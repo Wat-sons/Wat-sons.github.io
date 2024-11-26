@@ -1,0 +1,2 @@
+# linting.github.io
+BlogResource
