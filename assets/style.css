@@ -770,6 +770,16 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .work-item.is-flipped .work-media { grid-column: 6 / 13; order: 2; }
 .work-item.is-flipped .work-body  { grid-column: 1 / 6; order: 1; }
 
+/* 没有视觉素材的项目：整块退成通栏文字，右侧留给空白。
+   不给空图位 —— 一个空框比没有框更难看。 */
+.work-item.is-textonly { align-items: start; }
+.work-item.is-textonly .work-body,
+.work-item.is-textonly.is-flipped .work-body {
+  grid-column: 1 / 8;
+  order: 1;
+}
+.work-item.is-textonly .work-desc { max-width: 64ch; }
+
 .work-media {
   position: relative;
   border: 1px solid var(--line);

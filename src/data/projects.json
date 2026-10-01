@@ -1,5 +1,5 @@
 {
-  "_comment": "Selected Work。只放能确认的真实项目 —— 不编造。加项目：往 items 里加一条即可，页面自动交替左右布局。visual 指定用哪个 SVG 生成器（见 src/lib/visuals.mjs）：pipeline / rating / none。",
+  "_comment": "Selected Work。只放能确认的真实项目 —— 不编造。加项目：往 items 里加一条即可，有 visual 的自动交替左右布局。visual 取值见 src/lib/visuals.mjs：rating / none。没有能一眼读懂的图就用 none，宁可留白也别摆一张说不清的东西。",
   "updatedAt": "2026-10-01",
 
   "items": [
@@ -9,13 +9,13 @@
       "year": "2026",
       "title": "Data-Driven Homepage",
       "titleCn": "数据驱动个人主页",
-      "desc": "这个站本身。所有内容来自 src/data/*.json 单一事实来源，构建脚本产出纯静态 HTML —— 线上零运行时依赖、零 CDN、零字体外链。内建发布前隐私闸门，任何可能泄露个人信息的内容都会阻断推送；另有单文件导出，离线双击即可打开。",
-      "tags": ["Static Site", "Zero Dependency", "Build Pipeline"],
+      "desc": "这个站本身。所有内容来自 src/data/*.json 单一事实来源，构建脚本产出纯静态 HTML —— 线上零运行时依赖、零 CDN、零字体外链，整站只有三个文件。内建发布前隐私闸门：任何可能泄露个人信息的内容都会直接阻断推送。另有单文件导出，离线双击即可打开。",
+      "tags": ["Static Site", "Zero Dependency", "GitHub Pages"],
       "links": [
         { "label": "访问", "url": "https://wat-sons.github.io/" },
         { "label": "源码", "url": "https://github.com/Wat-sons/Wat-sons.github.io" }
       ],
-      "visual": "pipeline"
+      "visual": "none"
     },
     {
       "id": "competitive-programming",

@@ -131,6 +131,9 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   anchorsOk: [...document.querySelectorAll('.nav a')]
     .every(a => !!document.querySelector(a.getAttribute('href'))),
   hasDotMatrix: /1 DOT = 1 CONTEST/.test(document.body.innerHTML),
+  hasPipeline: /BUILD PIPELINE/.test(document.body.innerHTML),
+  textOnlyItems: document.querySelectorAll('.work-item.is-textonly').length,
+  emptyMediaBoxes: [...document.querySelectorAll('.work-media')].filter(v => !v.firstElementChild).length,
   hasResearch: /科研方向|WHAT I'M EXPLORING/.test(document.body.innerHTML)
 })`));
 check('零位图', r.imgs === 0, `img=${r.imgs}`);
@@ -144,6 +147,9 @@ check('幽灵区块标题已渲染', r.ghosts === 5, `${r.ghosts} 个`);
 check('rating 曲线挂在项目卡内、含两条真实序列', r.chartSvg === 1 && r.chartPaths === 2,
   `svg=${r.chartSvg} series=${r.chartPaths}`);
 check('已移除参与记录点阵', r.hasDotMatrix === false);
+check('已移除构建流水线图', r.hasPipeline === false);
+check('无视觉素材的项目退成通栏文字', r.textOnlyItems === 1, `${r.textOnlyItems} 个`);
+check('没有空图位', r.emptyMediaBoxes === 0, `${r.emptyMediaBoxes} 个空框`);
 check('已下线科研方向区块', r.hasResearch === false);
 check('奖项行已渲染', r.awards >= 20, `${r.awards} 行`);
 

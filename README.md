@@ -59,7 +59,7 @@ Minimal / Editorial 风格的 AI & Algorithms 个人作品集。
 │   ├── build.mjs            构建入口：数据 → HTML，拼 CSS，拷 JS
 │   ├── lib/
 │   │   ├── html.mjs         转义 / 拼接工具
-│   │   └── visuals.mjs      构建期 SVG：架构图 / rating 曲线
+│   │   └── visuals.mjs      构建期 SVG：目前只剩 rating 曲线
 │   ├── components/          ghost-title · section-head · project-card
 │   │                        stat-block · award-row · rail · pill
 │   ├── sections/            topbar · hero · work · competition
@@ -67,7 +67,7 @@ Minimal / Editorial 风格的 AI & Algorithms 个人作品集。
 │   ├── data/                ★ 内容唯一事实来源（改内容只动这里）
 │   │   ├── profile.json     身份、导航、Hero 文案、自述、技能、教育、校园
 │   │   ├── metrics.json     首屏四数字 / 竞赛四数字 / 时间线
-│   │   ├── projects.json    项目（visual 字段选 SVG 生成器：pipeline / rating / none）
+│   │   ├── projects.json    项目（visual：rating / none，无图自动退成通栏文字）
 │   │   ├── research.json    ⚠️ 当前不参与渲染（科研方向区块已下线，数据保留待恢复）
 │   │   ├── competitions.json 奖项 + 证书名称（页面按 date 升序）
 │   │   ├── contests.json    CF handles 与更新日志
@@ -149,8 +149,9 @@ Token 在 <https://github.com/settings/tokens/new?scopes=repo,workflow&descripti
 | 取舍 | 原因 |
 |---|---|
 | 不做图片 / 视频背景 / 外部字体 | 参考站评论区里翻车最多的就是加载慢与国内打不开 |
-| 视觉素材全部用真实数据生成 | 没有摄影素材，硬塞 stock 图立刻变模板；算法图反而是这个站的辨识点 |
-| **视觉必须一眼读懂** | 曾经做过一版「506 场参与记录点阵」（1 点 = 1 场），78% 的点是灰的，读者得读小字图例才明白，已删除。现在只保留架构图与 rating 折线 —— 折线是人人都懂的语言 |
+| 视觉素材全部用真实数据生成 | 没有摄影素材，硬塞 stock 图立刻变模板；真实 rating 曲线反而是这个站的辨识点 |
+| **图形要么一眼读懂，要么讲的是人不是站** | 已删掉两个自己做的图形：①「506 场参与记录点阵」—— 78% 的点是灰的，不读小字图例看不懂，信息量撑不起那么大面积；②「本站构建流程图」—— 讲的是这个站自己的内部结构，对访客没有价值，属于自说自话。现在只保留 rating 折线 |
+| 没有视觉素材的项目不给空图位 | 一个空框比没有框更难看；退成通栏文字（`.work-item.is-textonly`）反而形成大小节奏 |
 | 科研方向区块已下线 | 本人暂无可以声称的成果。`research.json` 保留，恢复方法见下 |
 | 章节编号由渲染器自动算 | 手工编号插一章要改五个地方 |
 | 统计数字全部从数据算，不写死 | 手写的 summary 一定会跟列表跑偏 |

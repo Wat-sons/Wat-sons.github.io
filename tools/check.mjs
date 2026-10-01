@@ -57,7 +57,7 @@ for (const a of competitions.awards) {
 }
 
 // 项目 visual 必须是已知的生成器
-const KNOWN_VISUALS = ['pipeline', 'rating', 'none'];
+const KNOWN_VISUALS = ['rating', 'none'];
 for (const p of projects.items) {
   if (p.visual && !KNOWN_VISUALS.includes(p.visual)) {
     problems.push(`项目 ${p.id} 的 visual「${p.visual}」没有对应生成器（可用：${KNOWN_VISUALS.join(' / ')}）`);

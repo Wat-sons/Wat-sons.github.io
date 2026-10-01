@@ -1,10 +1,13 @@
 /* ============================================================
    lib/visuals.mjs — 构建期生成的内联 SVG 视觉
-   全部来自真实数据：不画任何编造的曲线、结果或指标。
-     pipeline()  → 本站的构建与隐私闸门架构图（描述真实流程）
-     rating()    → 两个账号的真实 rating 曲线（来自 cf.json）
-   两个都做成 880×605（= 16:11），与 .work-media 的容器比例一致，
-   不会出现 letterbox 留白。
+
+   目前只剩一个：rating()。
+   另外两种曾经做过、已被删除，记在这里避免以后再走一遍：
+     · activity() —— 「506 场参与记录点阵」（1 点 = 1 场）。78% 的点是灰的，
+       不读小字图例看不懂，信息量撑不起那么大面积。
+     · pipeline() —— 「本站构建流程图」。讲的是这个站自己的内部结构，
+       对访客没有价值，属于自说自话。
+   留下来的标准：**要么一眼读懂，要么讲的是人而不是站**。
    ============================================================ */
 
 import { esc, num } from "./html.mjs";
@@ -16,80 +19,6 @@ const LINE = "var(--line)";
 
 const wrap = (w, h, body, label, cls = "") =>
   `<svg${cls ? ` class="${cls}"` : ""} viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}" preserveAspectRatio="xMidYMid meet">${body}</svg>`;
-
-/* ---------------------------------------------------------------- 架构图 */
-/**
- * 本站的真实构建链路，画成四列数据流：
- *   src/{data,sections,styles} → build.mjs → {index.html, assets/, dist/} → PRIVACY GATE → GitHub Pages
- * 闸门是「不通过就中止推送」的关卡，所以画成菱形判定而不是普通方框。
- */
-export function pipeline(w = 880, h = 605) {
-  const BW = 184, BH = 70;
-  const X = [0, 232, 464, 696];
-  const Y = [70, 185, 300];
-  const midY = Y[1] + BH / 2;
-
-  const box = (x, y, label, sub, accent) => `
-    <rect x="${x}" y="${y}" width="${BW}" height="${BH}" rx="8"
-          fill="var(--bg)" stroke="${accent ? ACCENT : LINE}"/>
-    <text x="${x + 14}" y="${y + 27}" fill="${accent ? ACCENT : "var(--fg)"}"
-          font-family="var(--font-mono)" font-size="12.5">${esc(label)}</text>
-    <text x="${x + 14}" y="${y + 47}" fill="${MUTE}"
-          font-family="var(--font-mono)" font-size="10.5">${esc(sub)}</text>`;
-
-  const arrowR = (x1, x2, y) => `
-    <line x1="${x1}" y1="${y}" x2="${x2 - 6}" y2="${y}" stroke="${LINE}"/>
-    <path d="M ${x2} ${y} l -6 -3.5 l 0 7 z" fill="${MUTE}"/>`;
-
-  const arrowD = (x, y1, y2) => `
-    <line x1="${x}" y1="${y1}" x2="${x}" y2="${y2 - 6}" stroke="${LINE}"/>
-    <path d="M ${x} ${y2} l -3.5 -6 l 7 0 z" fill="${MUTE}"/>`;
-
-  const fanIn = Y.map((y) => arrowR(X[0] + BW, X[1], y + BH / 2)).join("");
-
-  // build → 三个输出：先竖一条总线，再分出去
-  const busTop = Y[0] + BH / 2, busBot = Y[2] + BH / 2;
-  const busX = X[1] + BW + 24;
-  const fanOut = `
-    <line x1="${X[1] + BW}" y1="${midY}" x2="${busX}" y2="${midY}" stroke="${LINE}"/>
-    <line x1="${busX}" y1="${busTop}" x2="${busX}" y2="${busBot}" stroke="${LINE}"/>
-    ${Y.map((y) => arrowR(busX, X[2], y + BH / 2)).join("")}`;
-
-  return wrap(w, h, `
-    <text x="0" y="20" fill="${MUTE}" font-family="var(--font-mono)" font-size="11" letter-spacing="1.8">BUILD PIPELINE · ZERO DEPENDENCIES</text>
-
-    ${box(X[0], Y[0], "src/data/*.json", "单一事实来源")}
-    ${box(X[0], Y[1], "src/sections/", "区块渲染器")}
-    ${box(X[0], Y[2], "src/styles/", "令牌 + 分层 CSS")}
-
-    ${fanIn}
-    ${box(X[1], Y[1], "build.mjs", "纯 Node · 无打包器", true)}
-
-    ${fanOut}
-    ${box(X[2], Y[0], "index.html", "纯静态 HTML")}
-    ${box(X[2], Y[1], "assets/", "CSS · JS · 字体")}
-    ${box(X[2], Y[2], "dist/*.html", "单文件离线版")}
-
-    ${arrowR(X[2] + BW, X[3] + 34, midY)}
-    <path d="M ${X[3] + 78} ${midY} l -34 -40 l 34 -40 l 34 40 z"
-          fill="var(--bg)" stroke="${ACCENT}"/>
-    <text x="${X[3] + 78}" y="${midY - 6}" fill="${ACCENT}" font-family="var(--font-mono)"
-          font-size="11" text-anchor="middle">PRIVACY</text>
-    <text x="${X[3] + 78}" y="${midY + 9}" fill="${ACCENT}" font-family="var(--font-mono)"
-          font-size="11" text-anchor="middle">GATE</text>
-    <text x="${X[3] + 78}" y="${midY + 58}" fill="${MUTE}" font-family="var(--font-mono)"
-          font-size="10" text-anchor="middle">fail → abort push</text>
-
-    ${arrowD(X[3] + 78, midY + 72, 300)}
-    ${box(X[3] - 53, 300, "GitHub Pages", "wat-sons.github.io", true)}
-
-    <line x1="0" y1="440" x2="${w}" y2="440" stroke="${LINE}"/>
-    <text x="0" y="470" fill="${MUTE}" font-family="var(--font-mono)" font-size="11" letter-spacing="1.8">CONSTRAINTS</text>
-    ${["0 runtime dependencies", "0 CDN requests", "0 bitmap images", "0 build cache"]
-      .map((t, i) => `<text x="${(i % 2) * 450}" y="${508 + Math.floor(i / 2) * 30}"
-        fill="${DIM}" font-family="var(--font-mono)" font-size="12.5">${esc(t)}</text>`).join("")}
-  `, "本站构建流程图：src 的数据、区块与样式经 build.mjs 产出静态站与单文件版，推送前经过隐私闸门校验，不通过则中止");
-}
 
 /* -------------------------------------------------------------- rating 曲线 */
 /**
@@ -172,4 +101,4 @@ export function rating(cf, w = 880, h = 605) {
   `, `Codeforces rating 曲线：${handles.map((x) => `${x.handle} 当前 ${x.rating}，历史最高 ${x.maxRating}`).join("；")}`, "chart");
 }
 
-export const VISUALS = { pipeline, rating };
+export const VISUALS = { rating };
