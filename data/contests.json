@@ -1,0 +1,57 @@
+{
+  "_comment": "比赛记忆（手工维护部分）。自动同步的数字不写在这里，全部落在 data/cf.json，由 tools/sync.mjs 刷新。这里只记「事实」和「日志」。",
+  "updatedAt": "2026-10-01",
+  "handles": {
+    "codeforces": ["quchen", "quchen666"],
+    "qoj": "quchen",
+    "nowcoder": null,
+    "luogu": null,
+    "atcoder": null
+  },
+  "highlights": [
+    {
+      "date": "2026-06",
+      "name": "CCPC 全国邀请赛 · 贵阳",
+      "kind": "official",
+      "result": "银牌",
+      "note": "正式赛"
+    },
+    {
+      "date": "2025-09",
+      "name": "CCPC 全国邀请赛 · 南昌",
+      "kind": "official",
+      "result": "铜牌",
+      "note": "正式赛"
+    },
+    {
+      "date": "2025-06",
+      "name": "CCPC 全国邀请赛 · 郑州",
+      "kind": "official",
+      "result": "铜牌",
+      "note": "正式赛"
+    },
+    {
+      "date": "2026-05",
+      "name": "中国高校计算机大赛 · 团体程序设计天梯赛",
+      "kind": "official",
+      "result": "全国总决赛 个人二等奖",
+      "note": "团体赛"
+    }
+  ],
+  "notes": [
+    "训练主场是 Codeforces，两个号 quchen（主）+ quchen666，历史提交合计 2700+ 条。",
+    "VP（虚拟参赛）记录看 XCPC-VP-Tracker；CF 侧只认提交里的 participantType=VIRTUAL，赛后补题（PRACTICE）不算。",
+    "XCPC 题解整理在 XCPC-Solutions，赛站/题号进度由 XCPC-VP-Tracker 汇总。"
+  ],
+  "log": [
+    {
+      "date": "2026-10-01",
+      "text": "初始化：从个人简历导入奖项与正式赛记录，从 XCPC-VP-Tracker 导入 CF / XCPC 统计。"
+    }
+  ],
+  "todo": [
+    "补 2026 年 CCPC 网络预选赛 / ICPC 网络预选赛的参赛记录（哪几场、名次）。",
+    "把 Codeforces 两个号的当前 rating 定期刷新（npm run sync）。",
+    "证书原件扫描后放进私有仓库 awards-vault，并回填 data/awards.json 的 vault 字段。"
+  ]
+}

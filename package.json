@@ -1,0 +1,18 @@
+{
+  "name": "quchen-homepage",
+  "version": "1.1.0",
+  "private": true,
+  "description": "quchen 的个人主页 —— 数据驱动生成，GitHub Pages 托管",
+  "type": "module",
+  "scripts": {
+    "sync": "node tools/sync.mjs",
+    "build": "node build.mjs",
+    "check": "node tools/check.mjs",
+    "page": "node build.mjs && node tools/check.mjs",
+    "single": "node build.mjs && node tools/build-single.mjs",
+    "serve": "node tools/serve.mjs",
+    "shots": "node tools/fullshot.mjs --url http://127.0.0.1:5174/ --out 预览/整页.png --width 1440 --height 1000"
+  },
+  "engines": { "node": ">=20" },
+  "license": "MIT"
+}

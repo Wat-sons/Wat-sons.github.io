@@ -1,0 +1,533 @@
+{
+  "_comment": "自动生成，别手改。改数据源或改 tools/sync.mjs，然后 npm run sync。",
+  "syncedAt": "2026-10-01T13:32:16.605Z",
+  "sources": [
+    "https://codeforces.com/api/user.info",
+    "https://codeforces.com/api/user.rating",
+    "XCPC-VP-Tracker/cf-progress.json",
+    "XCPC-VP-Tracker/vp-data.json"
+  ],
+  "codeforces": {
+    "primary": "quchen",
+    "handles": [
+      {
+        "handle": "quchen",
+        "rating": 1799,
+        "maxRating": 1799,
+        "rank": "expert",
+        "maxRank": "expert",
+        "titlePhoto": "https://userpic.codeforces.org/4469329/title/c5ed9270d6b4d30c.jpg",
+        "ratingHistory": [
+          {
+            "contestId": 2102,
+            "name": "Codeforces Round 1024 (Div. 2)",
+            "rating": 405,
+            "delta": 405,
+            "at": "2025-05-11T17:05:00.000Z"
+          },
+          {
+            "contestId": 2109,
+            "name": "Codeforces Round 1025 (Div. 2)",
+            "rating": 772,
+            "delta": 367,
+            "at": "2025-05-17T16:50:00.000Z"
+          },
+          {
+            "contestId": 2110,
+            "name": "Codeforces Round 1026 (Div. 2)",
+            "rating": 974,
+            "delta": 202,
+            "at": "2025-05-24T16:35:00.000Z"
+          },
+          {
+            "contestId": 2114,
+            "name": "Codeforces Round 1027 (Div. 3)",
+            "rating": 1115,
+            "delta": 141,
+            "at": "2025-05-26T16:50:00.000Z"
+          },
+          {
+            "contestId": 2111,
+            "name": "Educational Codeforces Round 179 (Rated for Div. 2)",
+            "rating": 1190,
+            "delta": 75,
+            "at": "2025-06-03T16:35:00.000Z"
+          },
+          {
+            "contestId": 2117,
+            "name": "Codeforces Round 1029 (Div. 3)",
+            "rating": 1206,
+            "delta": 16,
+            "at": "2025-06-08T16:50:00.000Z"
+          },
+          {
+            "contestId": 2121,
+            "name": "Codeforces Round 1032 (Div. 3)",
+            "rating": 1208,
+            "delta": 2,
+            "at": "2025-06-17T16:50:00.000Z"
+          },
+          {
+            "contestId": 2122,
+            "name": "Order Capital Round 1 (Codeforces Round 1038, Div. 1 + Div. 2)",
+            "rating": 1173,
+            "delta": -35,
+            "at": "2025-07-19T16:50:00.000Z"
+          },
+          {
+            "contestId": 2125,
+            "name": "Educational Codeforces Round 181 (Rated for Div. 2)",
+            "rating": 1205,
+            "delta": 32,
+            "at": "2025-07-22T16:35:00.000Z"
+          },
+          {
+            "contestId": 2128,
+            "name": "Codeforces Round 1039 (Div. 2)",
+            "rating": 1286,
+            "delta": 81,
+            "at": "2025-07-27T16:35:00.000Z"
+          },
+          {
+            "contestId": 2130,
+            "name": "Codeforces Round 1040 (Div. 2)",
+            "rating": 1286,
+            "delta": 0,
+            "at": "2025-07-31T17:35:00.000Z"
+          },
+          {
+            "contestId": 2131,
+            "name": "Codeforces Round 1042 (Div. 3)",
+            "rating": 1278,
+            "delta": -8,
+            "at": "2025-08-10T16:50:00.000Z"
+          },
+          {
+            "contestId": 2132,
+            "name": "Codeforces Round 1043 (Div. 3)",
+            "rating": 1347,
+            "delta": 69,
+            "at": "2025-08-21T16:50:00.000Z"
+          },
+          {
+            "contestId": 2133,
+            "name": "Codeforces Round 1044 (Div. 2)",
+            "rating": 1443,
+            "delta": 96,
+            "at": "2025-08-24T16:35:00.000Z"
+          },
+          {
+            "contestId": 2134,
+            "name": "Codeforces Round 1045 (Div. 2)",
+            "rating": 1456,
+            "delta": 13,
+            "at": "2025-08-26T16:35:00.000Z"
+          },
+          {
+            "contestId": 2140,
+            "name": "Codeforces Round 1049 (Div. 2)",
+            "rating": 1409,
+            "delta": -47,
+            "at": "2025-09-09T16:35:00.000Z"
+          },
+          {
+            "contestId": 2144,
+            "name": "Educational Codeforces Round 182 (Rated for Div. 2)",
+            "rating": 1488,
+            "delta": 79,
+            "at": "2025-09-15T16:35:00.000Z"
+          },
+          {
+            "contestId": 2143,
+            "name": "Codeforces Round 1051 (Div. 2)",
+            "rating": 1510,
+            "delta": 22,
+            "at": "2025-09-17T16:35:00.000Z"
+          },
+          {
+            "contestId": 2147,
+            "name": "Codeforces Global Round 29 (Div. 1 + Div. 2)",
+            "rating": 1541,
+            "delta": 31,
+            "at": "2025-09-20T17:35:00.000Z"
+          },
+          {
+            "contestId": 2146,
+            "name": "Codeforces Round 1052 (Div. 2)",
+            "rating": 1462,
+            "delta": -79,
+            "at": "2025-09-21T16:50:00.000Z"
+          },
+          {
+            "contestId": 2151,
+            "name": "Codeforces Round 1053 (Div. 2)",
+            "rating": 1515,
+            "delta": 53,
+            "at": "2025-09-24T14:50:00.000Z"
+          },
+          {
+            "contestId": 2149,
+            "name": "Codeforces Round 1054 (Div. 3)",
+            "rating": 1557,
+            "delta": 42,
+            "at": "2025-09-25T16:50:00.000Z"
+          },
+          {
+            "contestId": 2152,
+            "name": "Squarepoint Challenge (Codeforces Round 1055, Div. 1 + Div. 2)",
+            "rating": 1602,
+            "delta": 45,
+            "at": "2025-10-03T17:35:00.000Z"
+          },
+          {
+            "contestId": 2155,
+            "name": "Codeforces Round 1056 (Div. 2)",
+            "rating": 1571,
+            "delta": -31,
+            "at": "2025-10-05T18:35:00.000Z"
+          },
+          {
+            "contestId": 2145,
+            "name": "Educational Codeforces Round 183 (Rated for Div. 2)",
+            "rating": 1509,
+            "delta": -62,
+            "at": "2025-10-06T16:35:00.000Z"
+          },
+          {
+            "contestId": 2153,
+            "name": "Codeforces Round 1057 (Div. 2)",
+            "rating": 1502,
+            "delta": -7,
+            "at": "2025-10-10T16:50:00.000Z"
+          },
+          {
+            "contestId": 2160,
+            "name": "Codeforces Round 1058 (Div. 2)",
+            "rating": 1467,
+            "delta": -35,
+            "at": "2025-10-12T17:05:00.000Z"
+          },
+          {
+            "contestId": 2162,
+            "name": "Codeforces Round 1059 (Div. 3)",
+            "rating": 1468,
+            "delta": 1,
+            "at": "2025-10-17T16:50:00.000Z"
+          },
+          {
+            "contestId": 2154,
+            "name": "Codeforces Round 1060 (Div. 2)",
+            "rating": 1439,
+            "delta": -29,
+            "at": "2025-10-19T16:35:00.000Z"
+          },
+          {
+            "contestId": 2157,
+            "name": "Codeforces Round 1066 (Div. 1 + Div. 2)",
+            "rating": 1597,
+            "delta": 158,
+            "at": "2025-11-23T12:35:00.000Z"
+          },
+          {
+            "contestId": 2158,
+            "name": "Codeforces Round 1067 (Div. 2)",
+            "rating": 1598,
+            "delta": 1,
+            "at": "2025-11-29T16:35:00.000Z"
+          },
+          {
+            "contestId": 2176,
+            "name": "Codeforces Round 1070 (Div. 2)",
+            "rating": 1573,
+            "delta": -25,
+            "at": "2025-12-11T16:35:00.000Z"
+          },
+          {
+            "contestId": 2180,
+            "name": "Codeforces Global Round 31 (Div. 1 + Div. 2)",
+            "rating": 1591,
+            "delta": 18,
+            "at": "2025-12-19T17:05:00.000Z"
+          },
+          {
+            "contestId": 2179,
+            "name": "Codeforces Round 1071 (Div. 3)",
+            "rating": 1634,
+            "delta": 43,
+            "at": "2025-12-23T17:15:00.000Z"
+          },
+          {
+            "contestId": 2178,
+            "name": "Good Bye 2025",
+            "rating": 1730,
+            "delta": 96,
+            "at": "2025-12-27T17:35:00.000Z"
+          },
+          {
+            "contestId": 2210,
+            "name": "Codeforces Round 1089 (Div. 2)",
+            "rating": 1677,
+            "delta": -53,
+            "at": "2026-03-29T16:50:00.000Z"
+          },
+          {
+            "contestId": 2225,
+            "name": "Educational Codeforces Round 189 (Rated for Div. 2)",
+            "rating": 1799,
+            "delta": 122,
+            "at": "2026-04-21T16:35:00.000Z"
+          }
+        ]
+      },
+      {
+        "handle": "quchen666",
+        "rating": 1992,
+        "maxRating": 2089,
+        "rank": "candidate master",
+        "maxRank": "candidate master",
+        "titlePhoto": "https://userpic.codeforces.org/5285244/title/131bcb0792fdc229.jpg",
+        "ratingHistory": [
+          {
+            "contestId": 2167,
+            "name": "Codeforces Round 1062 (Div. 4)",
+            "rating": 531,
+            "delta": 531,
+            "at": "2025-10-28T16:50:00.000Z"
+          },
+          {
+            "contestId": 2163,
+            "name": "Codeforces Round 1063 (Div. 2)",
+            "rating": 807,
+            "delta": 276,
+            "at": "2025-11-10T17:05:00.000Z"
+          },
+          {
+            "contestId": 2169,
+            "name": "Educational Codeforces Round 184 (Rated for Div. 2)",
+            "rating": 1112,
+            "delta": 305,
+            "at": "2025-11-14T16:35:00.000Z"
+          },
+          {
+            "contestId": 2166,
+            "name": "Codeforces Round 1064 (Div. 2)",
+            "rating": 1510,
+            "delta": 398,
+            "at": "2025-11-16T16:35:00.000Z"
+          },
+          {
+            "contestId": 2171,
+            "name": "Codeforces Round 1065 (Div. 3)",
+            "rating": 1617,
+            "delta": 107,
+            "at": "2025-11-20T17:05:00.000Z"
+          },
+          {
+            "contestId": 2189,
+            "name": "Codeforces Round 1075 (Div. 2)",
+            "rating": 1707,
+            "delta": 90,
+            "at": "2026-01-23T16:35:00.000Z"
+          },
+          {
+            "contestId": 2188,
+            "name": "Codeforces Round 1077 (Div. 2)",
+            "rating": 1729,
+            "delta": 22,
+            "at": "2026-01-29T17:35:00.000Z"
+          },
+          {
+            "contestId": 2197,
+            "name": "Codeforces Round 1079 (Div. 2)",
+            "rating": 1755,
+            "delta": 26,
+            "at": "2026-02-11T17:35:00.000Z"
+          },
+          {
+            "contestId": 2192,
+            "name": "Codeforces Round 1081 (Div. 2)",
+            "rating": 1677,
+            "delta": -78,
+            "at": "2026-02-21T16:35:00.000Z"
+          },
+          {
+            "contestId": 2202,
+            "name": "Codeforces Round 1082 (Div. 2)",
+            "rating": 1792,
+            "delta": 115,
+            "at": "2026-02-23T17:05:00.000Z"
+          },
+          {
+            "contestId": 2203,
+            "name": "Educational Codeforces Round 187 (Rated for Div. 2)",
+            "rating": 1767,
+            "delta": -25,
+            "at": "2026-02-25T16:35:00.000Z"
+          },
+          {
+            "contestId": 2205,
+            "name": "Codeforces Round 1083 (Div. 2)",
+            "rating": 1760,
+            "delta": -7,
+            "at": "2026-02-26T17:05:00.000Z"
+          },
+          {
+            "contestId": 2207,
+            "name": "Codeforces Round 1085 (Div. 1 + Div. 2)",
+            "rating": 1721,
+            "delta": -39,
+            "at": "2026-03-08T17:35:00.000Z"
+          },
+          {
+            "contestId": 2208,
+            "name": "Codeforces Round 1086 (Div. 2)",
+            "rating": 1736,
+            "delta": 15,
+            "at": "2026-03-14T16:35:00.000Z"
+          },
+          {
+            "contestId": 2204,
+            "name": "Educational Codeforces Round 188 (Rated for Div. 2)",
+            "rating": 1805,
+            "delta": 69,
+            "at": "2026-03-16T16:50:00.000Z"
+          },
+          {
+            "contestId": 2209,
+            "name": "Codeforces Round 1087 (Div. 2)",
+            "rating": 1886,
+            "delta": 81,
+            "at": "2026-03-21T16:35:00.000Z"
+          },
+          {
+            "contestId": 2211,
+            "name": "Nebius Round 2 (Codeforces Round 1088, Div. 1 + Div. 2)",
+            "rating": 1926,
+            "delta": 40,
+            "at": "2026-03-28T17:15:00.000Z"
+          },
+          {
+            "contestId": 2219,
+            "name": "Codeforces Round 1093 (Div. 1)",
+            "rating": 2089,
+            "delta": 163,
+            "at": "2026-04-13T16:35:00.000Z"
+          },
+          {
+            "contestId": 2222,
+            "name": "Spectral::Cup 2026 Round 1 (Codeforces Round 1094, Div. 1 + Div. 2)",
+            "rating": 2086,
+            "delta": -3,
+            "at": "2026-04-25T17:05:00.000Z"
+          },
+          {
+            "contestId": 2226,
+            "name": "Codeforces Round 1095 (Div. 2)",
+            "rating": 2044,
+            "delta": -42,
+            "at": "2026-04-28T16:50:00.000Z"
+          },
+          {
+            "contestId": 2230,
+            "name": "Educational Codeforces Round 190 (Rated for Div. 2)",
+            "rating": 1982,
+            "delta": -62,
+            "at": "2026-05-18T16:35:00.000Z"
+          },
+          {
+            "contestId": 2232,
+            "name": "Codeforces Round 1101 (Div. 2)",
+            "rating": 2016,
+            "delta": 34,
+            "at": "2026-05-30T16:35:00.000Z"
+          },
+          {
+            "contestId": 2237,
+            "name": "Order Capital Round 2 (Codeforces Round 1104, Div. 1 + Div. 2)",
+            "rating": 2066,
+            "delta": 50,
+            "at": "2026-06-18T17:35:00.000Z"
+          },
+          {
+            "contestId": 2238,
+            "name": "Codeforces Round 1106 (Div. 2)",
+            "rating": 1974,
+            "delta": -92,
+            "at": "2026-06-28T16:35:00.000Z"
+          },
+          {
+            "contestId": 2242,
+            "name": "Educational Codeforces Round 192 (Rated for Div. 2)",
+            "rating": 1923,
+            "delta": -51,
+            "at": "2026-07-06T16:35:00.000Z"
+          },
+          {
+            "contestId": 2245,
+            "name": "Spectral::Cup 2026 Round 3 (Codeforces Round 1110, Div. 1 + Div. 2)",
+            "rating": 1993,
+            "delta": 70,
+            "at": "2026-07-16T17:15:00.000Z"
+          },
+          {
+            "contestId": 2247,
+            "name": "Codeforces Round 1111 (Div. 2)",
+            "rating": 2039,
+            "delta": 46,
+            "at": "2026-07-18T16:35:00.000Z"
+          },
+          {
+            "contestId": 2249,
+            "name": "Codeforces Round 1112 (Div. 1)",
+            "rating": 1996,
+            "delta": -43,
+            "at": "2026-07-26T17:05:00.000Z"
+          },
+          {
+            "contestId": 2252,
+            "name": "Codeforces Round 1115 (Div. 2)",
+            "rating": 2007,
+            "delta": 11,
+            "at": "2026-08-06T16:35:00.000Z"
+          },
+          {
+            "contestId": 2253,
+            "name": "Educational Codeforces Round 193 (Rated for Div. 2)",
+            "rating": 1992,
+            "delta": -15,
+            "at": "2026-08-07T16:35:00.000Z"
+          }
+        ]
+      }
+    ],
+    "ratedContests": 67,
+    "peak": {
+      "handle": "quchen666",
+      "maxRating": 2089,
+      "maxRank": "candidate master"
+    },
+    "stats": {
+      "submissions": {
+        "quchen": 2266,
+        "quchen666": 483
+      },
+      "contestsSeen": 506,
+      "byStatus": {
+        "practice": 393,
+        "other": 5,
+        "vp": 40,
+        "contest": 68
+      },
+      "generatedAt": "2026-10-01T00:20:16+0800"
+    }
+  },
+  "xcpc": {
+    "contests": 72,
+    "regional": 61,
+    "online": 11,
+    "problems": 905,
+    "solved": 98,
+    "withSolutions": 18,
+    "generatedAt": "2026-09-30T23:55:53+08:00"
+  }
+}
