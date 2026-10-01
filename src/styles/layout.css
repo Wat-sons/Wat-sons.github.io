@@ -71,29 +71,11 @@
   align-items: center;
   gap: clamp(1rem, 3vw, 2.5rem);
 }
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-.brand-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  background: var(--accent);
-  color: var(--bg);
-  display: grid;
-  place-items: center;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0;
-}
+/* 导航靠左，年份与菜单靠右。顶栏不再放 logo/昵称 ——
+   单页作品集里那只是把名字说了第二遍。 */
 .nav {
   display: flex;
   gap: clamp(0.75rem, 2vw, 1.75rem);
-  margin-inline: auto;
 }
 .nav a {
   position: relative;
@@ -121,7 +103,8 @@
 .nav a:hover .idx, .nav a.is-active .idx { color: var(--accent); }
 .nav a:hover::after, .nav a.is-active::after { transform: scaleX(1); }
 
-.topbar-tail { display: flex; align-items: center; gap: 0.9rem; }
+/* margin-left:auto 保证移动端导航变成固定抽屉后，右侧那组仍然贴右边 */
+.topbar-tail { display: flex; align-items: center; gap: 0.9rem; margin-left: auto; }
 .year-tag { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--fg-mute); letter-spacing: 0.1em; }
 
 /* 移动端：导航收成抽屉 */

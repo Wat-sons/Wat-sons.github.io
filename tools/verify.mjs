@@ -222,14 +222,14 @@ if (existsSync(SINGLE)) {
   r = JSON.parse(await evalJs(`JSON.stringify({
     title: document.title,
     fontLoaded: document.fonts.check('700 48px "Space Grotesk Variable"'),
-    styled: getComputedStyle(document.querySelector('.brand-mark')).backgroundColor,
+    styled: getComputedStyle(document.querySelector('.stat-num')).color,
     awards: document.querySelectorAll('.award-row').length,
     chart: document.querySelectorAll('.work-media path.series').length,
     notIn: document.querySelectorAll('.reveal:not(.is-in)').length
   })`));
   check('单文件版可离线打开', /quchen/.test(r.title), r.title);
   check('单文件版内嵌字体已生效', r.fontLoaded === true, `fontLoaded=${r.fontLoaded}`);
-  check('单文件版样式已内联', r.styled !== 'rgba(0, 0, 0, 0)', r.styled);
+  check('单文件版样式已内联', /216,\s*255,\s*74/.test(r.styled), r.styled);
   check('单文件版内容完整', r.awards >= 20 && r.chart === 2, `${r.awards} 行 / ${r.chart} 序列`);
   check('单文件版动画正常', r.notIn === 0, `未进场 ${r.notIn}`);
 } else {

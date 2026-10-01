@@ -1,5 +1,7 @@
 /* sections/topbar.mjs — 固定顶部导航
-   极简：品牌 + 编号菜单 + 年份。移动端收成右侧抽屉。 */
+   极简：编号菜单靠左 + 年份与菜单按钮靠右。
+   刻意不放 logo / 昵称 —— 单页作品集里那只是把名字说了第二遍，
+   页脚与联系区已经各有一处。 */
 
 import { esc } from "../lib/html.mjs";
 
@@ -12,10 +14,6 @@ export const topbar = ({ profile, year }) => {
 <div class="scroll-progress" aria-hidden="true"></div>
 <header class="topbar">
   <div class="wrap topbar-inner">
-    <a class="brand" href="#top">
-      <span class="brand-mark" aria-hidden="true">q</span>
-      <span>${esc(profile.handle)}</span>
-    </a>
     <nav class="nav" id="nav" aria-label="章节导航">${links}</nav>
     <div class="topbar-tail">
       <span class="year-tag">[${esc(year)}]</span>
