@@ -1,5 +1,5 @@
 {
-  "_comment": "竞赛奖项单一事实来源。weight 越小越靠前。vault 只做本地记账（指向私有仓库 awards），页面从不读取。certs 是证书名称（纯文字），绝不放进图片或原始文件名。本文件公开可下载。",
+  "_comment": "竞赛奖项单一事实来源。页面按 date 排序（获奖时间先后），weight 只作为含金量参考、当前不参与排序。vault 只做本地记账（指向私有仓库 awards），页面从不读取。certs 是证书名称（纯文字），绝不放进图片或原始文件名。本文件公开可下载。",
   "updatedAt": "2026-10-01",
   "levels": {
     "gold": {
@@ -382,8 +382,8 @@
       "series": "CCF-CSP",
       "stage": "全国",
       "level": "cert",
-      "result": "认证通过",
-      "extra": null,
+      "result": "270 分",
+      "extra": "累计排名前 7.2%",
       "weight": 230,
       "vault": "2026/CCF-CSP 第37次认证成绩单.pdf",
       "certs": [

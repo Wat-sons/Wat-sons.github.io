@@ -32,7 +32,7 @@ export const contact = ({ profile, ctx }) => {
     <div class="contact-links reveal" data-delay="2">${links}</div>
 
     <p class="contact-sign">
-      ${esc(profile.handle)} · ${esc(profile.location)} · 本站不含姓名 / 学号 / 电话等个人信息
+      ${esc(profile.handle)} · ${esc(profile.location)}
     </p>
   </div>
 </section>`;
