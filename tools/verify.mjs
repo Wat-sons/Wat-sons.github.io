@@ -105,6 +105,12 @@ for (const vp of VIEWPORTS) {
       .filter(n => { const cs = getComputedStyle(n);
         if (cs.position === 'fixed' || cs.visibility === 'hidden' || cs.display === 'none') return false;
         if (n.closest('.section-ghost')) return false;   // 幽灵字故意出血
+        // 被 overflow:hidden/clip 的祖先裁掉的元素不可能造成文档横向滚动
+        // （首屏那个出血的插画就属于这种），不该算溢出
+        for (let p = n.parentElement; p && p !== document.body; p = p.parentElement) {
+          const ox = getComputedStyle(p).overflowX;
+          if (ox === 'hidden' || ox === 'clip') return false;
+        }
         const b = n.getBoundingClientRect();
         return b.width > 0 && b.right > document.documentElement.clientWidth + 2; })
       .slice(0, 4).map(n => n.tagName + '.' + String(n.className).slice(0, 30))
@@ -118,6 +124,8 @@ await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, dev
 await load(`${BASE}/index.html`);
 let r = JSON.parse(await evalJs(`JSON.stringify({
   imgs: document.querySelectorAll('img').length,
+  sceneImgs: document.querySelectorAll('.hero-scenery img, .contact-scenery img').length,
+  abroadImgs: Array.prototype.filter.call(document.querySelectorAll('img'), function (i) { return !i.closest('.hero-scenery, .contact-scenery'); }).length,
   reveals: document.querySelectorAll('.reveal').length,
   notIn: document.querySelectorAll('.reveal:not(.is-in)').length,
   ready: !!window.__SITE_READY,
@@ -136,7 +144,9 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   emptyMediaBoxes: [...document.querySelectorAll('.work-media')].filter(v => !v.firstElementChild).length,
   hasResearch: /科研方向|WHAT I'M EXPLORING/.test(document.body.innerHTML)
 })`));
-check('零位图', r.imgs === 0, `img=${r.imgs}`);
+check('位图只有那两张呼应插画（首屏 + 页尾）',
+  r.imgs === 2 && r.sceneImgs === 2 && r.abroadImgs === 0,
+  `共 ${r.imgs} 张 · 插画 ${r.sceneImgs} · 其他 ${r.abroadImgs}`);
 check('入场动画全部收尾', r.notIn === 0, `${r.reveals} 个 reveal，未进场 ${r.notIn}`);
 check('app.js 正常收尾', r.ready === true);
 check('有无障碍跳转链接', r.skip === true);
@@ -171,7 +181,9 @@ const OFFLINE = [
 for (const [needle, label] of OFFLINE) {
   check(`页面不含 ${label}`, !bodyText.includes(needle));
 }
-check('页面无本地位图引用', !/src="[^"]*\.(png|jpe?g|webp)"/i.test(bodyText));
+check('页面无未获准的本地位图引用',
+  !/src="(?![^"]*assets\/scenery\/orbit\.webp)[^"]*\.(png|jpe?g|webp)"/i.test(bodyText),
+  '唯一允许的是 assets/scenery/orbit.webp');
 
 const DATA_FILES = ['src/data/profile.json', 'src/data/metrics.json', 'src/data/projects.json',
                     'src/data/research.json', 'src/data/competitions.json',

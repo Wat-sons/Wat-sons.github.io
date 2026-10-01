@@ -100,8 +100,11 @@ export function rating(cf, w = 880, h = 605) {
   const xLabels = [t0, (t0 + t1) / 2, t1].map((t, i) => `
     <text class="axis" x="${X(t).toFixed(1)}" y="${h - 16}" text-anchor="${i === 0 ? "start" : i === 2 ? "end" : "middle"}">${fmt(t)}</text>`).join("");
 
+  // 汇总提交数（两个账号相加），写在标题行里 —— 数字本身就是视觉元素
+  const subs = Object.values(cf?.codeforces?.stats?.submissions ?? {}).reduce((a, b) => a + b, 0);
+
   return wrap(w, h, `
-    <text x="0" y="20" fill="${MUTE}" font-family="var(--font-mono)" font-size="11" letter-spacing="1.8">CODEFORCES RATING · ${all.length} RATED CONTESTS</text>
+    <text x="0" y="20" fill="${MUTE}" font-family="var(--font-mono)" font-size="11" letter-spacing="1.8">CODEFORCES RATING · ${all.length} RATED CONTESTS · ${esc(num(subs))} SUBMISSIONS</text>
     ${summary}
     <line x1="0" y1="120" x2="${w}" y2="120" stroke="${LINE}"/>
     ${grid}

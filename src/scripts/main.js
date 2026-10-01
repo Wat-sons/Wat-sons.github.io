@@ -84,6 +84,7 @@
   function setupScroll() {
     var bar = document.querySelector(".scroll-progress");
     var ghosts = Array.prototype.slice.call(document.querySelectorAll(".section-ghost .ghost"));
+    var scenery = document.querySelector(".hero-scenery");
     var ticking = false;
 
     function frame() {
@@ -92,6 +93,11 @@
       var max = doc.scrollHeight - window.innerHeight;
 
       if (bar) bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, y / max) : 0) + ")";
+
+      // 首屏插画随滚动缓慢下移（幅度刻意做小，只够让人察觉"它在那儿"）
+      if (scenery && !reduce && y < window.innerHeight * 1.2) {
+        scenery.style.setProperty("--sc-sy", (y * 0.10).toFixed(1) + "px");
+      }
 
       if (!reduce) {
         for (var i = 0; i < ghosts.length; i++) {
@@ -180,6 +186,10 @@
         raf = 0;
         hero.style.setProperty("--mx", tx.toFixed(3));
         hero.style.setProperty("--my", ty.toFixed(3));
+        // 夜景插画反向微移：鼠标往右，插画往左，营造景深。幅度只有 ±7px，
+        // 目标是"说不上来哪里动了，但感觉画面是活的"。
+        hero.style.setProperty("--sc-x", (-tx * 7).toFixed(1) + "px");
+        hero.style.setProperty("--sc-y", (-ty * 5).toFixed(1) + "px");
       });
     }, { passive: true });
   }

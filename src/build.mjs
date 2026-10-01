@@ -71,6 +71,15 @@ const resolveMetric = (s) => {
 metrics.hero = metrics.hero.map(resolveMetric);
 metrics.competition = metrics.competition.map(resolveMetric);
 
+// profile.json 里也可以写 {total} 这类占位（目前用在 About 的 Currently 一行）。
+// 只处理文案字段，别的地方不碰。
+const fillStats = (s) => (typeof s === "string"
+  ? s.replace(/\{(\w+)\}/g, (_, k) => (awardStats[k] ?? `{${k}}`))
+  : s);
+if (profile.about?.currently) {
+  profile.about.currently = profile.about.currently.map((c) => ({ ...c, text: fillStats(c.text) }));
+}
+
 /* ---------- 2. 区块（顺序 = 页面顺序 = 导航顺序 = 编号顺序） ---------- */
 const ctx = (num, note) => ({ num, note });
 

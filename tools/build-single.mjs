@@ -43,6 +43,19 @@ const fontBuf = readFileSync(join(ROOT, 'assets/fonts/space-grotesk-latin-var.wo
 if (!css.includes(fontRel)) throw new Error(`style.css 里找不到字体引用 ${fontRel}`);
 css = css.replaceAll(`url("${fontRel}")`, `url("${dataUri(fontBuf, 'font/woff2')}")`);
 
+// 1b) 首屏夜景插画：同样内联成 data URI（34 KB -> base64 约 45 KB）。
+// 单文件版的卖点就是「离线双击就能看」，所以图也必须进去。
+const sceneRel = 'assets/scenery/orbit.webp';
+const sceneAbs = join(ROOT, sceneRel);
+if (!existsSync(sceneAbs)) throw new Error(`缺 ${sceneRel}`);
+const sceneBuf = readFileSync(sceneAbs);
+if (!html.includes(`src="${sceneRel}"`)) throw new Error(`index.html 里找不到 ${sceneRel} 的引用`);
+// 首屏与页尾是同一张图（首尾呼应），这里两处都会内联成 data URI。
+// 单文件因此比之前大 ~45 KB —— 换来的是"离线双击就能看，且插画也在里面"。
+// 试过用 CSS 变量 / 伪元素去重，但那样只在单文件路径里存在一套别的渲染方式，
+// 维护风险大于省下的 45 KB，所以作罢。
+html = html.replaceAll(`src="${sceneRel}"`, `src="${dataUri(sceneBuf, 'image/webp')}"`);
+
 // 2) 外链 CSS → 内联 <style>，同时去掉字体 preload（已内联，无需预加载）
 if (!html.includes('<link rel="stylesheet" href="assets/style.css">')) {
   throw new Error('index.html 里找不到 assets/style.css 的引用，脚本需要同步更新');

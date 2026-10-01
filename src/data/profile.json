@@ -6,6 +6,8 @@
   "github": "Wat-sons",
   "email": "2673052046@qq.com",
   "blog": "https://www.cnblogs.com/quchen-blog",
+  "nowcoder": "https://ac.nowcoder.com/acm/contest/profile/951251697",
+  "nowcoderHandle": "quchen666",
   "location": "山西 · 太原",
 
   "nav": [
@@ -17,7 +19,7 @@
   ],
 
   "hero": {
-    "railLeft": "[PORTFOLIO]",
+    "railLeft": "[QUCHEN]",
     "railRight": "AI · ALGORITHMS · RESEARCH",
     "eyebrow": "Artificial Intelligence · Competitive Programming",
     "headline": ["I BUILD", "THINGS WITH", "AI & ALGORITHMS."],
@@ -34,7 +36,7 @@
     ],
     "currently": [
       { "marker": "Studying", "text": "人工智能专业（本科）· 2024 级 · 太原理工大学人工智能学院" },
-      { "marker": "Competing", "text": "Codeforces 历史最高 2089（Candidate Master）· 累计 23 项竞赛获奖" },
+      { "marker": "Competing", "text": "Codeforces 历史最高 2089（Candidate Master）· 牛客 Rating 2225 · 累计 {total} 项竞赛获奖" },
       { "marker": "Building", "text": "数据驱动、零依赖的静态站点与自用工具" }
     ]
   },

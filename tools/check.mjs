@@ -197,10 +197,14 @@ for (const f of pubFiles) {
   const stripped = text.replace(/"vault"\s*:\s*"[^"]*"/g, '"vault":""');
   const CERT_DIR = 'assets/' + 'certs';
   if (stripped.includes(CERT_DIR)) flag(f, `${f} 引用了 ${CERT_DIR} —— 证书图片不允许进公开仓库`);
+  // 唯一获准进仓库的位图：首屏夜景插画（装饰用、无人信息、四边淡出已烘进 alpha）。
+  // 白名单是**精确路径**，不是"允许 webp" —— 换个名字或换个目录一样会被拦。
+  const IMG_ALLOW = new Set(['assets/scenery/orbit.webp']);
   const localImgs = [...stripped.matchAll(/(?:src|href)\s*=\s*["']([^"']+\.(?:jpe?g|png|webp))["']/gi)]
     .map((m) => m[1])
-    .filter((u) => !/^(?:https?:|data:|\/\/)/i.test(u));
-  if (localImgs.length) flag(f, `${f} 引用了本地位图（${localImgs.slice(0, 3).join(', ')}）—— 证书只能以文字名称出现`);
+    .filter((u) => !/^(?:https?:|data:|\/\/)/i.test(u))
+    .filter((u) => !IMG_ALLOW.has(u.replace(/^\.?\//, '')));
+  if (localImgs.length) flag(f, `${f} 引用了未获准的本地位图（${localImgs.slice(0, 3).join(', ')}）—— 证书只能以文字名称出现`);
 }
 
 // 结构约束：education 不该再有成绩/排名/课程字段
@@ -221,6 +225,7 @@ try {
 const ALLOWED_BIN = [
   'assets/favicon.svg',                       // 矢量图标
   'assets/fonts/space-grotesk-latin-var.woff2', // 自托管字体
+  'assets/scenery/orbit.webp',                // 首屏夜景插画（唯一一张位图，四边淡出已烘进 alpha）
 ];
 const BIN_RE = /\.(png|jpe?g|webp|gif|pdf|docx?|xlsx?|zip)$/i;
 let tracked = null;

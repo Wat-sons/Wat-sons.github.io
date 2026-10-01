@@ -10,14 +10,68 @@
   justify-content: space-between;
   padding-block: clamp(5.5rem, 11vh, 8rem) clamp(2rem, 5vh, 3.5rem);
   position: relative;
+  overflow: hidden;
   border-bottom: 1px solid var(--line);
 }
 .hero .wrap {
+  position: relative;
+  z-index: 1;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: clamp(3rem, 10vh, 8rem);
+}
+
+/* ---------- 夜景插画：全站唯一的二次元元素 ----------
+   图本身的纯黑已经被重映射成站点底色 #0B0B0C，所以用普通混合铺上去
+   也看不出矩形边 —— 只有环、星点和那个小小的剪影浮在黑里。
+   （不用 screen 混合，因为剪影本身是黑的，screen 会把它一起抹掉。）
+   宽度不到六成、压在右下角、透明度 0.8：读起来是「背景里的光」，
+   而不是贴了一张壁纸。 */
+.hero-scenery {
+  position: absolute;
+  right: 0;
+  top: 7%;
+  width: min(52%, 750px);
+  aspect-ratio: 16 / 9;
+  z-index: 0;
+  pointer-events: none;
+  /* 三层微动：
+       --sc-x / --sc-y  鼠标反向微移（景深）
+       --sc-sy          滚动缓慢下移
+     幅度都只有几 px —— 目标是"说不上来哪里动了，但画面是活的"。
+     用独立的 translate 属性承载入场动画，避免和 transform 打架。 */
+  transform: translate3d(var(--sc-x, 0px), calc(var(--sc-y, 0px) + var(--sc-sy, 0px)), 0);
+  animation: scenery-in 1800ms var(--ease) both;
+}
+.hero-scenery img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* 四边淡出已经烘进这张 WebP 的 alpha 通道了（见 tools/ 里的处理脚本），
+     所以这里不需要任何 mask，也不会有矩形边。contain 保证不裁掉淡出区。 */
+  object-fit: contain;
+  /* 压到 0.62：行星退成背景里的一枚光斑，标题仍然是视觉主体 */
+  opacity: 0.62;
+}
+@keyframes scenery-in {
+  from { opacity: 0; translate: 0 26px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+/* 文字压在插画上时保持可读 */
+.hero h1, .hero .lead, .hero .eyebrow { position: relative; }
+
+/* 移动端：首屏文字已经很密，把插画挪到底部数字后面，
+   并压到 0.35 —— 不然它会从页眉那行 mono 小字上穿过去。 */
+@media (max-width: 860px) {
+  .hero-scenery {
+    top: auto;
+    bottom: 0;
+    right: -12%;
+    width: 128%;
+  }
+  .hero-scenery img { opacity: 0.35; }
 }
 .hero-main { padding-top: clamp(1rem, 6vh, 4rem); }
 
@@ -270,6 +324,23 @@
 .contact-lead { margin-top: clamp(1.5rem, 4vw, 2.5rem); max-width: 44ch; color: var(--fg-dim); font-size: var(--fs-lead); line-height: 1.6; }
 .contact-links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: clamp(2rem, 5vw, 3rem); }
 .contact-sign { margin-top: clamp(2.5rem, 6vw, 4rem); font-size: var(--fs-meta); color: var(--fg-mute); letter-spacing: 0.06em; }
+
+/* 联系区的呼应插画：镜像 + 更淡，只做页尾气氛，不抢 CTA。
+   刻意沿用首屏那一张，不引入第二种画风。
+   注意用 #contact 而不是 .contact —— section 的 class 是 "section has-ghost"。 */
+#contact { position: relative; overflow: hidden; }
+.contact-scenery {
+  position: absolute;
+  right: -4%;
+  bottom: -4%;
+  width: min(58%, 820px);
+  pointer-events: none;
+  transform: scaleX(-1);
+  opacity: 0.3;
+  z-index: 0;
+}
+.contact-scenery img { display: block; width: 100%; height: auto; }
+#contact > .wrap { position: relative; z-index: 1; }
 
 /* ═══════════════ 响应式重排 ═══════════════ */
 @media (max-width: 1080px) {

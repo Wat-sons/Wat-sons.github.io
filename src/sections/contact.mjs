@@ -10,6 +10,7 @@ export const contact = ({ profile, ctx }) => {
   const links = [
     pill({ href: `mailto:${profile.email}`, label: profile.email, variant: "is-solid", external: false, arrow: false }),
     pill({ href: `https://github.com/${profile.github}`, label: `GitHub · ${profile.github}` }),
+    pill({ href: profile.nowcoder, label: `牛客 · ${profile.nowcoderHandle}` }),
     pill({ href: profile.blog, label: "技术博客" }),
   ].join("");
 
@@ -34,6 +35,12 @@ export const contact = ({ profile, ctx }) => {
     <p class="contact-sign">
       ${esc(profile.handle)} · ${esc(profile.location)}
     </p>
+  </div>
+
+  <!-- 首尾呼应：同一张插画镜像后淡淡压在右下角。
+       不引入第二种画风，只让页面开头和结尾看到同一片天。 -->
+  <div class="contact-scenery" aria-hidden="true">
+    <img src="assets/scenery/orbit.webp" alt="" width="1920" height="1080" loading="lazy" decoding="async">
   </div>
 </section>`;
 };

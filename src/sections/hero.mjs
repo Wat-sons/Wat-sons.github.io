@@ -1,5 +1,6 @@
 /* sections/hero.mjs — 首屏
-   构图：顶部四角页眉 → 大面积留白 → 巨型宣言 → 底部四数字（带竖分隔线）。
+   构图：右下角的夜景插画（全站唯一的二次元元素，约 5%）→ 顶部四角页眉 →
+   大面积留白 → 巨型宣言 → 底部四数字（带竖分隔线）。
    宣言逐行升起用纯 CSS animation-delay，不依赖 JS。 */
 
 import { esc } from "../lib/html.mjs";
@@ -20,6 +21,9 @@ export const hero = ({ profile, metrics }) => {
 
   return `
 <section id="top" class="hero">
+  <div class="hero-scenery" aria-hidden="true">
+    <img src="assets/scenery/orbit.webp" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
+  </div>
   <div class="wrap">
     ${rail(h.railLeft, h.railRight)}
 

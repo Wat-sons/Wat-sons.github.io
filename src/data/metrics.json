@@ -5,14 +5,14 @@
   "hero": [
     { "value": 355,  "unit": "分", "label": "CCF-CSP 最高分",      "note": "累计排名前 1.76%" },
     { "value": 2089, "unit": "",   "label": "Codeforces 历史最高",  "note": "Candidate Master" },
-    { "from": "total", "unit": "项", "label": "竞赛获奖",           "note": "其中全国性 {national} 项" },
-    { "value": 67,   "unit": "场", "label": "Codeforces rated",    "note": "两个账号 · 2749 次提交" }
+    { "value": 2225, "unit": "",   "label": "牛客 Rating",         "note": "Rating 排名 465 · 参赛 90 次" },
+    { "from": "total", "unit": "项", "label": "竞赛获奖",           "note": "其中全国性 {national} 项" }
   ],
 
   "competition": [
     { "value": 2089, "unit": "",   "label": "Codeforces 峰值 rating", "note": "Candidate Master · @quchen666" },
+    { "value": 2225, "unit": "",   "label": "牛客 Rating",            "note": "Rating 排名 465 · @quchen666" },
     { "value": 355,  "unit": "分", "label": "CCF-CSP 最高分",         "note": "第 43 次认证 · 前 1.76%" },
-    { "value": 2749, "unit": "",   "label": "Codeforces 提交",        "note": "506 场 · 67 场 rated" },
     { "from": "total", "unit": "项", "label": "竞赛获奖",             "note": "全国性 {national} · 省赛区域 {provincial}" }
   ],
 
