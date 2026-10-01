@@ -62,16 +62,44 @@ function Invoke-Gh {
 }
 
 function Invoke-Git {
-    param([string]$WorkDir, [string[]]$GitArgs, [string]$Label)
+    param([string]$WorkDir, [string[]]$GitArgs, [string]$Label, [switch]$ShowOutput)
     Push-Location $WorkDir
     try {
         # git 往 stderr 写东西会被 $ErrorActionPreference='Stop' 当成致命错误，这里临时放宽
         $prev = $ErrorActionPreference
         $ErrorActionPreference = "Continue"
-        & $Git @GitArgs 2>&1 | ForEach-Object { Write-Host "   $_" -ForegroundColor DarkGray }
+        $out = & $Git @GitArgs 2>&1
         $code = $LASTEXITCODE
         $ErrorActionPreference = $prev
+        if ($ShowOutput -and $out) { $out | ForEach-Object { Write-Host "   $_" -ForegroundColor DarkGray } }
         if ($code -ne 0) { throw "$Label 失败（git exit $code）" }
+    } finally { Pop-Location }
+}
+
+# 工作区干净就别 commit —— `git commit` 在无改动时返回 1，那是正常情况不是错误
+function Test-Dirty {
+    param([string]$WorkDir)
+    Push-Location $WorkDir
+    try {
+        $prev = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        $st = & $Git status --porcelain 2>&1
+        $ErrorActionPreference = $prev
+        return [bool]($st | Where-Object { $_ -and "$_".Trim() })
+    } finally { Pop-Location }
+}
+
+# 仓库里还没有任何提交
+function Test-HasCommit {
+    param([string]$WorkDir)
+    Push-Location $WorkDir
+    try {
+        $prev = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        & $Git rev-parse --verify HEAD > $null 2>&1
+        $ok = ($LASTEXITCODE -eq 0)
+        $ErrorActionPreference = $prev
+        return $ok
     } finally { Pop-Location }
 }
 
@@ -127,33 +155,41 @@ if ($SkipCheck) {
 Write-Host "`n=== 4/6 推送公开主页 ===" -ForegroundColor Cyan
 if (-not (Test-Path (Join-Path $Base ".git"))) {
     Write-Host "   初始化 git 仓库 ..." -ForegroundColor Yellow
-    Invoke-Git -WorkDir $Base -GitArgs @("init", "-b", "main") -Label "git init"
+    Invoke-Git -WorkDir $Base -GitArgs @("init", "-b", "main") -Label "git init" -ShowOutput
 }
 Invoke-Git -WorkDir $Base -GitArgs @("add", "-A") -Label "git add"
-Invoke-Git -WorkDir $Base -GitArgs @("-c", "user.name=$Owner", "-c", "user.email=2673052046@qq.com",
-                                     "commit", "-m", "更新主页数据与构建结果") -Label "git commit"
+if ((Test-Dirty -WorkDir $Base) -or -not (Test-HasCommit -WorkDir $Base)) {
+    Invoke-Git -WorkDir $Base -GitArgs @("-c", "user.name=$Owner", "-c", "user.email=2673052046@qq.com",
+                                         "commit", "-m", "更新主页数据与构建结果") -Label "git commit" -ShowOutput
+} else {
+    Write-Host "   没有新改动，跳过提交" -ForegroundColor DarkGray
+}
 $url = "git@github.com:$Owner/${PublicRepo}.git"
 Push-Location $Base
 try {
     if (@(& $Git remote) -contains "origin") { Invoke-Git -WorkDir $Base -GitArgs @("remote", "set-url", "origin", $url) -Label "set-url" }
     else { Invoke-Git -WorkDir $Base -GitArgs @("remote", "add", "origin", $url) -Label "add remote" }
 } finally { Pop-Location }
-Invoke-Git -WorkDir $Base -GitArgs @("push", "-u", "origin", "main", "--force") -Label "推送公开主页"
+Invoke-Git -WorkDir $Base -GitArgs @("push", "-u", "origin", "main", "--force") -Label "推送公开主页" -ShowOutput
 
 Write-Host "`n=== 5/6 推送私有奖项归档 ===" -ForegroundColor Cyan
 $aw = Join-Path $Base "awards-repo"
 if (Test-Path $aw) {
-    if (-not (Test-Path (Join-Path $aw ".git"))) { Invoke-Git -WorkDir $aw -GitArgs @("init", "-b", "main") -Label "git init" }
+    if (-not (Test-Path (Join-Path $aw ".git"))) { Invoke-Git -WorkDir $aw -GitArgs @("init", "-b", "main") -Label "git init" -ShowOutput }
     Invoke-Git -WorkDir $aw -GitArgs @("add", "-A") -Label "git add"
-    Invoke-Git -WorkDir $aw -GitArgs @("-c", "user.name=$Owner", "-c", "user.email=2673052046@qq.com",
-                                       "commit", "-m", "更新证书归档") -Label "git commit"
+    if ((Test-Dirty -WorkDir $aw) -or -not (Test-HasCommit -WorkDir $aw)) {
+        Invoke-Git -WorkDir $aw -GitArgs @("-c", "user.name=$Owner", "-c", "user.email=2673052046@qq.com",
+                                           "commit", "-m", "更新证书归档") -Label "git commit" -ShowOutput
+    } else {
+        Write-Host "   没有新改动，跳过提交" -ForegroundColor DarkGray
+    }
     $aurl = "git@github.com:$Owner/${PrivateRepo}.git"
     Push-Location $aw
     try {
         if (@(& $Git remote) -contains "origin") { Invoke-Git -WorkDir $aw -GitArgs @("remote", "set-url", "origin", $aurl) -Label "set-url" }
         else { Invoke-Git -WorkDir $aw -GitArgs @("remote", "add", "origin", $aurl) -Label "add remote" }
     } finally { Pop-Location }
-    Invoke-Git -WorkDir $aw -GitArgs @("push", "-u", "origin", "main", "--force") -Label "推送私有归档"
+    Invoke-Git -WorkDir $aw -GitArgs @("push", "-u", "origin", "main", "--force") -Label "推送私有归档" -ShowOutput
 } else {
     Write-Host "   没找到 awards-repo/，跳过" -ForegroundColor DarkYellow
 }
