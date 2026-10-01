@@ -1,0 +1,72 @@
+{
+  "_comment": "身份与各区块文案。本文件在公开仓库里 —— 不要写真名 / 学号 / 电话 / 成绩 / 排名 / 课程。",
+  "updatedAt": "2026-10-01",
+
+  "handle": "quchen",
+  "github": "Wat-sons",
+  "email": "2673052046@qq.com",
+  "blog": "https://www.cnblogs.com/quchen-blog",
+  "location": "山西 · 太原",
+
+  "nav": [
+    { "id": "work",        "label": "Work" },
+    { "id": "research",    "label": "Research" },
+    { "id": "competition", "label": "Competition" },
+    { "id": "timeline",    "label": "Timeline" },
+    { "id": "about",       "label": "About" },
+    { "id": "contact",     "label": "Contact" }
+  ],
+
+  "hero": {
+    "railLeft": "[PORTFOLIO]",
+    "railRight": "AI · ALGORITHMS · RESEARCH",
+    "eyebrow": "Artificial Intelligence · Competitive Programming",
+    "headline": ["I BUILD", "THINGS WITH", "AI & ALGORITHMS."],
+    "markLine": 2,
+    "lead": "太原理工大学人工智能学院在读，日常在 Codeforces 上刷题，也把算法写成能跑起来、能被人用的小工具。这里放我做过的东西、拿到的成绩，以及正在琢磨的问题。"
+  },
+
+  "about": {
+    "secNote": "关于我在做什么，而不是一串履历字段。",
+    "lead": "比起把知识停在笔记里，我更喜欢把它推到一个|会被评测机打分|的地方。这大概就是我一直打竞赛的原因。",
+    "paragraphs": [
+      "算法对我更像一种思考方式：把模糊的问题拆成能验证的小步骤，再一步步压榨到更优。竞赛把这件事逼到极限——限时、有对手、结果只有对和错。",
+      "除了比赛，我也愿意把训练过程做成工具：数据驱动的站点、自动同步的战绩面板、能复用的模板。做出来、跑起来、有人用，比写完就归档更让我有动力。"
+    ],
+    "currently": [
+      { "marker": "Studying", "text": "人工智能专业（本科）· 2024 级 · 太原理工大学人工智能学院" },
+      { "marker": "Competing", "text": "Codeforces 历史最高 2089（Candidate Master）· 累计 23 项竞赛获奖" },
+      { "marker": "Building", "text": "数据驱动、零依赖的静态站点与自用工具" }
+    ]
+  },
+
+  "skills": [
+    { "group": "Languages", "items": ["C++（主力）", "Python", "JavaScript", "Shell"] },
+    { "group": "Algorithms", "items": ["图论", "动态规划", "数据结构", "复杂度分析", "限时编码"] },
+    { "group": "Data / ML", "items": ["NumPy", "Pandas", "Matplotlib", "PyTorch", "CNN / RNN 基础"] },
+    { "group": "Tools", "items": ["Git", "Linux", "FastAPI / MySQL 基础", "Codeforces / QOJ"] }
+  ],
+
+  "education": {
+    "school": "太原理工大学",
+    "college": "人工智能学院",
+    "major": "人工智能（本科）",
+    "period": "2024.09 – 至今"
+  },
+
+  "campus": [
+    {
+      "org": "太原理工大学 自律委员会 学风建设部",
+      "period": "2024.09 – 2025.06",
+      "points": [
+        "参与学院日常学风督查，负责课堂出勤与自习纪律检查并做记录上报。",
+        "对接班级学习委员协调检查时间与结果反馈，保证检查按计划推进。"
+      ]
+    }
+  ],
+
+  "footer": {
+    "line1": "Built with curiosity.",
+    "line2": "AI · Algorithms · Research"
+  }
+}

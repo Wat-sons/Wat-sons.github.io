@@ -1,0 +1,56 @@
+/* ============================================================
+   print.css — 直接 Ctrl+P 存 PDF
+   评论区的 HR 场景：比起让人翻网页，一份 PDF 更实在。
+   打印时去掉背景、辉光、幽灵字、导航，全部展开。
+   ============================================================ */
+
+@media print {
+  :root {
+    --bg: #fff; --bg-raise: #fff; --bg-sunken: #fff;
+    --fg: #000; --fg-dim: #222; --fg-mute: #555; --fg-ghost: transparent;
+    --line: #d8dbe2; --line-strong: #b8bec9;
+    --accent: #1c4ed8; --accent-deep: #1c4ed8; --accent-glow: transparent;
+    --sec-y: 1.2rem;
+  }
+
+  html { font-size: 11pt; scroll-behavior: auto; }
+  body { background: #fff !important; color: #000 !important; overflow: visible; }
+  body::before, .topbar, .nav, .nav-toggle, .skip-link, .scroll-progress,
+  .section-ghost, .to-top, .noscript-note { display: none !important; }
+
+  .wrap { width: 100%; }
+  .hero { min-height: auto; padding-block: 0 1rem; border-bottom: 1px solid var(--line); }
+  .hero .wrap { gap: 1rem; }
+  .hero h1 { font-size: 2.4rem; }
+  .display, .contact-cta { font-size: 2.4rem; }
+  .hero .reveal-line > span { transform: none !important; animation: none !important; }
+  .hero-fade { opacity: 1 !important; animation: none !important; }
+
+  .section { padding-block: 1.1rem; break-inside: auto; }
+  .section + .section { border-top: 1px solid var(--line); }
+
+  html.js .reveal { opacity: 1 !important; transform: none !important; }
+
+  .work-media, .comp-chart, .work-item, .award-row, .tl-row, .research-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .work-media { background: #fff !important; aspect-ratio: 16 / 11; }
+  .comp-chart { background: #fff !important; }
+  .comp-chart .grid-line { stroke: #ddd; }
+  .comp-chart .axis { fill: #555; }
+  .comp-chart .series-0 { stroke: #1c4ed8; }
+  .comp-chart .series-1 { stroke: #999; }
+
+  .award-row:hover, .research-item:hover { background: none !important; padding-left: 0 !important; }
+  .work-item:hover .work-media > svg { transform: none !important; }
+
+  /* 链接补出 URL，纸质版才有意义 */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #555;
+    word-break: break-all;
+  }
+  .pill::after, .to-top::after, footer a::after { content: none !important; }
+}

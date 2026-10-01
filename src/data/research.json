@@ -1,0 +1,14 @@
+{
+  "_comment": "Research 方向。按本人要求：现阶段只列方向，不写任何成果或结论 —— note 留空时页面显示「整理中」标记。想补一句话就填 note 字段，别的都不用动。",
+  "updatedAt": "2026-10-01",
+
+  "secNote": "目前只在读与试的阶段，没有可以声称的成果。方向先列在这里。",
+  "todoLabel": "整理中",
+  "items": [
+    { "id": "llm-ea", "title": "LLM × Evolutionary Algorithms", "titleCn": "大模型辅助的进化算法", "note": null },
+    { "id": "mopso",  "title": "Multi-objective Optimization",  "titleCn": "多目标优化与 Pareto 前沿", "note": null },
+    { "id": "path",   "title": "Path Planning",                 "titleCn": "路径规划", "note": null },
+    { "id": "swarm",  "title": "Swarm Intelligence",            "titleCn": "群体智能", "note": null },
+    { "id": "ai-opt", "title": "AI-assisted Optimization",      "titleCn": "智能优化方法", "note": null }
+  ]
+}

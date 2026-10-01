@@ -1,11 +1,10 @@
 {
-  "_comment": "自动生成，别手改。改数据源或改 tools/sync.mjs，然后 npm run sync。",
+  "_comment": "自动生成，别手改。改数据源或改 tools/sync.mjs，然后 npm run sync。本文件公开可下载，只放 Codeforces 公开数据。",
   "syncedAt": "2026-10-01T13:32:16.605Z",
   "sources": [
-    "https://codeforces.com/api/user.info",
-    "https://codeforces.com/api/user.rating",
-    "XCPC-VP-Tracker/cf-progress.json",
-    "XCPC-VP-Tracker/vp-data.json"
+    "user.info",
+    "user.rating",
+    "cf-progress.json"
   ],
   "codeforces": {
     "primary": "quchen",
@@ -520,14 +519,5 @@
       },
       "generatedAt": "2026-10-01T00:20:16+0800"
     }
-  },
-  "xcpc": {
-    "contests": 72,
-    "regional": 61,
-    "online": 11,
-    "problems": 905,
-    "solved": 98,
-    "withSolutions": 18,
-    "generatedAt": "2026-09-30T23:55:53+08:00"
   }
 }

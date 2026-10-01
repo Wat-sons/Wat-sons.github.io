@@ -1,0 +1,59 @@
+/* ============================================================
+   tokens.css — 设计令牌（唯一的「设计决策集中地」）
+   改颜色 / 字号 / 间距 / 节奏，只动这个文件。
+   ============================================================ */
+
+:root {
+  /* ---------- 色彩 ---------- */
+  /* 暖调近黑。不用纯黑：纯黑在 OLED 上会显得廉价，且失去层次。 */
+  --bg:          #0B0B0C;
+  --bg-raise:    #131315;   /* 卡片底，只比页面亮一档 */
+  --bg-sunken:   #08080A;
+  --fg:          #EDEAE3;   /* 暖白，比纯白柔和 */
+  --fg-dim:      #8A8781;
+  --fg-mute:     #57554F;
+  --fg-ghost:    #1A1A1D;   /* 幽灵标题：只比底色亮一点点 */
+  --line:        #232327;
+  --line-strong: #34343B;
+
+  /* 全站唯一强调色。只允许出现在：大数字 / 链接 hover / 状态点 / 焦点环 / 一处陈述 */
+  --accent:      #D8FF4A;
+  --accent-deep: #A7C93A;
+  --accent-glow: rgba(216, 255, 74, 0.14);
+
+  /* ---------- 字体 ---------- */
+  /* Space Grotesk 无中日韩字形，中文自动落到后面的系统栈 */
+  --font-sans: "Space Grotesk Variable", "PingFang SC", "HarmonyOS Sans SC",
+               "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+
+  /* ---------- 字号阶梯 ---------- */
+  /* 显示字 / 正文 / meta ≈ 8 : 1.3 : 1，靠比值而非绝对值制造层级 */
+  --fs-display: clamp(2.75rem, 9.5vw, 8rem);      /* Hero 宣言     44 → 128px */
+  --fs-ghost:   clamp(3.5rem, 14vw, 11rem);       /* 幽灵区块标题  56 → 176px */
+  --fs-h2:      clamp(1.75rem, 4.4vw, 3rem);      /* 区块标题      28 → 48px  */
+  --fs-h3:      clamp(1.25rem, 2.4vw, 1.875rem);  /* 卡片标题      20 → 30px  */
+  --fs-num:     clamp(2.25rem, 6vw, 4.5rem);      /* 大数字        36 → 72px  */
+  --fs-num-sm:  clamp(1.5rem, 3vw, 2.25rem);
+  --fs-lead:    clamp(1rem, 1.7vw, 1.3125rem);    /* 导语          16 → 21px  */
+  --fs-body:    clamp(0.9375rem, 1.05vw, 1.0625rem); /* 正文       15 → 17px  */
+  --fs-meta:    clamp(0.6875rem, 0.85vw, 0.8125rem); /* meta       11 → 13px  */
+
+  /* ---------- 空间 ---------- */
+  --gutter:  clamp(1rem, 3.5vw, 2.5rem);
+  --maxw:    1440px;
+  --sec-y:   clamp(4.5rem, 13vh, 10rem);   /* 区块上下留白：全站节奏的主要来源 */
+  --stack:   clamp(1.25rem, 2.5vw, 2.25rem);
+
+  /* ---------- 形状与运动 ---------- */
+  --radius:  14px;
+  --radius-sm: 9px;
+  --ease:    cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur:     280ms;
+  --dur-slow: 620ms;
+}
+
+/* 尊重系统设置：关闭一切非必要动效 */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 1ms; --dur-slow: 1ms; }
+}

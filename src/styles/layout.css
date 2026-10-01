@@ -1,0 +1,282 @@
+/* ============================================================
+   layout.css — 容器、12 列栅格、区块骨架、页眉导航、页脚
+   不用「max-width:1200px + margin:auto」的模板布局：
+   每个区块自己决定占哪几列，形成 Editorial 的不对称感。
+   ============================================================ */
+
+.wrap {
+  width: min(var(--maxw), 100% - var(--gutter) * 2);
+  margin-inline: auto;
+}
+
+/* ---------- 12 列栅格 ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+}
+/* 内容区常用列宽。命名按「占哪几列」而不是语义，方便自由编排。 */
+.c-1-6  { grid-column: 1 / 7; }
+.c-1-5  { grid-column: 1 / 6; }
+.c-1-4  { grid-column: 1 / 5; }
+.c-1-8  { grid-column: 1 / 9; }
+.c-1-12 { grid-column: 1 / 13; }
+.c-4-9  { grid-column: 4 / 10; }
+.c-6-10 { grid-column: 6 / 11; }
+.c-7-12 { grid-column: 7 / 13; }
+.c-8-12 { grid-column: 8 / 13; }
+.c-9-12 { grid-column: 9 / 13; }
+.c-push-2 { margin-left: calc(100% / 6); }
+
+/* ---------- 区块 ---------- */
+.section {
+  position: relative;
+  padding-block: var(--sec-y);
+}
+.section + .section { border-top: 1px solid var(--line); }
+.section.is-flush { border-top: none; }
+
+/* 幽灵标题铺在区块顶部，压在内容后面 */
+.section-ghost {
+  position: absolute;
+  top: clamp(1rem, 3vh, 2.5rem);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  z-index: 0;
+  opacity: 0.9;
+}
+.section > .wrap { position: relative; z-index: 1; }
+/* 幽灵字之后的正文要避开它 */
+.section.has-ghost { padding-top: calc(var(--sec-y) + clamp(2.5rem, 7vw, 5.5rem)); }
+
+/* ---------- 顶部导航 ---------- */
+.topbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  padding-block: 1.1rem;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              backdrop-filter var(--dur) var(--ease);
+  border-bottom: 1px solid transparent;
+}
+.topbar.is-stuck {
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(150%) blur(12px);
+  -webkit-backdrop-filter: saturate(150%) blur(12px);
+  border-bottom-color: var(--line);
+}
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--bg);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.nav {
+  display: flex;
+  gap: clamp(0.75rem, 2vw, 1.75rem);
+  margin-inline: auto;
+}
+.nav a {
+  position: relative;
+  font-size: var(--fs-meta);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  padding-block: 0.35rem;
+  transition: color var(--dur) var(--ease);
+}
+.nav a .idx { color: var(--fg-mute); margin-right: 0.45em; transition: color var(--dur) var(--ease); }
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.nav a:hover, .nav a.is-active { color: var(--fg); }
+.nav a:hover .idx, .nav a.is-active .idx { color: var(--accent); }
+.nav a:hover::after, .nav a.is-active::after { transform: scaleX(1); }
+
+.topbar-tail { display: flex; align-items: center; gap: 0.9rem; }
+.year-tag { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--fg-mute); letter-spacing: 0.1em; }
+
+/* 移动端：导航收成抽屉 */
+.nav-toggle { display: none; }
+@media (max-width: 860px) {
+  .nav {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 0 var(--gutter) 0 calc(var(--gutter) + 4px);
+    background: var(--bg);
+    border-left: 1px solid var(--line);
+    transform: translateX(100%);
+    /* 关闭时同时置为 hidden：既不让键盘 Tab 进去，也不会被当成横向溢出 */
+    visibility: hidden;
+    transition: transform var(--dur-slow) var(--ease), visibility 0s linear var(--dur-slow);
+    z-index: 60;
+  }
+  .nav a { font-size: clamp(1.5rem, 8vw, 2.25rem); text-transform: none; letter-spacing: -0.02em; }
+  .nav a::after { display: none; }
+  body.nav-open .nav {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform var(--dur-slow) var(--ease), visibility 0s;
+  }
+  body.nav-open { overflow: hidden; }
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--fg);
+    z-index: 70;
+    position: relative;
+  }
+  .nav-toggle span {
+    position: absolute;
+    width: 15px;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  }
+  .nav-toggle span:nth-child(1) { transform: translateY(-4px); }
+  .nav-toggle span:nth-child(2) { transform: translateY(4px); }
+  body.nav-open .nav-toggle span:nth-child(1) { transform: rotate(45deg); }
+  body.nav-open .nav-toggle span:nth-child(2) { transform: rotate(-45deg); }
+}
+
+/* ---------- 滚动进度 ---------- */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 2px;
+  z-index: 80;
+  transform-origin: left;
+  transform: scaleX(0);
+  background: var(--accent);
+  pointer-events: none;
+}
+
+/* ---------- 页脚 ---------- */
+.footer {
+  border-top: 1px solid var(--line);
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+}
+.footer-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.footer-line {
+  font-size: var(--fs-meta);
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  line-height: 2;
+}
+.footer-line b { color: var(--fg-dim); font-weight: 500; }
+.to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--fs-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  transition: color var(--dur) var(--ease);
+}
+.to-top:hover { color: var(--accent); }
+.to-top svg { transition: transform var(--dur) var(--ease); }
+.to-top:hover svg { transform: translateY(-3px); }
+
+/* ---------- 通用小胶囊 ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.45em 0.95em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: var(--fs-meta);
+  letter-spacing: 0.06em;
+  color: var(--fg-dim);
+  background: transparent;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              background var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.pill:hover { color: var(--fg); border-color: var(--fg-mute); transform: translateY(-1px); }
+.pill.is-solid { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.pill.is-solid:hover { background: var(--accent); border-color: var(--accent); }
+.pill.is-accent { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 var(--accent-glow);
+  animation: dot-pulse 2.8s var(--ease) infinite;
+}
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  50% { box-shadow: 0 0 0 7px transparent; }
+}
+
+/* ---------- 四角页眉（rail） ---------- */
+.rail {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.rail span:last-child { text-align: right; }
+
+/* ---------- 响应式：移动端重新编排，而不是等比缩小 ---------- */
+@media (max-width: 1080px) {
+  .c-4-9, .c-6-10, .c-7-12, .c-8-12, .c-9-12 { grid-column: 1 / 13; }
+  .c-1-6, .c-1-8 { grid-column: 1 / 13; }
+  .c-push-2 { margin-left: 0; }
+}
+@media (max-width: 720px) {
+  .grid { gap: 1.25rem; }
+  .c-1-6, .c-1-5, .c-1-4, .c-1-8, .c-1-12,
+  .c-4-9, .c-6-10, .c-7-12, .c-8-12, .c-9-12 { grid-column: 1 / 13; }
+  .sec-note { margin-left: 0; max-width: none; }
+  .section-ghost { opacity: 0.75; }
+}

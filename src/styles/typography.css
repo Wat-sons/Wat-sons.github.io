@@ -1,0 +1,185 @@
+/* ============================================================
+   typography.css — 字体层级、显示字、幽灵标题、数字、链接
+   ============================================================ */
+
+/* ---------- 显示级大字（Hero 宣言 / 联系 CTA） ---------- */
+.display {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.032em;
+  text-transform: uppercase;
+  /* 大写拉丁不吃负字距会显得散；-0.03em 是 Space Grotesk 在这个尺寸的甜点 */
+}
+.display .line { display: block; }
+
+/* 末行加一道强调色下划线，代替「整行变色」那种廉价做法。
+   注意结构与选择器：hero.mjs 产出的是 .reveal-line > span > .mark，
+   所以不能用 > .mark 直接子选择器。 */
+.display .reveal-line:last-child .mark {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+.display .reveal-line:last-child .mark::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.015em;
+  height: 0.055em;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: mark-in 800ms var(--ease) 1000ms forwards;
+}
+@keyframes mark-in { to { transform: scaleX(1); } }
+
+/* ---------- 幽灵区块标题 ---------- */
+/* 全站的节奏锚点：巨型、极低对比、被左边缘裁掉一截 */
+.ghost {
+  font-size: var(--fs-ghost);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  color: var(--fg-ghost);
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+  /* 向左出血，故意被裁 */
+  margin-left: -0.06em;
+}
+
+/* ---------- 区块头 ---------- */
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  flex-wrap: wrap;
+  margin-bottom: clamp(1.75rem, 4vw, 3rem);
+}
+.sec-num {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  padding-top: 0.35em;
+}
+.sec-title {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+}
+.sec-title .en {
+  display: block;
+  font-size: 0.42em;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-top: 0.5em;
+}
+.sec-note {
+  margin-left: auto;
+  max-width: 34ch;
+  font-size: var(--fs-meta);
+  line-height: 1.7;
+  color: var(--fg-dim);
+}
+
+/* ---------- 导语 / 正文 ---------- */
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--fg);
+  letter-spacing: -0.008em;
+}
+.body-text {
+  font-size: var(--fs-body);
+  line-height: 1.85;
+  color: var(--fg-dim);
+}
+.body-text + .body-text { margin-top: 1em; }
+.body-text strong { color: var(--fg); font-weight: 500; }
+
+/* ---------- meta / 眉标 ---------- */
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  line-height: 1.6;
+}
+.meta.accent { color: var(--accent); }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
+/* ---------- 大数字 ---------- */
+.stat-num {
+  font-family: var(--font-sans);
+  font-size: var(--fs-num);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.stat-num.is-plain { color: var(--fg); }
+.stat-num small {
+  font-size: 0.34em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--fg-dim);
+  margin-left: 0.25em;
+}
+.stat-label {
+  font-size: var(--fs-meta);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  margin-top: 0.75em;
+}
+.stat-note {
+  font-size: var(--fs-meta);
+  color: var(--fg-mute);
+  margin-top: 0.2em;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- 链接：下划线从左侧生长 ---------- */
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  color: var(--fg);
+  transition: color var(--dur) var(--ease);
+}
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.link:hover { color: var(--accent); }
+.link:hover::after { transform: scaleX(1); }
+.link .arrow { transition: transform var(--dur) var(--ease); }
+.link:hover .arrow { transform: translateX(4px); }
+
+/* 已经带下划线的静态链接（联系方式那种） */
+.link-static { color: var(--fg-dim); transition: color var(--dur) var(--ease); }
+.link-static:hover { color: var(--accent); }

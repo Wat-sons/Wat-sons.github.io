@@ -1,13 +1,13 @@
 /**
- * 浏览器级回归验证（CDP）。检查那些静态自检查不出来的东西：
- *   1. 页面无横向溢出、零位图、入场动画能收尾
- *   2. 公开页面里搜不到真名 / 学号 / 手机号
+ * 浏览器级回归验证（CDP）。检查静态自检查不出来的东西：
+ *   1. 四档断点无横向溢出、零位图、入场动画能收尾、锚点齐全
+ *   2. 公开页面与公开 JSON 里搜不到真名 / 学号 / 手机号 / 已下线内容
  *   3. 禁用 JS 时正文仍然可见（渐进增强是否真的生效）
- *   4. @media print 下导航/按钮隐藏、背景转白、长表格能铺开
- *   5. dist/ 里的单文件版能离线（file://）正常打开
+ *   4. @media print 下导航/幽灵字隐藏、背景转白、内容不再被隐藏
+ *   5. dist/ 的单文件版能离线（file://）正常打开
  *
- * 前置：先 `node tools/serve.mjs`（默认 5174）与 `npm run build`、`npm run single`。
- * 用法：node tools/verify.mjs [--port 5174]
+ * 前置：node tools/serve.mjs（默认 5174）、npm run build、npm run single
+ * 用法：node tools/verify.mjs
  */
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -19,7 +19,7 @@ const ROOT = resolve(HERE, '..');
 const argv = process.argv.slice(2);
 const pFlag = argv.indexOf('--port');
 const PORT = pFlag >= 0 ? Number(argv[pFlag + 1]) : 5174;
-const CDP_PORT = 9366;
+const CDP_PORT = 9377;
 const BASE = `http://127.0.0.1:${PORT}`;
 const SINGLE = join(ROOT, 'dist', 'quchen-homepage.html');
 
@@ -68,7 +68,7 @@ async function load(url, { scroll = true } = {}) {
         document.documentElement.style.scrollBehavior = "auto";
         const step = Math.round(innerHeight * 0.8);
         for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
-          scrollTo(0, y); await new Promise(r => setTimeout(r, 80));
+          scrollTo(0, y); await new Promise(r => setTimeout(r, 70));
         }
         scrollTo(0, document.documentElement.scrollHeight);
         await new Promise(r => setTimeout(r, 300));
@@ -79,101 +79,149 @@ async function load(url, { scroll = true } = {}) {
       awaitPromise: true,
     });
   }
-  await sleep(600);
+  await sleep(700);
 }
 
 const results = [];
 const check = (name, pass, detail = '') => results.push({ name, pass, detail });
 
 await send('Page.enable');
-await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
 
-/* ---------- 1. 桌面端 ---------- */
+/* ---------- 1. 四档断点 ---------- */
+const VIEWPORTS = [
+  { w: 1440, h: 900, label: 'Desktop 1440', dpr: 1, mobile: false },
+  { w: 1280, h: 800, label: 'Laptop 1280', dpr: 1, mobile: false },
+  { w: 768, h: 1024, label: 'Tablet 768', dpr: 1, mobile: false },
+  { w: 390, h: 844, label: 'Mobile 390', dpr: 2, mobile: true },
+];
+for (const vp of VIEWPORTS) {
+  await send('Emulation.setDeviceMetricsOverride',
+    { width: vp.w, height: vp.h, deviceScaleFactor: vp.dpr, mobile: vp.mobile });
+  await load(`${BASE}/index.html`, { scroll: false });
+  const r = JSON.parse(await evalJs(`JSON.stringify({
+    sw: document.documentElement.scrollWidth,
+    cw: document.documentElement.clientWidth,
+    overflow: [...document.querySelectorAll('body *')]
+      .filter(n => { const cs = getComputedStyle(n);
+        if (cs.position === 'fixed' || cs.visibility === 'hidden' || cs.display === 'none') return false;
+        if (n.closest('.section-ghost')) return false;   // 幽灵字故意出血
+        const b = n.getBoundingClientRect();
+        return b.width > 0 && b.right > document.documentElement.clientWidth + 2; })
+      .slice(0, 4).map(n => n.tagName + '.' + String(n.className).slice(0, 30))
+  })`));
+  check(`${vp.label} 无横向溢出`, r.sw === r.cw && r.overflow.length === 0,
+    r.sw === r.cw ? 'ok' : `${r.sw}/${r.cw} ${r.overflow.join(', ')}`);
+}
+
+/* ---------- 2. 桌面端结构 ---------- */
+await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
 await load(`${BASE}/index.html`);
 let r = JSON.parse(await evalJs(`JSON.stringify({
-  sw: document.documentElement.scrollWidth,
-  cw: document.documentElement.clientWidth,
   imgs: document.querySelectorAll('img').length,
   reveals: document.querySelectorAll('.reveal').length,
-  notIn: document.querySelectorAll('.reveal:not(.in)').length,
+  notIn: document.querySelectorAll('.reveal:not(.is-in)').length,
   ready: !!window.__SITE_READY,
   skip: !!document.querySelector('.skip-link'),
   sections: document.querySelectorAll('main section').length,
-  certs: document.querySelectorAll('.cert-item').length,
-  awards: document.querySelectorAll('.award').length,
-  idx: [...document.querySelectorAll('.sec-head h2')].map(h => h.dataset.idx)
+  ghosts: document.querySelectorAll('.section-ghost .ghost').length,
+  chartSvg: document.querySelectorAll('.comp-chart svg').length,
+  chartPaths: document.querySelectorAll('.comp-chart path.series').length,
+  dots: document.querySelectorAll('.work-media svg circle').length,
+  awards: document.querySelectorAll('.award-row').length,
+  navLinks: document.querySelectorAll('.nav a').length,
+  anchorsOk: [...document.querySelectorAll('.nav a')]
+    .every(a => !!document.querySelector(a.getAttribute('href')))
 })`));
-check('无横向溢出', r.sw === r.cw, `scrollWidth=${r.sw} / clientWidth=${r.cw}`);
 check('零位图', r.imgs === 0, `img=${r.imgs}`);
-check('入场动画全部完成', r.notIn === 0, `${r.reveals} 个 reveal，未进场 ${r.notIn}`);
+check('入场动画全部收尾', r.notIn === 0, `${r.reveals} 个 reveal，未进场 ${r.notIn}`);
 check('app.js 正常收尾', r.ready === true);
 check('有无障碍跳转链接', r.skip === true);
-check('章节编号连续且与章节数一致',
-  Array.isArray(r.idx) && r.idx.length === r.sections &&
-  r.idx.every((v, i) => v === '/' + String(i + 1).padStart(2, '0')),
-  r.idx.join(','));
-check('证书清单有内容', r.certs >= 20, `${r.certs} 条`);
-check('奖项列表有内容', r.awards >= 20, `${r.awards} 条`);
+check('7 个 section（含 Hero）+ 6 条导航且锚点齐全',
+  r.sections === 7 && r.navLinks === 6 && r.anchorsOk,
+  `sections=${r.sections} nav=${r.navLinks} anchors=${r.anchorsOk}`);
+check('幽灵区块标题已渲染', r.ghosts === 6, `${r.ghosts} 个`);
+check('rating 曲线含两条真实序列', r.chartSvg === 1 && r.chartPaths === 2, `svg=${r.chartSvg} series=${r.chartPaths}`);
+check('参与记录点阵已渲染', r.dots > 400, `${r.dots} 个点`);
+check('奖项行已渲染', r.awards >= 20, `${r.awards} 行`);
 
-/* ---------- 2. 页面文本隐私扫描 ---------- */
+/* ---------- 3. 隐私：页面 + 公开 JSON ---------- */
 const bodyText = await evalJs('document.documentElement.outerHTML');
-for (const [needle, label] of [['林' + '挺', '真名'], ['Lin' + ' Ting', '真名拼音'],
-                               ['2024' + '002391', '学号'], ['1815' + '0032643', '手机号']]) {
-  check(`页面不含${label}`, !bodyText.includes(needle));
+const OFFLINE = [
+  ['林' + '挺', '真名'],
+  ['Lin' + ' Ting', '真名拼音'],
+  ['2024' + '002391', '学号'],
+  ['1815' + '0032643', '手机号'],
+  ['86' + '.43', '加权成绩'],
+  ['24 / 1' + '40', '专业排名'],
+  ['相关' + '课程', '课程列表'],
+  ['XCP' + 'C', '训练记录'],
+  ['VP 打' + '卡台', 'VP 打卡台'],
+  ['ccpc' + '-neo-vp', '非本人项目'],
+  ['assets/' + 'certs', '证书图片目录'],
+];
+for (const [needle, label] of OFFLINE) {
+  check(`页面不含 ${label}`, !bodyText.includes(needle));
 }
 check('页面无本地位图引用', !/src="[^"]*\.(png|jpe?g|webp)"/i.test(bodyText));
 
-/* ---------- 3. 移动端 ---------- */
-await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
-await load(`${BASE}/index.html`);
-r = JSON.parse(await evalJs(`JSON.stringify({
-  sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth
-})`));
-check('移动端无横向溢出', r.sw === r.cw, `${r.sw} / ${r.cw}`);
-await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+const DATA_FILES = ['src/data/profile.json', 'src/data/metrics.json', 'src/data/projects.json',
+                    'src/data/research.json', 'src/data/competitions.json',
+                    'src/data/contests.json', 'src/data/cf.json'];
+for (const f of DATA_FILES) {
+  const res = await fetch(`${BASE}/${f}`);
+  if (!res.ok) { check(`${f} 可访问`, false, `HTTP ${res.status}`); continue; }
+  const txt = await res.text();
+  const hit = OFFLINE.filter(([n]) => txt.includes(n)).map(([, l]) => l);
+  check(`${f} 不含隐私内容`, hit.length === 0, hit.join(', '));
+}
+const cfJson = await (await fetch(`${BASE}/src/data/cf.json`)).json();
+check('cf.json 无 xcpc 字段', !('xcpc' in cfJson));
 
 /* ---------- 4. 禁用 JS ---------- */
 await send('Emulation.setScriptExecutionDisabled', { value: true });
 await load(`${BASE}/index.html`, { scroll: false });
 r = JSON.parse(await evalJs(`JSON.stringify({
-  cls: document.documentElement.className,
   revealOpacity: getComputedStyle(document.querySelector('.reveal')).opacity,
-  awardVisible: getComputedStyle(document.querySelector('.award')).opacity
+  awardVisible: getComputedStyle(document.querySelector('.award-row')).opacity,
+  heroVisible: getComputedStyle(document.querySelector('h1')).opacity
 })`));
-await send('Emulation.setScriptExecutionDisabled', { value: false });
-check('禁用 JS 时正文可见', r.awardVisible === '1', `award opacity=${r.awardVisible}`);
+await send("Emulation.setScriptExecutionDisabled", { value: false });
+check('禁用 JS 时项目卡可见', r.awardVisible === '1', `opacity=${r.awardVisible}`);
+check('禁用 JS 时标题可见', r.heroVisible === '1', `opacity=${r.heroVisible}`);
 
 /* ---------- 5. 打印模式 ---------- */
 await send('Emulation.setEmulatedMedia', { media: 'print' });
 await load(`${BASE}/index.html`, { scroll: false });
 r = JSON.parse(await evalJs(`JSON.stringify({
   bodyBg: getComputedStyle(document.body).backgroundColor,
-  jump: getComputedStyle(document.querySelector('.jump')).display,
-  links: getComputedStyle(document.querySelector('.links')).display,
+  topbar: getComputedStyle(document.querySelector('.topbar')).display,
+  ghost: getComputedStyle(document.querySelector('.section-ghost')).display,
   skip: getComputedStyle(document.querySelector('.skip-link')).display,
-  reveal: getComputedStyle(document.querySelector('.reveal')).opacity,
-  h1Color: getComputedStyle(document.querySelector('h1')).color
+  certItems: getComputedStyle(document.querySelector('.tl-items') ?? document.body).color,
+  reveal: getComputedStyle(document.querySelector('.reveal')).opacity
 })`));
 await send('Emulation.setEmulatedMedia', { media: '' });
 check('打印时背景转白', /255,\s*255,\s*255/.test(r.bodyBg), r.bodyBg);
-check('打印时隐藏章节导航', r.jump === 'none', r.jump);
-check('打印时隐藏按钮区', r.links === 'none', r.links);
+check('打印时隐藏导航', r.topbar === 'none', r.topbar);
+check('打印时隐藏幽灵标题', r.ghost === 'none', r.ghost);
 check('打印时隐藏跳转链接', r.skip === 'none', r.skip);
-check('打印时内容不再隐藏', r.reveal === '1', `opacity=${r.reveal}`);
+check('打印时内容不再被隐藏', r.reveal === '1', `opacity=${r.reveal}`);
 
 /* ---------- 6. 单文件离线版 ---------- */
 if (existsSync(SINGLE)) {
   await load(pathToFileURL(SINGLE).href);
   r = JSON.parse(await evalJs(`JSON.stringify({
     title: document.title,
-    styled: getComputedStyle(document.querySelector('.brand, .eyebrow')).borderTopWidth,
-    certs: document.querySelectorAll('.cert-item').length,
-    notIn: document.querySelectorAll('.reveal:not(.in)').length,
-    cfData: !!document.getElementById('cf-data')
+    fontLoaded: document.fonts.check('700 48px "Space Grotesk Variable"'),
+    styled: getComputedStyle(document.querySelector('.brand-mark')).backgroundColor,
+    awards: document.querySelectorAll('.award-row').length,
+    chart: document.querySelectorAll('.comp-chart path.series').length,
+    notIn: document.querySelectorAll('.reveal:not(.is-in)').length
   })`));
   check('单文件版可离线打开', /quchen/.test(r.title), r.title);
-  check('单文件版样式已内联', r.styled !== '0px', `border=${r.styled}`);
-  check('单文件版内容完整', r.certs >= 20, `${r.certs} 条证书`);
+  check('单文件版内嵌字体已生效', r.fontLoaded === true, `fontLoaded=${r.fontLoaded}`);
+  check('单文件版样式已内联', r.styled !== 'rgba(0, 0, 0, 0)', r.styled);
+  check('单文件版内容完整', r.awards >= 20 && r.chart === 2, `${r.awards} 行 / ${r.chart} 序列`);
   check('单文件版动画正常', r.notIn === 0, `未进场 ${r.notIn}`);
 } else {
   check('单文件版存在', false, '先跑 npm run single');

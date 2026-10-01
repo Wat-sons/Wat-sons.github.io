@@ -1,0 +1,35 @@
+{
+  "_comment": "Selected Work。只放能确认的真实项目 —— 不编造。加项目：往 items 里加一条即可，页面自动交替左右布局。visual 指定用哪个 SVG 生成器（见 src/lib/visuals.mjs）：pipeline / activity / rating / none。",
+  "updatedAt": "2026-10-01",
+
+  "items": [
+    {
+      "id": "homepage",
+      "index": "01",
+      "year": "2026",
+      "title": "Data-Driven Homepage",
+      "titleCn": "数据驱动个人主页",
+      "desc": "这个站本身。所有内容来自 src/data/*.json 单一事实来源，构建脚本产出纯静态 HTML —— 线上零运行时依赖、零 CDN、零字体外链。内建发布前隐私闸门，任何可能泄露个人信息的内容都会阻断推送；另有单文件导出，离线双击即可打开。",
+      "tags": ["Static Site", "Zero Dependency", "Build Pipeline"],
+      "links": [
+        { "label": "访问", "url": "https://wat-sons.github.io/" },
+        { "label": "源码", "url": "https://github.com/Wat-sons/Wat-sons.github.io" }
+      ],
+      "visual": "pipeline"
+    },
+    {
+      "id": "competitive-programming",
+      "index": "02",
+      "year": "2024 —",
+      "title": "Competitive Programming",
+      "titleCn": "算法竞赛训练体系",
+      "desc": "两年 ACM 赛制训练：Codeforces 两个账号累计 67 场 rated、2749 次提交，横跨在线赛与线下全国邀请赛。主语言 C++，主攻图论、动态规划与数据结构。下面是按提交类型拆分的真实分布。",
+      "tags": ["C++", "Algorithms", "Codeforces", "CCPC"],
+      "links": [
+        { "label": "Codeforces @quchen666", "url": "https://codeforces.com/profile/quchen666" },
+        { "label": "Codeforces @quchen", "url": "https://codeforces.com/profile/quchen" }
+      ],
+      "visual": "activity"
+    }
+  ]
+}

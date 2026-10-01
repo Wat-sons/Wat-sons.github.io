@@ -1,17 +1,47 @@
 {
-  "_comment": "奖项单一事实来源。加新奖：往 awards 数组里加一条，weight 越小越靠前（含金量）。vault 只做本地记账，指向私有仓库里的证书原件，公开页面不展示该字段。certs 是证书名称（纯文字），会在「证书清单」区块汇总显示——**绝不要**把证书图片或原始文件名放进来，原始文件名里带真名。本文件在公开仓库里。",
+  "_comment": "竞赛奖项单一事实来源。weight 越小越靠前。vault 只做本地记账（指向私有仓库 awards），页面从不读取。certs 是证书名称（纯文字），绝不放进图片或原始文件名。本文件公开可下载。",
   "updatedAt": "2026-10-01",
   "levels": {
-    "gold": { "label": "金奖", "tone": "gold" },
-    "first": { "label": "全国一等奖", "tone": "gold" },
-    "second": { "label": "全国二等奖", "tone": "silver" },
-    "silver": { "label": "银牌", "tone": "silver" },
-    "third": { "label": "全国三等奖", "tone": "bronze" },
-    "bronze": { "label": "铜牌", "tone": "bronze" },
-    "provincial-first": { "label": "省赛 / 区域一等奖", "tone": "blue" },
-    "provincial-second": { "label": "省赛二等奖", "tone": "blue" },
-    "finalist": { "label": "决赛入围", "tone": "blue" },
-    "cert": { "label": "认证", "tone": "blue" }
+    "gold": {
+      "label": "金奖",
+      "tone": "gold"
+    },
+    "first": {
+      "label": "全国一等奖",
+      "tone": "gold"
+    },
+    "second": {
+      "label": "全国二等奖",
+      "tone": "silver"
+    },
+    "silver": {
+      "label": "银牌",
+      "tone": "silver"
+    },
+    "third": {
+      "label": "全国三等奖",
+      "tone": "bronze"
+    },
+    "bronze": {
+      "label": "铜牌",
+      "tone": "bronze"
+    },
+    "provincial-first": {
+      "label": "省赛 / 区域一等奖",
+      "tone": "blue"
+    },
+    "provincial-second": {
+      "label": "省赛二等奖",
+      "tone": "blue"
+    },
+    "finalist": {
+      "label": "决赛入围",
+      "tone": "blue"
+    },
+    "cert": {
+      "label": "认证",
+      "tone": "blue"
+    }
   },
   "awards": [
     {
@@ -101,7 +131,9 @@
       "extra": null,
       "weight": 60,
       "vault": "2026/2026-ccpc-guiyang_*.jpg",
-      "certs": ["2026 CCPC 全国邀请赛（贵阳）银奖证书"]
+      "certs": [
+        "2026 CCPC 全国邀请赛（贵阳）银奖证书"
+      ]
     },
     {
       "id": "lanqiao-2026-second",
@@ -114,7 +146,9 @@
       "extra": null,
       "weight": 70,
       "vault": "2026/2026-lanqiao-national_*.jpg",
-      "certs": ["第十七届蓝桥杯 C/C++ 大学 A 组 全国总决赛 二等奖证书"]
+      "certs": [
+        "第十七届蓝桥杯 C/C++ 大学 A 组 全国总决赛 二等奖证书"
+      ]
     },
     {
       "id": "nowcoder-summer-2026-second",
@@ -143,7 +177,9 @@
       "extra": null,
       "weight": 90,
       "vault": "2026/2026-nowcoder-winter_*.png",
-      "certs": ["第九届牛客寒假算法基础集训营 一等奖证书"]
+      "certs": [
+        "第九届牛客寒假算法基础集训营 一等奖证书"
+      ]
     },
     {
       "id": "ccpc-zhengzhou-2025-bronze",
@@ -156,7 +192,9 @@
       "extra": null,
       "weight": 100,
       "vault": "2025/2025-ccpc-zhengzhou*.jpg",
-      "certs": ["2025 CCPC 全国邀请赛（郑州）铜牌证书"]
+      "certs": [
+        "2025 CCPC 全国邀请赛（郑州）铜牌证书"
+      ]
     },
     {
       "id": "ccpc-nanchang-2025-bronze",
@@ -169,7 +207,9 @@
       "extra": null,
       "weight": 110,
       "vault": "2025/2025-ccpc-nanchang*.jpg",
-      "certs": ["2025 CCPC 全国邀请赛（南昌）铜奖证书"]
+      "certs": [
+        "2025 CCPC 全国邀请赛（南昌）铜奖证书"
+      ]
     },
     {
       "id": "ccpc-qinhuangdao-2026-bronze",
@@ -182,7 +222,9 @@
       "extra": null,
       "weight": 120,
       "vault": "2026/2026-ccpc-qinhuangdao_*.jpg",
-      "certs": ["2026 CCPC 全国邀请赛（秦皇岛）铜奖证书"]
+      "certs": [
+        "2026 CCPC 全国邀请赛（秦皇岛）铜奖证书"
+      ]
     },
     {
       "id": "mati-2025-bronze",
@@ -195,7 +237,9 @@
       "extra": null,
       "weight": 130,
       "vault": "2025/2025-mati-national_*.jpg",
-      "certs": ["第七届码蹄杯程序设计大赛 本科院校赛道国赛 铜奖证书"]
+      "certs": [
+        "第七届码蹄杯程序设计大赛 本科院校赛道国赛 铜奖证书"
+      ]
     },
     {
       "id": "cacc-2025-third",
@@ -208,7 +252,9 @@
       "extra": null,
       "weight": 140,
       "vault": "2025/2025-cacc_*.png",
-      "certs": ["第二届 CCF 算法能力大赛（CACC）三等奖证书"]
+      "certs": [
+        "第二届 CCF 算法能力大赛（CACC）三等奖证书"
+      ]
     },
     {
       "id": "gplt-2025-third",
@@ -221,7 +267,9 @@
       "extra": null,
       "weight": 150,
       "vault": "2025/2025-gplt_*.png",
-      "certs": ["2025 团体程序设计天梯赛 全国总决赛 团队三等奖证书"]
+      "certs": [
+        "2025 团体程序设计天梯赛 全国总决赛 团队三等奖证书"
+      ]
     },
     {
       "id": "nowcoder-summer-2025-third",
@@ -250,7 +298,9 @@
       "extra": null,
       "weight": 170,
       "vault": "2026/2026-baidu-final_*.jpg",
-      "certs": ["第 22 届百度之星程序设计大赛 决赛（人才专项赛道）学生证书"]
+      "certs": [
+        "第 22 届百度之星程序设计大赛 决赛（人才专项赛道）学生证书"
+      ]
     },
     {
       "id": "lanqiao-2026-provincial-first",
@@ -263,7 +313,9 @@
       "extra": null,
       "weight": 180,
       "vault": "2026/2026-lanqiao-provincial_*.jpg",
-      "certs": ["第十七届蓝桥杯 C/C++ 大学 A 组 省赛 一等奖证书"]
+      "certs": [
+        "第十七届蓝桥杯 C/C++ 大学 A 组 省赛 一等奖证书"
+      ]
     },
     {
       "id": "ccut-nw-2025-first",
@@ -276,7 +328,9 @@
       "extra": null,
       "weight": 190,
       "vault": "2025/2025-network-nw_*.jpg",
-      "certs": ["中国高校计算机大赛 · 网络技术挑战赛 西北赛区 一等奖证书"]
+      "certs": [
+        "中国高校计算机大赛 · 网络技术挑战赛 西北赛区 一等奖证书"
+      ]
     },
     {
       "id": "raicom-2025-provincial-second",
@@ -289,7 +343,9 @@
       "extra": null,
       "weight": 200,
       "vault": "2025/2025-raicom-provincial_*.jpg",
-      "certs": ["睿抗机器人开发者大赛（RAICOM）编程技能赛道 省赛 二等奖证书"]
+      "certs": [
+        "睿抗机器人开发者大赛（RAICOM）编程技能赛道 省赛 二等奖证书"
+      ]
     },
     {
       "id": "mati-2025-provincial",
@@ -302,7 +358,9 @@
       "extra": null,
       "weight": 210,
       "vault": "2025/2025-mati-provincial_*.jpg",
-      "certs": ["第七届码蹄杯程序设计大赛 本科院校赛道省赛 获奖证书"]
+      "certs": [
+        "第七届码蹄杯程序设计大赛 本科院校赛道省赛 获奖证书"
+      ]
     },
     {
       "id": "ccf-csp-42",
@@ -328,7 +386,9 @@
       "extra": null,
       "weight": 230,
       "vault": "2026/CCF-CSP 第37次认证成绩单.pdf",
-      "certs": ["CCF-CSP 第 37 次认证成绩单"]
+      "certs": [
+        "CCF-CSP 第 37 次认证成绩单"
+      ]
     }
   ]
 }

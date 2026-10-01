@@ -135,8 +135,8 @@ if ($SkipCheck) {
     # PowerShell 5.1 没有 ?. 运算符，老实写
     $cmd = Get-Command node -ErrorAction SilentlyContinue
     $nodeExe = if ($cmd) { $cmd.Source } else { $null }
-    if (-not $nodeExe) {
-        $nodeExe = Get-ChildItem "D:\Claude Code project\projects\个人主页\_archive" -Filter node.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+    if (-not $nodeExe -and (Test-Path "D:\software place\node.exe")) {
+        $nodeExe = "D:\software place\node.exe"
     }
     if (-not $nodeExe) {
         # 本机 node 不在 PATH，用 DSH 自带的
@@ -145,9 +145,9 @@ if ($SkipCheck) {
     if (-not (Test-Path $nodeExe)) { throw "找不到 node，请先装 Node >= 20 或手动跑 npm run build" }
     Push-Location $Base
     try {
-        & $nodeExe build.mjs
-        if ($LASTEXITCODE -ne 0) { throw "build.mjs 失败" }
-        & $nodeExe tools/check.mjs
+        & $nodeExe "src/build.mjs"
+        if ($LASTEXITCODE -ne 0) { throw "src/build.mjs 失败" }
+        & $nodeExe "tools/check.mjs"
         if ($LASTEXITCODE -ne 0) { throw "自检未通过（含隐私闸门），已中止推送" }
     } finally { Pop-Location }
 }

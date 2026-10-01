@@ -1,0 +1,63 @@
+/* ============================================================
+   motion.css — 动效分层
+   L0 纯 CSS（hover）      → 这里
+   L1 IntersectionObserver → reveal，渐进增强
+   L2 rAF + scroll         → 幽灵标题视差（由 JS 写 --shift）
+   L3 CSS animation-delay  → Hero 逐行升起（在 sections.css）
+   L4 pointermove → CSS 变量 → 鼠标微视差
+   全部只动 transform / opacity，不触发 layout。
+   ============================================================ */
+
+/* ---------- L1：区块 reveal ---------- */
+/* 关键：只有 JS 确认可用（html.js）才隐藏。JS 挂了、被墙了，正文必须仍然可见。 */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+html.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+}
+/* 同一组内逐条错开，形成节奏而不是整块弹出来 */
+html.js .reveal[data-delay="1"].is-in { transition-delay: 80ms; }
+html.js .reveal[data-delay="2"].is-in { transition-delay: 160ms; }
+html.js .reveal[data-delay="3"].is-in { transition-delay: 240ms; }
+html.js .reveal[data-delay="4"].is-in { transition-delay: 320ms; }
+
+/* ---------- L2：幽灵标题视差 ---------- */
+/* JS 把滚动量写进 --shift，这里只负责应用 */
+.section-ghost .ghost {
+  transform: translate3d(var(--shift-x, 0px), var(--shift-y, 0px), 0);
+  will-change: transform;
+}
+
+/* ---------- L4：Hero 鼠标微视差 ---------- */
+/* JS 写 --mx / --my（-1 ~ 1），幅度压到 6px 以内 */
+.hero { --mx: 0; --my: 0; }
+.hero .hero-main {
+  transform: translate3d(calc(var(--mx) * 5px), calc(var(--my) * 4px), 0);
+  transition: transform 700ms var(--ease);
+}
+.hero-stats {
+  transform: translate3d(calc(var(--mx) * -3px), 0, 0);
+  transition: transform 700ms var(--ease);
+}
+
+/* ---------- 滚动进度条 ---------- */
+.scroll-progress { will-change: transform; }
+
+/* ---------- 尊重 reduced-motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  html.js .reveal { opacity: 1 !important; transform: none !important; }
+  .hero .reveal-line > span { transform: none !important; animation: none !important; }
+  .hero-fade { opacity: 1 !important; animation: none !important; }
+  .display .reveal-line:last-child .mark::after { transform: scaleX(1); animation: none !important; }
+  .section-ghost .ghost { transform: none !important; }
+  .hero .hero-main, .hero-stats { transform: none !important; }
+  .pill .dot { animation: none !important; }
+  .work-item:hover .work-media > svg { transform: none !important; }
+  .to-top:hover svg { transform: none !important; }
+  * { transition-duration: 1ms !important; }
+}

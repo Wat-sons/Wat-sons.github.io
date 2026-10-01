@@ -100,15 +100,13 @@ for (const h of cfHandles) {
   }
 }
 
-// XCPC-VP-Tracker 的产物
+// XCPC-VP-Tracker 的提交统计（只取 CF 相关部分；XCPC 训练量按本人要求不公开）
 let vpProgress = await readIfExists(path.join(trackerDir, 'cf-progress.json'));
-let vpData = await readIfExists(path.join(trackerDir, 'vp-data.json'));
 const trackerUsed = [];
 if (vpProgress) trackerUsed.push('cf-progress.json');
-if (vpData) trackerUsed.push('vp-data.json');
 console.log(trackerUsed.length
-  ? `XCPC-VP-Tracker: ${trackerUsed.join(' + ')}`
-  : `XCPC-VP-Tracker: 没找到（找的是 ${trackerDir}），跳过`);
+  ? `CF 提交统计: ${trackerUsed.join(' + ')}`
+  : `CF 提交统计: 没找到（找的是 ${trackerDir}），跳过`);
 
 const cfStats = vpProgress?.summary
   ? {
@@ -119,20 +117,8 @@ const cfStats = vpProgress?.summary
     }
   : null;
 
-const xcpc = vpData?.meta
-  ? {
-      contests: vpData.meta.contestCount ?? null,
-      regional: vpData.meta.regionalCount ?? null,
-      online: vpData.meta.onlineCount ?? null,
-      problems: vpData.meta.totalProblems ?? null,
-      solved: vpData.meta.totalSolved ?? null,
-      withSolutions: vpData.meta.withSolutions ?? null,
-      generatedAt: vpData.meta.generatedAt ?? null,
-    }
-  : null;
-
 const payload = {
-  _comment: '自动生成，别手改。改数据源或改 tools/sync.mjs，然后 npm run sync。',
+  _comment: '自动生成，别手改。改数据源或改 tools/sync.mjs，然后 npm run sync。本文件公开可下载，只放 Codeforces 公开数据。',
   syncedAt: new Date().toISOString(),
   sources: [
     `${CONTESTS_API}/user.info`,
@@ -151,7 +137,6 @@ const payload = {
     ),
     stats: cfStats,
   },
-  xcpc,
 };
 
 await mkdir(path.dirname(outPath), { recursive: true });
@@ -167,4 +152,3 @@ if (payload.codeforces.peak) {
   console.log(`  历史最高: ${k.maxRating} (${k.maxRank}) by ${k.handle}`);
 }
 if (cfStats) console.log(`  CF 提交 ${Object.values(cfStats.submissions ?? {}).reduce((a, b) => a + b, 0)} 条 / ${cfStats.contestsSeen} 场`);
-if (xcpc) console.log(`  XCPC ${xcpc.contests} 赛站 / ${xcpc.problems} 题 / 已过 ${xcpc.solved}`);
