@@ -135,6 +135,24 @@ for (const vp of VIEWPORTS) {
 /* ---------- 2. 桌面端结构 ---------- */
 await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
 await load(`${BASE}/index.html`);
+
+// Timeline 的路径是**滚动联动**的，必须在真的滚到那里之后再量 ——
+// load() 里那轮滚动遍历最后回到了页面顶部，在顶部量只会得到"刚起笔"的状态。
+await send('Runtime.evaluate', {
+  expression: `(async () => {
+    const tr = document.querySelector('[data-tl-track]');
+    if (!tr) return;
+    // 站点开了 scroll-behavior:smooth，会把这跳变成动画，量到的就是中间态
+    document.documentElement.style.scrollBehavior = 'auto';
+    const r = tr.getBoundingClientRect();
+    // 滚到轨道底部 —— 路径要在这里刚好画满，最后一个节点（NEXT）才会亮
+    scrollTo(0, scrollY + r.top + r.height);
+    await new Promise((done) => setTimeout(done, 700));
+    document.documentElement.style.scrollBehavior = '';
+  })()`,
+  awaitPromise: true,
+});
+
 let r = JSON.parse(await evalJs(`JSON.stringify({
   imgs: document.querySelectorAll('img').length,
   sceneImgs: document.querySelectorAll('.hero-scenery img, .contact-scenery img').length,
@@ -156,6 +174,14 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   textOnlyItems: document.querySelectorAll('.work-item.is-textonly').length,
   emptyMediaBoxes: [...document.querySelectorAll('.work-media')].filter(v => !v.firstElementChild).length,
   hasResearch: /科研方向|WHAT I'M EXPLORING/.test(document.body.innerHTML),
+  tlHead: /PATH SO FAR/.test(document.body.innerHTML),
+  tlD: (document.querySelector('.tl-path')?.getAttribute('d') || '').length,
+  tlStops: document.querySelectorAll('[data-tl-stop]').length,
+  tlReached: document.querySelectorAll('.tl-stop.is-reached').length,
+  tlDash: getComputedStyle(document.querySelector('.tl-path')).strokeDasharray,
+  tlNodeX: [...document.querySelectorAll('[data-tl-node]')]
+    .map((n) => Math.round(n.getBoundingClientRect().left)),
+  tlCta: document.querySelector('.tl-cta')?.classList.contains('is-in'),
   preloader: !!document.getElementById('preloader'),
   preBooted: !document.documentElement.classList.contains('is-booting'),
   preReady: document.documentElement.classList.contains('is-ready'),
@@ -182,6 +208,16 @@ check('已移除构建流水线图', r.hasPipeline === false);
 check('无视觉素材的项目退成通栏文字', r.textOnlyItems === 1, `${r.textOnlyItems} 个`);
 check('没有空图位', r.emptyMediaBoxes === 0, `${r.emptyMediaBoxes} 个空框`);
 check('已下线科研方向区块', r.hasResearch === false);
+
+/* ---------- Timeline — PATH SO FAR ---------- */
+check('标题为 PATH SO FAR', r.tlHead === true);
+check('路径已由节点位置生成（d 非空 + dash 已量出）',
+  r.tlD > 60 && r.tlDash !== '0px', `d=${r.tlD} 字符 · dasharray=${r.tlDash}`);
+check('4 个路径节点（2024 / 2025 / 2026 / NEXT）', r.tlStops === 4, `${r.tlStops} 个`);
+check('节点左右交错（不是居中竖线）',
+  new Set(r.tlNodeX).size >= 2, `节点 x: ${r.tlNodeX.join(', ')}`);
+check('滚到底后所有节点都被路径点亮 + 收尾文案出现',
+  r.tlReached === 4 && r.tlCta === true, `点亮 ${r.tlReached}/4 · cta=${r.tlCta}`);
 
 /* ---------- Preloader ---------- */
 check('Preloader 标记完整（粒子层 / 障碍物 / 路径）',

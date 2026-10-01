@@ -90,7 +90,7 @@ const sections = [
     competitions, metrics, cf,
     ctx: ctx("/02", `${competitions.awards.length} 条记录 · 按获奖时间先后排列 · 数字均来自真实数据`),
   }),
-  timeline({ metrics, ctx: ctx("/03", "每年只写确实发生过的事。") }),
+  timeline({ metrics, ctx: ctx("/03", null) }),
   about({ profile, ctx: ctx("/04", null) }),
   contact({ profile, ctx: ctx("/05", null) }),
 ].join("\n");
@@ -206,7 +206,7 @@ console.log(`  index.html        ${kb(html)} KB · ${sections.split("<section").
 console.log(`  assets/style.css  ${kb(cssParts.join(""))} KB · ${CSS_ORDER.length} 个样式层`);
 console.log(`  assets/app.js     ${kb(await readText("assets/app.js"))} KB`);
 console.log(`  奖项 ${AW.length} 条（竞赛 ${awardStats.total} · 全国性 ${awardStats.national} · 省赛区域 ${awardStats.provincial} · 认证 ${awardStats.cert}）`);
-console.log(`  项目 ${projects.items.length} 个 · 时间线 ${metrics.timeline.length} 年`);
+console.log(`  项目 ${projects.items.length} 个 · 路径节点 ${(metrics.timeline.stops ?? []).length} 个 · 时间线 ${metrics.timeline.range ?? ""}`);
 if (cf) {
   console.log(`  CF 数据同步于 ${cf.syncedAt.slice(0, 10)} · ${cf.codeforces.handles.map((h) => h.handle).join(" / ")}`);
 }

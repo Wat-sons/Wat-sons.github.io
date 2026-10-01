@@ -81,6 +81,10 @@
   }
 
   /* --------------------------------------------- L2 滚动：进度条 + 视差 */
+  /* 挂在同一个 rAF 帧里的滚动回调。setupPath 会把自己的绘制函数推进来，
+     这样整站只有一个滚动循环，不会各写各的 listener。 */
+  var scrollFns = [];
+
   function setupScroll() {
     var bar = document.querySelector(".scroll-progress");
     var ghosts = Array.prototype.slice.call(document.querySelectorAll(".section-ghost .ghost"));
@@ -98,6 +102,8 @@
       if (scenery && !reduce && y < window.innerHeight * 1.2) {
         scenery.style.setProperty("--sc-sy", (y * 0.10).toFixed(1) + "px");
       }
+
+      for (var k = 0; k < scrollFns.length; k++) scrollFns[k]();
 
       if (!reduce) {
         for (var i = 0; i < ghosts.length; i++) {
@@ -454,10 +460,99 @@
     }
   }
 
+  /* ═══════════════ Timeline — PATH SO FAR ═══════════════
+     与 Preloader 同一种语言：那边是算法正在找路，这边是我走过的路。
+     路径的 d 是**运行时量出来的** —— 每个节点的实际坐标连成一条平滑曲线，
+     所以四档断点、任何文案长度都不会让路径穿到文字上。
+     滚动联动：路径的绘制进度绑定在轨道穿过视口的进度上，
+     画到哪个节点，那个节点的内容才淡入。 */
+  function setupPath() {
+    var track = document.querySelector("[data-tl-track]");
+    if (!track) return;
+    var svg = track.querySelector(".tl-svg");
+    var path = track.querySelector(".tl-path");
+    var stops = Array.prototype.slice.call(track.querySelectorAll("[data-tl-stop]"));
+    var cta = document.querySelector("[data-tl-cta]");
+    if (!svg || !path || !stops.length) return;
+
+    var L = 0;
+    var tipY = 0;
+
+    function build() {
+      var box = track.getBoundingClientRect();
+      if (!box.width || !box.height) return;
+      // viewBox 用实测像素，1:1 映射，stroke-width 就是 px，不会被缩放
+      svg.setAttribute("viewBox", "0 0 " + box.width.toFixed(0) + " " + box.height.toFixed(0));
+
+      var pts = stops.map(function (s) {
+        var n = s.querySelector("[data-tl-node]");
+        var r = n.getBoundingClientRect();
+        var cy = r.top - box.top + r.height / 2;
+        s._tlY = cy;                                    // 供绘制时判断"画到哪了"
+        return { x: r.left - box.left + r.width / 2, y: cy };
+      });
+
+      var d = "M " + pts[0].x.toFixed(1) + " " + pts[0].y.toFixed(1);
+      for (var i = 1; i < pts.length; i++) {
+        var a = pts[i - 1], b = pts[i], dy = b.y - a.y;
+        // 两段控制点各占一半竖直距离 —— 得到平滑的 S 形，不是折线
+        d += " C " + a.x.toFixed(1) + " " + (a.y + dy * 0.45).toFixed(1)
+           + ", " + b.x.toFixed(1) + " " + (b.y - dy * 0.45).toFixed(1)
+           + ", " + b.x.toFixed(1) + " " + b.y.toFixed(1);
+      }
+      // 尾巴：从最后一个节点继续往外走，配合渐变淡出 —— 「路还在生成」
+      var t = pts[pts.length - 1];
+      d += " C " + t.x.toFixed(1) + " " + (t.y + 60).toFixed(1)
+         + ", " + (t.x + 26).toFixed(1) + " " + (t.y + 96).toFixed(1)
+         + ", " + (t.x + 62).toFixed(1) + " " + (t.y + 116).toFixed(1);
+      path.setAttribute("d", d);
+
+      try { L = path.getTotalLength(); } catch (e) { L = 0; }
+      path.style.setProperty("--tl-len", L.toFixed(1));
+      draw();
+    }
+
+    function draw() {
+      if (!L) return;
+      if (reduce) {
+        path.style.strokeDashoffset = 0;
+        for (var j = 0; j < stops.length; j++) stops[j].classList.add("is-reached");
+        if (cta) cta.classList.add("is-in");
+        return;
+      }
+      var box = track.getBoundingClientRect();
+      var vh = window.innerHeight;
+      // 轨道顶部到达视口 88% 处为 0，轨道底部到达 42% 处为 1
+      var p = (vh * 0.88 - box.top) / (box.height + vh * 0.46);
+      p = p < 0 ? 0 : (p > 1 ? 1 : p);
+
+      var drawn = L * p;
+      path.style.strokeDashoffset = (L - drawn).toFixed(1);
+
+      // 画笔尖端到哪，哪个节点才亮 —— 用真实曲线长度定位，不是按 y 估算
+      try { tipY = path.getPointAtLength(drawn).y; } catch (e) { tipY = 0; }
+      for (var i = 0; i < stops.length; i++) {
+        if (!stops[i]._tlY && stops[i]._tlY !== 0) continue;
+        stops[i].classList.toggle("is-reached", tipY >= stops[i]._tlY - 3);
+      }
+      if (cta) cta.classList.toggle("is-in", p > 0.9);
+    }
+
+    scrollFns.push(draw);
+    // resize 会改变所有节点的坐标，必须重算几何
+    var rt = 0;
+    window.addEventListener("resize", function () {
+      clearTimeout(rt);
+      rt = setTimeout(build, 180);
+    }, { passive: true });
+    build();
+  }
+
   /* ------------------------------------------------------------------ */
   setupReveal();
   setupCounters();
   setupScroll();
+  setupPath();
   setupTopbar();
   setupDrawer();
   setupPointer();

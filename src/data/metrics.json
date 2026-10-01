@@ -16,34 +16,46 @@
     { "from": "total", "unit": "项", "label": "竞赛获奖",             "note": "全国性 {national} · 省赛区域 {provincial}" }
   ],
 
-  "timeline": [
-    {
-      "year": "2024",
-      "current": false,
-      "items": [
-        "入学太原理工大学人工智能学院",
-        "开始系统训练算法竞赛，主战场 Codeforces"
-      ]
-    },
-    {
-      "year": "2025",
-      "current": false,
-      "items": [
-        "首次 CCF-CSP 认证（第 37 次）270 分 · 累计排名前 7.2%",
-        "首年参赛：省赛 → 全国总决赛",
-        "CCPC 全国邀请赛郑州站 铜牌 · 南昌站 铜奖",
-        "睿抗 RAICOM 编程技能赛道 全国总决赛一等奖 · 百度之星决赛铜奖"
-      ]
-    },
-    {
-      "year": "2026",
-      "current": true,
-      "items": [
-        "CCPC 全国邀请赛贵阳站 银牌 · 秦皇岛站 铜奖",
-        "CCF-CSP 第 43 次 355 分（前 1.76%）· Codeforces 峰值 2089",
-        "第 22 届百度之星决赛（人才专项赛道）金奖 · 天梯赛全国总决赛 个人二等奖",
-        "开始把训练过程做成工具与站点"
-      ]
+  "timeline": {
+    "_comment": "PATH SO FAR —— 与 Loading 动画呼应：那边是算法正在找路，这边是我已经走过的路。只写成长与转折，不复述竞赛记录（详细记录在 competitions.json）。每年最多两行正文 + 三个关键词。side 决定内容落在路径的哪一侧，改这里就能翻转版式。文案用英文，跟首屏宣言的语气一致。",
+    "range": "2024 — 2026",
+    "intro": "A few years of algorithms, competitions, and things I decided to build.",
+    "stops": [
+      {
+        "year": "2024",
+        "tag": "START",
+        "side": "left",
+        "lines": [
+          "Entered Taiyuan University of Technology.",
+          "Started systematic competitive programming training."
+        ],
+        "keys": ["AI", "C++", "Algorithms"]
+      },
+      {
+        "year": "2025",
+        "tag": "COMPETE",
+        "side": "right",
+        "lines": [
+          "First year of serious competition.",
+          "From provincial contests to national finals."
+        ],
+        "miles": ["CSP 270", "CCPC × 2", "RAICOM"]
+      },
+      {
+        "year": "2026",
+        "tag": "BUILD",
+        "side": "left",
+        "lines": [
+          "Competition became more than competition.",
+          "Starting to turn training, data and algorithms into tools."
+        ],
+        "miles": ["CSP 355", "CF 2089", "Website"]
+      }
+    ],
+    "next": {
+      "tag": "NEXT",
+      "line": "The path is still being generated.",
+      "cta": "PATH CONTINUES"
     }
-  ]
+  }
 }

@@ -75,7 +75,7 @@ for (const n of profile.nav) {
 }
 
 notes.push(`奖项 ${competitions.awards.length} 条（关联证书原件 ${competitions.awards.filter((a) => a.vault).length} 条）`);
-notes.push(`项目 ${projects.items.length} 个 · 研究方向 ${research.items.length} 个 · 时间线 ${metrics.timeline.length} 年`);
+notes.push(`项目 ${projects.items.length} 个 · 研究方向 ${research.items.length} 个 · 路径节点 ${(metrics.timeline?.stops ?? []).length} 个`);
 
 /* ──────────────────── 2. index.html 与资源 ──────────────────── */
 let html = '';
