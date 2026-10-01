@@ -204,6 +204,16 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 @keyframes mark-in { to { transform: scaleX(1); } }
 
+/* 有 Preloader 时，下划线不再自己画。
+   Preloader 最后会让它那条路径飞到这个下划线的**精确位置**并画满，
+   然后在这里瞬间就位（scaleX(1)），视觉上是同一条线继续存在 —— 不是切页。
+   没装 Preloader（无 JS / 不支持）时，上面那条 mark-in 照常播。 */
+html.js.is-booting .display .reveal-line:last-child .mark::after { animation: none; }
+html.js.is-ready .display .reveal-line:last-child .mark::after {
+  animation: none;
+  transform: scaleX(1);
+}
+
 /* ---------- 幽灵区块标题 ---------- */
 /* 全站的节奏锚点：巨型、极低对比、被左边缘裁掉一截 */
 .ghost {
@@ -737,16 +747,30 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .reveal-line > span { display: block; }
 
 .hero .reveal-line > span {
-  transform: translateY(105%);
+  transform: none;
   animation: line-up 1100ms var(--ease) forwards;
 }
 .hero .reveal-line:nth-child(1) > span { animation-delay: 120ms; }
 .hero .reveal-line:nth-child(2) > span { animation-delay: 240ms; }
 .hero .reveal-line:nth-child(3) > span { animation-delay: 360ms; }
-@keyframes line-up { to { transform: translateY(0); } }
+@keyframes line-up {
+  from { transform: translateY(105%); }
+  to   { transform: translateY(0); }
+}
+
+/* Preloader 在跑的时候：Hero 整体藏起来，并且**不做位移动画**。
+   用 visibility 而不是 transform 是有原因的 ——
+   preloader 要精确量出最后一行下划线该在的位置，
+   而 visibility:hidden 的元素仍然保留最终布局，量出来是准的。 */
+html.js.is-booting .hero { visibility: hidden; }
+html.js.is-booting .hero .reveal-line > span { animation: none; }
 
 .hero-fade { opacity: 0; animation: fade-in 900ms var(--ease) 700ms forwards; }
-@keyframes fade-in { to { opacity: 1; } }
+html.js.is-booting .hero-fade { animation: none; }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
 /* ═══════════════ ABOUT ═══════════════ */
 .about-lead { font-size: clamp(1.25rem, 2.6vw, 1.875rem); line-height: 1.45; letter-spacing: -0.015em; }
@@ -983,6 +1007,254 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .tl-row { grid-template-columns: 1fr; gap: 0.75rem; }
   .skill-row { grid-template-columns: 1fr; gap: 0.5rem; }
 }
+
+/* ==== src/styles/preloader.css ==== */
+/* ═══════════════════════════════════════════════════════════════
+   PRELOADER — 「An Algorithm Finding Its Way.」
+
+   只在 html.is-booting 存在时显示。这带来三个好处：
+     1. 默认（无 JS / prefers-reduced-motion）它根本不存在，页面直接可读
+     2. 内联脚本在 <head> 里加 is-booting，早于 body 解析，不会闪
+     3. JS 想结束时只要摘掉 is-booting，它立刻消失 —— 不需要清理定时器
+
+   配色全部复用现有 token，不引入第二个 accent：
+     粒子 = --fg-mute 与少量 --accent
+     路径 = --accent（全屏唯一明显的强调色）
+   ═══════════════════════════════════════════════════════════════ */
+
+.preloader { display: none; }
+
+/* 全片共用的淡入。定义漏了它的话，所有引用 pl-fade 的层都会永远停在 opacity:0
+   （没有关键帧的 animation + forwards 不会把元素带到终态）—— 这个坑踩过一次。 */
+@keyframes pl-fade { from { opacity: 0; } to { opacity: 1; } }
+
+html.is-booting .preloader {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  /* Loading 期间页面不滚 */
+  cursor: default;
+}
+html.is-booting { overflow: hidden; }
+
+.pl-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.5rem, 3.5vh, 2.5rem);
+  padding: var(--gutter);
+}
+
+/* ---------- QUCHEN ---------- */
+.pl-word {
+  margin: 0;
+  font-size: clamp(1.6rem, 4.6vw, 2.6rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  opacity: 0;
+  animation: pl-fade 620ms var(--ease) 60ms forwards;
+}
+
+/* ---------- 搜索空间 ---------- */
+.pl-stage {
+  position: relative;
+  width: min(58vh, 34vw, 460px);
+  aspect-ratio: 1 / 1;
+}
+.pl-space { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* 极淡的坐标网格 —— 有，但不构成"赛博/矩阵"感 */
+.pl-grid { opacity: 0; animation: pl-grid-in 900ms var(--ease) 120ms forwards; }
+@keyframes pl-grid-in { to { opacity: 0.55; } }
+
+/* 障碍物：几何约束。只描边不填充，永远退在后面 */
+.pl-obstacles { opacity: 0; animation: pl-fade 700ms var(--ease) 260ms forwards; }
+.pl-obstacles > * {
+  fill: color-mix(in srgb, var(--fg) 4%, transparent);
+  stroke: var(--line-strong);
+  stroke-width: 0.35;
+}
+
+/* 最终路径：起点画到终点用 dashoffset，长度由 JS 量出来 */
+.pl-path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+.pl-stage.is-found .pl-path { opacity: 1; }
+
+/* ---------- START / TARGET ---------- */
+.pl-node { opacity: 0; animation: pl-fade 600ms var(--ease) 380ms forwards; }
+.pl-node-start circle { fill: var(--fg-mute); }
+.pl-node-target .pl-ring { fill: var(--accent); }
+.pl-node-target .pl-halo {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 0.4;
+  transform-origin: 88px 12px;
+  animation: pl-halo 2200ms var(--ease) 600ms infinite;
+}
+@keyframes pl-halo {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  70%  { transform: scale(3.4); opacity: 0; }
+  100% { transform: scale(3.4); opacity: 0; }
+}
+
+.pl-tag {
+  fill: var(--fg-mute);
+  font-family: var(--font-mono);
+  font-size: 3.1px;
+  letter-spacing: 0.16em;
+}
+
+/* ---------- 粒子群 ---------- */
+.pl-swarm { opacity: 0; animation: pl-fade 500ms var(--ease) 300ms forwards; }
+.pl-swarm.is-done { opacity: 0; transition: opacity 420ms var(--ease); }
+
+.pl-particle {
+  fill: var(--fg-dim);
+  transition: fill 500ms var(--ease);
+}
+/* 收敛阶段把"当前最优"的粒子点亮成 accent —— 视觉上"路径正在成形" */
+.pl-swarm.is-converging .pl-particle.is-best { fill: var(--accent); }
+
+.pl-trail {
+  fill: none;
+  stroke: var(--fg-mute);
+  stroke-width: 0.28;
+  stroke-linecap: round;
+  opacity: 0.5;
+}
+.pl-swarm.is-converging .pl-trail { opacity: 0.75; }
+
+/* ---------- 文字状态 ---------- */
+.pl-status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2.4rem;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  opacity: 0;
+  animation: pl-fade 400ms var(--ease) 520ms forwards;
+}
+.pl-status::after { content: "…"; }
+
+/* ---------- PATH FOUND ---------- */
+.pl-verdict {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+}
+.pl-verdict b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 1.6vw, 1.15rem);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;              /* letter-spacing 会让居中偏右，补回来 */
+  color: var(--accent);
+  background: var(--bg);
+  padding: 0.35em 0.5em;
+}
+.pl-verdict i {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.625rem;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  color: var(--fg-mute);
+  background: var(--bg);      /* 同一块底色：路径从文字后面过，不切字 */
+  padding: 0.3em 0.5em;
+}
+.pl-stage.is-found .pl-verdict { animation: pl-fade 300ms var(--ease) forwards; }
+
+/* ---------- 二次元彩蛋：只在 PATH FOUND 那一瞬出现 ~420ms ----------
+   极小、极淡、在路径终点旁边。看得见的人会心一笑，看不见也不影响什么。 */
+.pl-egg {
+  position: absolute;
+  right: -1.2rem;
+  top: 4%;
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  opacity: 0;
+  pointer-events: none;
+}
+.pl-stage.is-found .pl-egg { animation: pl-egg 1500ms var(--ease) 120ms forwards; }
+@keyframes pl-egg {
+  0%   { opacity: 0; transform: translateY(5px); }
+  18%  { opacity: 0.9; transform: translateY(0); }
+  62%  { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+/* ═══════════ Phase 05 — Enter Portfolio ═══════════
+   搜索空间整体轻微放大并化开，同时那条横线拉到首页下划线该在的位置。 */
+.pl-stage, .pl-word, .pl-status { transition: opacity 420ms var(--ease), transform 620ms var(--ease); }
+.preloader.is-enter .pl-stage { opacity: 0; transform: scale(1.08); }
+.preloader.is-enter .pl-word { opacity: 0; transform: translateY(-8px); }
+.preloader.is-enter .pl-status { opacity: 0; }
+
+.pl-line {
+  position: fixed;
+  left: var(--pl-x, 50%);
+  top: var(--pl-y, 50%);
+  width: var(--pl-w, 0px);
+  height: var(--pl-h, 3px);
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  pointer-events: none;
+}
+.preloader.is-enter .pl-line {
+  transform: scaleX(1);
+  opacity: 1;
+  transition: transform 480ms var(--ease), opacity 160ms linear;
+}
+/* 最后整块淡出；Hero 从下面露出来 */
+.preloader.is-exit { transition: opacity 520ms var(--ease); opacity: 0; }
+
+/* ═══════════════ 移动端 / 小屏 ═══════════════ */
+@media (max-width: 860px) {
+  .pl-stage { width: min(66vh, 78vw, 340px); }
+  .pl-egg { right: -0.5rem; }
+}
+@media (max-width: 480px) {
+  .pl-status { bottom: -2rem; font-size: 0.625rem; letter-spacing: 0.18em; }
+}
+
+/* ═══════════════ prefers-reduced-motion ═══════════════
+   不播粒子动画。JS 会把时间线压到 ~900ms 并跳过 rAF，
+   这里负责把不需要的层直接拿掉。 */
+.preloader.is-reduced .pl-swarm,
+.preloader.is-reduced .pl-obstacles,
+.preloader.is-reduced .pl-grid { opacity: 0.5; animation: none; }
+.preloader.is-reduced .pl-path { opacity: 1; }
+.preloader.is-reduced .pl-node-target .pl-halo { animation: none; opacity: 0.4; }
+.preloader.is-reduced .pl-egg { display: none; }
 
 /* ==== src/styles/motion.css ==== */
 /* ============================================================

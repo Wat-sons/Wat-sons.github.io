@@ -194,6 +194,231 @@
     }, { passive: true });
   }
 
+  /* ═══════════════ Preloader：「An Algorithm Finding Its Way.」 ═══════════════
+     视觉模拟 PSO 的行为（exploration → evaluation → convergence），
+     但不跑真的 PSO，也不出现任何算法名或公式 ——
+     普通访客看到的是一个好看的加载动画，懂算法的人自己会认出来。
+
+     时间线合计约 2.4s（要求 1.8–2.5s）。分五段：
+       INIT → EXPLORE → CONVERGE → PATH FOUND → ENTER PORTFOLIO
+     最后一段把那条路径送到首页标题下划线的**精确位置**，
+     随后 Hero 的下划线在同一位置瞬间就位 —— 视觉上是同一条线，不是切页。 */
+  function setupPreloader() {
+    var pl = document.getElementById("preloader");
+    // 注意：本文件顶部的 doc 是 documentElement 的别名（var doc = document.documentElement），
+    // 不是 document。这里要用真正的 document，别再写 doc.documentElement。
+    var root = document.documentElement;
+    if (!pl || !root.classList.contains("is-booting")) return;
+
+    var stage = pl.querySelector(".pl-stage");
+    var swarm = pl.querySelector(".pl-swarm");
+    var pathEl = pl.querySelector(".pl-path");
+    var statusEl = pl.querySelector("[data-pl-status]");
+    var NS = "http://www.w3.org/2000/svg";
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // 时间线（ms）。合计约 2.4s（要求 1.8–2.5s，上限 3s）。
+    // 收敛段给足 700ms —— 粒子要真的"游"过去，不能瞬移到位。
+    var T = reduce
+      ? { explore: 0, converge: 120, found: 240, draw: 250, enter: 480, exit: 660, end: 860 }
+      : { explore: 150, converge: 650, found: 1450, draw: 1520, enter: 1900, exit: 2200, end: 2420 };
+
+    var START = [10, 88], TARGET = [88, 12];
+    // 一个"看起来像解、其实不是"的假吸引子：让一部分粒子先往错的方向走
+    var DECOY = [64, 76];
+
+    /* 障碍物直接从 DOM 读 —— 标记里怎么写这里就怎么用，避免两处维护。
+       （preloader.mjs 里的形状就是唯一事实来源） */
+    var OBST = [];
+    Array.prototype.forEach.call(pl.querySelectorAll(".pl-obstacles > *"), function (n) {
+      var b;
+      try { b = n.getBBox(); } catch (e) { return; }
+      if (b && b.width > 0) OBST.push({ x: b.x, y: b.y, w: b.width, h: b.height });
+    });
+
+    /* ---------- 粒子数量：按视口宽度 + CPU 核数降级，保证 60fps ---------- */
+    var base = window.innerWidth <= 720 ? 10 : window.innerWidth <= 1080 ? 14 : 24;
+    var cores = navigator.hardwareConcurrency || 4;
+    var N = reduce ? 0 : (cores <= 4 ? Math.round(base * 0.6) : base);
+
+    var parts = [];
+    var raf = 0, t0 = 0, timers = [];
+    var phase = 0;              // 0 = 探索，1 = 收敛（决定拉力与限速）
+    var at = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
+    var setStatus = function (s) { if (statusEl) statusEl.textContent = s; };
+
+    /* ---------- 建粒子 ---------- */
+    function build() {
+      for (var i = 0; i < N; i++) {
+        var el = document.createElementNS(NS, "circle");
+        el.setAttribute("class", "pl-particle");
+        el.setAttribute("r", "0.85");
+        var tr = document.createElementNS(NS, "polyline");
+        tr.setAttribute("class", "pl-trail");
+        swarm.appendChild(tr);
+        swarm.appendChild(el);
+        parts.push({
+          x: START[0] + (Math.random() - 0.5) * 14,
+          y: START[1] + (Math.random() - 0.5) * 14,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: (Math.random() - 0.5) * 0.6,
+          goal: Math.random() < 0.32 ? DECOY : TARGET,   // 三成走错方向
+          trail: [],
+          len: 2,
+          el: el, tr: tr
+        });
+      }
+    }
+
+    /* ---------- 一帧 ---------- */
+    function step() {
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        /* 简化的 PSO 更新式：惯性 + 朝吸引子的拉力 + 一点噪声。
+           只在视觉上成立，不追求数值正确 —— 这一整个动画是"视觉模拟算法行为"，
+           不是科研演示，页面上也不会出现任何算法名字或公式。
+
+           参数是调出来的，不是抄来的：k 太大粒子会瞬移到位（1 帧跨半张图），
+           所以取到终端速度约 1.9 单位/帧 —— 横穿 100 单位的空间要 ~50 帧。 */
+        var k = phase ? 0.0034 : 0.0010;
+        p.vx = p.vx * 0.94 + (p.goal[0] - p.x) * k + (Math.random() - 0.5) * 0.12;
+        p.vy = p.vy * 0.94 + (p.goal[1] - p.y) * k + (Math.random() - 0.5) * 0.12;
+
+        // 限速：没有这个的话粒子会拖着一条直线冲过去，很廉价。
+        // 收敛段放到 2.8，让它们在 PATH FOUND 之前**真的能走到目标**。
+        var VMAX = phase ? 2.8 : 1.4;
+        var sp = Math.hypot(p.vx, p.vy);
+        if (sp > VMAX) { p.vx = p.vx / sp * VMAX; p.vy = p.vy / sp * VMAX; }
+
+        // 贴近目标时加一点斥力 —— 让它们**环绕**目标，而不是塌缩成一个点
+        var ddx = p.x - TARGET[0], ddy = p.y - TARGET[1];
+        var dd = Math.hypot(ddx, ddy);
+        if (dd < 5 && dd > 0.01) { p.vx += ddx / dd * 0.05; p.vy += ddy / dd * 0.05; }
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // 越界回弹
+        if (p.x < 3 || p.x > 97) { p.vx *= -0.6; p.x = Math.min(97, Math.max(3, p.x)); }
+        if (p.y < 3 || p.y > 97) { p.vy *= -0.6; p.y = Math.min(97, Math.max(3, p.y)); }
+
+        // 障碍物：推出去并损失速度 —— 视觉上就是"被挡住、绕开"
+        for (var j = 0; j < OBST.length; j++) {
+          var o = OBST[j];
+          if (p.x > o.x - 1.6 && p.x < o.x + o.w + 1.6 && p.y > o.y - 1.6 && p.y < o.y + o.h + 1.6) {
+            var dx = p.x - (o.x + o.w / 2), dy = p.y - (o.y + o.h / 2);
+            if (Math.abs(dx) / o.w > Math.abs(dy) / o.h) { p.vx = Math.abs(p.vx) * Math.sign(dx || 1); p.x += Math.sign(dx || 1) * 0.9; }
+            else { p.vy = Math.abs(p.vy) * Math.sign(dy || 1); p.y += Math.sign(dy || 1) * 0.9; }
+          }
+        }
+
+        // 拖尾：收敛阶段变长，"路径"就是这么显出来的
+        p.trail.push(p.x, p.y);
+        while (p.trail.length > p.len * 2) p.trail.splice(0, 2);
+
+        var pts = "";
+        for (var q = 0; q < p.trail.length; q += 2) pts += p.trail[q].toFixed(1) + "," + p.trail[q + 1].toFixed(1) + " ";
+        p.tr.setAttribute("points", pts);
+        p.el.setAttribute("cx", p.x.toFixed(1));
+        p.el.setAttribute("cy", p.y.toFixed(1));
+      }
+    }
+
+    function loop(now) {
+      if (!t0) t0 = now;
+      step();
+      if (now - t0 < T.found) raf = requestAnimationFrame(loop);
+    }
+
+    /* ---------- 量出首页下划线的位置 ---------- */
+    // is-booting 期间 Hero 是 visibility:hidden（保留布局），
+    // 所以这里量到的是文字的**最终**位置，不是被 transform 推开的位置。
+    function measure() {
+      var mark = document.querySelector(".hero .display .reveal-line:last-child .mark");
+      if (!mark) return false;
+      var r = mark.getBoundingClientRect();
+      if (!r.width) return false;
+      var fs = parseFloat(getComputedStyle(mark).fontSize) || 100;
+      var hgt = Math.max(2, fs * 0.055);
+      pl.style.setProperty("--pl-x", r.left + "px");
+      pl.style.setProperty("--pl-y", (r.bottom - fs * 0.015 - hgt) + "px");
+      pl.style.setProperty("--pl-w", r.width + "px");
+      pl.style.setProperty("--pl-h", hgt + "px");
+      return true;
+    }
+
+    function cleanup() {
+      for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]);
+      timers.length = 0;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    }
+
+    /* ---------- 收尾：摘掉 is-booting ----------
+       这一步同时做三件事：preloader 隐藏（CSS 只在 is-booting 下显示）、
+       Hero 从 visibility:hidden 恢复、下划线在同一位置就位。
+       不需要手动删 DOM，也不需要清 CSS 动画。 */
+    function finish() {
+      cleanup();
+      measure();                       // 再量一次，防止中途改过窗口尺寸
+      root.classList.remove("is-booting");
+      root.classList.add("is-ready");
+    }
+
+    /* ---------- 各阶段 ---------- */
+    at(T.explore, function () { setStatus("SEARCHING"); });
+
+    at(T.converge, function () {
+      setStatus("CONVERGING");
+      phase = 1;
+      swarm.classList.add("is-converging");
+      // 群体最优切换到真目标：粒子开始排成一条路线
+      for (var i = 0; i < parts.length; i++) { parts[i].goal = TARGET; parts[i].len = 13; }
+      // 把最靠前的几个点亮成强调色 → "最优个体正在领路"
+      parts.slice().sort(function (a, b) {
+        return (Math.hypot(a.x - TARGET[0], a.y - TARGET[1])) - (Math.hypot(b.x - TARGET[0], b.y - TARGET[1]));
+      }).slice(0, Math.max(2, Math.round(N * 0.25))).forEach(function (p) {
+        p.el.classList.add("is-best");
+      });
+    });
+
+    at(T.found, function () {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+      swarm.classList.add("is-done");     // 粒子淡出
+      setStatus("PATH FOUND");
+      stage.classList.add("is-found");
+    });
+
+    // 路径从起点画到终点
+    at(T.draw, function () {
+      if (!pathEl) return;
+      var L;
+      try { L = pathEl.getTotalLength(); } catch (e) { L = 0; }
+      if (!L) return;
+      pathEl.style.strokeDasharray = L;
+      pathEl.style.strokeDashoffset = L;
+      pathEl.style.transition = "stroke-dashoffset " + (reduce ? 200 : 560) + "ms var(--ease)";
+      // 下一帧再改，确保浏览器先认下 dashoffset 的起始值
+      requestAnimationFrame(function () { pathEl.style.strokeDashoffset = 0; });
+    });
+
+    at(T.enter, function () {
+      measure();
+      pl.classList.add("is-enter");       // 空间化开 + 那条线拉到下划线该在的位置
+    });
+
+    at(T.exit, function () { pl.classList.add("is-exit"); });
+    at(T.end, finish);
+
+    /* ---------- 起跑 ---------- */
+    if (reduce) pl.classList.add("is-reduced");
+    if (N) {
+      build();
+      requestAnimationFrame(loop);
+    }
+  }
+
   /* ------------------------------------------------------------------ */
   setupReveal();
   setupCounters();
@@ -204,4 +429,13 @@
 
   // 告诉 <head> 里的守卫脚本：JS 一切正常，可以保持入场动画
   window.__SITE_READY = true;
+
+  // Preloader 放在最后起：前面都装好了再开始放动画，
+  // 而且它内部出错也不会影响上面任何一个系统。
+  try {
+    setupPreloader();
+  } catch (e) {
+    document.documentElement.classList.remove("is-booting");
+    if (window.console) console.warn("preloader skipped:", e);
+  }
 })();

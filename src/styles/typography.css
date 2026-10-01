@@ -35,6 +35,16 @@
 }
 @keyframes mark-in { to { transform: scaleX(1); } }
 
+/* 有 Preloader 时，下划线不再自己画。
+   Preloader 最后会让它那条路径飞到这个下划线的**精确位置**并画满，
+   然后在这里瞬间就位（scaleX(1)），视觉上是同一条线继续存在 —— 不是切页。
+   没装 Preloader（无 JS / 不支持）时，上面那条 mark-in 照常播。 */
+html.js.is-booting .display .reveal-line:last-child .mark::after { animation: none; }
+html.js.is-ready .display .reveal-line:last-child .mark::after {
+  animation: none;
+  transform: scaleX(1);
+}
+
 /* ---------- 幽灵区块标题 ---------- */
 /* 全站的节奏锚点：巨型、极低对比、被左边缘裁掉一截 */
 .ghost {

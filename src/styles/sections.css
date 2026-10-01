@@ -114,16 +114,30 @@
 .reveal-line > span { display: block; }
 
 .hero .reveal-line > span {
-  transform: translateY(105%);
+  transform: none;
   animation: line-up 1100ms var(--ease) forwards;
 }
 .hero .reveal-line:nth-child(1) > span { animation-delay: 120ms; }
 .hero .reveal-line:nth-child(2) > span { animation-delay: 240ms; }
 .hero .reveal-line:nth-child(3) > span { animation-delay: 360ms; }
-@keyframes line-up { to { transform: translateY(0); } }
+@keyframes line-up {
+  from { transform: translateY(105%); }
+  to   { transform: translateY(0); }
+}
+
+/* Preloader 在跑的时候：Hero 整体藏起来，并且**不做位移动画**。
+   用 visibility 而不是 transform 是有原因的 ——
+   preloader 要精确量出最后一行下划线该在的位置，
+   而 visibility:hidden 的元素仍然保留最终布局，量出来是准的。 */
+html.js.is-booting .hero { visibility: hidden; }
+html.js.is-booting .hero .reveal-line > span { animation: none; }
 
 .hero-fade { opacity: 0; animation: fade-in 900ms var(--ease) 700ms forwards; }
-@keyframes fade-in { to { opacity: 1; } }
+html.js.is-booting .hero-fade { animation: none; }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
 /* ═══════════════ ABOUT ═══════════════ */
 .about-lead { font-size: clamp(1.25rem, 2.6vw, 1.875rem); line-height: 1.45; letter-spacing: -0.015em; }

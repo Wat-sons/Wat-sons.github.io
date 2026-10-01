@@ -143,6 +143,55 @@ Token 在 <https://github.com/settings/tokens/new?scopes=repo,workflow&descripti
 
 ---
 
+## Preloader —「An Algorithm Finding Its Way.」
+
+页面打开时不是「加载」，而是**算法在一个抽象空间里找路**：粒子探索 → 收敛 → PATH FOUND
+→ 那条路径变形成首页标题下的强调色横线。让访客的感觉是「这个首页就是算法找到的结果」。
+
+```
+INIT (QUCHEN + 坐标空间)        0 ─ 150ms
+EXPLORE (SEARCHING…，粒子散开)  150 ─ 650ms
+CONVERGE (CONVERGING…，拖尾拉长) 650 ─ 1450ms
+PATH FOUND (路径画出 + 見つけた。) 1450 ─ 1900ms
+ENTER (路径→横线→Hero)          1900 ─ 2420ms
+```
+
+**设计上的几个决定**
+
+| 决定 | 原因 |
+|---|---|
+| 暗底 `#0B0B0C`，不是规格里写的米白 `#F5F5F2` | 亮底 Loading 切到暗色 Hero 会闪一下，直接违背「两者必须连续」这条核心要求 |
+| Accent 沿用青柠 `#D8FF4A`，没有引入电光蓝 | 全站只有一个 accent 是上一轮定下的规则；加蓝立刻变成两色杂烩 |
+| 不出现任何算法名字、公式、参数 | 规格要求「不要做成科研论文演示」。懂的人看到「探索→收敛→最优路径」自己会认出来 |
+| 最终路径是**手工设计的贝塞尔曲线**，不是跑出来的 | 这是视觉模拟，不是科研。手工设计换来每次打开都好看、且必然避开障碍 |
+| 粒子跑的是简化的 PSO 更新式（惯性 + 拉力 + 噪声 + 限速） | 真的 PSO 在这个尺度上没有视觉差别，还更贵。参数是调出来的：k 太大粒子会 1 帧跨半张图 |
+| 收敛段给足 800ms、限速放到 2.8 | 否则粒子还没游到目标就 PATH FOUND 了，「找到路径」说服力不足 |
+| 贴到目标时加斥力 | 不加的话 24 个粒子会塌缩成一个点，很难看 |
+
+**Loading 与 Hero 怎么接起来的（最关键的一段）**
+
+不是「Loading → 黑屏 → 首页」，而是**同一条线**：
+
+1. `is-booting` 期间 Hero 用 `visibility: hidden` 藏起来 —— **不能用 transform**，
+   因为 preloader 要精确量出最后一行下划线该在的位置，而 `visibility:hidden`
+   的元素仍保留最终布局，量出来是准的；
+2. ENTER 阶段把那条路径送到量出来的坐标（写进 `--pl-x/y/w/h`），拉成一条横线；
+3. 收尾时摘掉 `is-booting` → preloader 消失、Hero 恢复可见，
+   同时下划线用 `transform: scaleX(1)` 在同一位置**瞬间就位**（不再自己播 `mark-in`）。
+   视觉上就是同一条线继续存在。
+
+`window.__SITE_READY` 照旧在装好所有系统后立刻置位，preloader 单独 `try/catch` 包着，
+它挂掉不影响任何一个既有系统。
+
+**降级路径（三条都实测过）**
+
+| 场景 | 行为 |
+|---|---|
+| `prefers-reduced-motion: reduce` | 仍然走一遍，但压到 ~0.9s、不跑 rAF、粒子数 0、不出现彩蛋 |
+| JS 完全禁用 | `is-booting` 从没被加上 → preloader `display:none` → 页面直接可读 |
+| 移动端 / 低配 | 粒子 24 → 14（≤1080px）→ 10（≤720px）；`hardwareConcurrency ≤ 4` 再砍 40% |
+| 兜底 | 2.5s 解除入场隐藏；**3.6s 无条件撤掉 preloader**，防止动画卡住盖住整页 |
+
 ## 已知取舍
 
 | 取舍 | 原因 |

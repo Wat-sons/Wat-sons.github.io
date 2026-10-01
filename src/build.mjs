@@ -15,6 +15,7 @@ import { fileURLToPath } from "node:url";
 import { esc, embedJson } from "./lib/html.mjs";
 import { topbar } from "./sections/topbar.mjs";
 import { hero } from "./sections/hero.mjs";
+import { preloader } from "./lib/preloader.mjs";
 import { work } from "./sections/work.mjs";
 import { competition } from "./sections/competition.mjs";
 import { timeline } from "./sections/timeline.mjs";
@@ -118,17 +119,26 @@ const html = `<!doctype html>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/space-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/style.css">
-<!-- 渐进增强：只有 JS 真跑起来才隐藏待入场元素；app.js 若加载失败，2.5s 后自动解除隐藏 -->
+<!-- 渐进增强：只有 JS 真跑起来才隐藏待入场元素；app.js 若加载失败，2.5s 后自动解除隐藏。
+     Preloader 同理 —— is-booting 只在这里加，所以「无 JS」时它根本不会出现。
+     两道兜底：2.5s 解除入场隐藏；3.6s 无条件撤掉 Preloader（防止动画卡住盖住整页）。 -->
 <script>
 (function () {
   var d = document.documentElement;
   d.classList.add("js");
+  var reduce = false;
+  try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+  // 减少动效时仍然走一遍简化版（START → PATH FOUND → 首页），但不跑粒子
+  if (d.classList && typeof requestAnimationFrame === "function") d.classList.add("is-booting");
+  d.setAttribute("data-reduced", reduce ? "1" : "0");
   setTimeout(function () { if (!window.__SITE_READY) d.classList.remove("js"); }, 2500);
+  setTimeout(function () { d.classList.remove("is-booting"); }, 3600);
 })();
 </script>
 </head>
 <body>
 <a class="skip-link" href="#work">跳到主要内容</a>
+${preloader()}
 ${topbar({ profile, year })}
 
 <main>
@@ -152,7 +162,7 @@ await writeFile(join(ROOT, "index.html"), html, "utf8");
 
 /* ---------- 4. 样式：按固定顺序拼接 ---------- */
 const CSS_ORDER = ["tokens.css", "base.css", "typography.css", "layout.css",
-                   "sections.css", "motion.css", "print.css"];
+                   "sections.css", "preloader.css", "motion.css", "print.css"];
 const cssParts = [];
 for (const f of CSS_ORDER) {
   cssParts.push(`/* ==== src/styles/${f} ==== */\n` + await readFile(join(SRC, "styles", f), "utf8"));

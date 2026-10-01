@@ -61,6 +61,19 @@ async function load(url, { scroll = true } = {}) {
   await send('Page.navigate', { url });
   await p;
   await sleep(1200);
+  // 等 Preloader 收尾再往下走 —— 它跑完之前量到的是加载动画期间的布局，
+  // 会得到一堆假阳性（首屏被 visibility:hidden 藏起来等）。
+  // 正常 ~2.4s 结束；这里最多等 5s，超时也继续，由下面的断言去报错。
+  let booted = false;
+  for (let i = 0; i < 50; i++) {
+    const st = await send('Runtime.evaluate', {
+      expression: `!document.documentElement.classList.contains('is-booting')`,
+      returnByValue: true,
+    });
+    if (st?.result?.value) { booted = true; break; }
+    await sleep(100);
+  }
+  if (!booted) console.log('  ! Preloader 未在 5s 内收尾');
   if (scroll) {
     await send('Runtime.evaluate', {
       expression: `(async () => {
@@ -142,7 +155,15 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   hasPipeline: /BUILD PIPELINE/.test(document.body.innerHTML),
   textOnlyItems: document.querySelectorAll('.work-item.is-textonly').length,
   emptyMediaBoxes: [...document.querySelectorAll('.work-media')].filter(v => !v.firstElementChild).length,
-  hasResearch: /科研方向|WHAT I'M EXPLORING/.test(document.body.innerHTML)
+  hasResearch: /科研方向|WHAT I'M EXPLORING/.test(document.body.innerHTML),
+  preloader: !!document.getElementById('preloader'),
+  preBooted: !document.documentElement.classList.contains('is-booting'),
+  preReady: document.documentElement.classList.contains('is-ready'),
+  preParticles: document.querySelectorAll('.pl-particle').length,
+  preObstacles: document.querySelectorAll('.pl-obstacles > *').length,
+  prePath: !!document.querySelector('.pl-path'),
+  heroVisible: getComputedStyle(document.querySelector('.hero')).visibility === 'visible',
+  markOn: getComputedStyle(document.querySelector('.display .reveal-line:last-child .mark'), '::after').transform
 })`));
 check('位图只有那两张呼应插画（首屏 + 页尾）',
   r.imgs === 2 && r.sceneImgs === 2 && r.abroadImgs === 0,
@@ -161,6 +182,17 @@ check('已移除构建流水线图', r.hasPipeline === false);
 check('无视觉素材的项目退成通栏文字', r.textOnlyItems === 1, `${r.textOnlyItems} 个`);
 check('没有空图位', r.emptyMediaBoxes === 0, `${r.emptyMediaBoxes} 个空框`);
 check('已下线科研方向区块', r.hasResearch === false);
+
+/* ---------- Preloader ---------- */
+check('Preloader 标记完整（粒子层 / 障碍物 / 路径）',
+  r.preloader && r.preObstacles === 4 && r.prePath,
+  `容器=${r.preloader} 障碍物=${r.preObstacles} 路径=${r.prePath}`);
+check('Preloader 已收尾且不残留加载锁',
+  r.preBooted === true && r.preReady === true,
+  `booting 已解除=${r.preBooted} is-ready=${r.preReady}`);
+check('Preloader 结束后 Hero 恢复可见', r.heroVisible === true);
+check('Hero 下划线已接上（scaleX 满格，不是 0）',
+  !/matrix\(0,/.test(String(r.markOn)), String(r.markOn).slice(0, 40));
 check('奖项行已渲染', r.awards >= 20, `${r.awards} 行`);
 
 /* ---------- 3. 隐私：页面 + 公开 JSON ---------- */

@@ -16,17 +16,70 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/space-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/style.css">
-<!-- 渐进增强：只有 JS 真跑起来才隐藏待入场元素；app.js 若加载失败，2.5s 后自动解除隐藏 -->
+<!-- 渐进增强：只有 JS 真跑起来才隐藏待入场元素；app.js 若加载失败，2.5s 后自动解除隐藏。
+     Preloader 同理 —— is-booting 只在这里加，所以「无 JS」时它根本不会出现。
+     两道兜底：2.5s 解除入场隐藏；3.6s 无条件撤掉 Preloader（防止动画卡住盖住整页）。 -->
 <script>
 (function () {
   var d = document.documentElement;
   d.classList.add("js");
+  var reduce = false;
+  try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+  // 减少动效时仍然走一遍简化版（START → PATH FOUND → 首页），但不跑粒子
+  if (d.classList && typeof requestAnimationFrame === "function") d.classList.add("is-booting");
+  d.setAttribute("data-reduced", reduce ? "1" : "0");
   setTimeout(function () { if (!window.__SITE_READY) d.classList.remove("js"); }, 2500);
+  setTimeout(function () { d.classList.remove("is-booting"); }, 3600);
 })();
 </script>
 </head>
 <body>
 <a class="skip-link" href="#work">跳到主要内容</a>
+
+<div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="正在为这个页面寻找路径">
+  <div class="pl-inner">
+    <p class="pl-word">QUCHEN</p>
+
+    <div class="pl-stage">
+      <svg class="pl-space" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <pattern id="pl-grid" width="10" height="10" patternUnits="userSpaceOnUse">
+            <path d="M 10 0 H 0 V 10" fill="none" stroke="var(--line)" stroke-width="0.16"/>
+          </pattern>
+        </defs>
+
+        <rect class="pl-grid" x="0" y="0" width="100" height="100" fill="url(#pl-grid)"/>
+
+        <g class="pl-obstacles"><circle cx="32" cy="64" r="10"/><rect x="49" y="33" width="18" height="18" rx="4"/><circle cx="76" cy="66" r="8"/><rect x="14" y="34" width="18" height="6" rx="3"/></g>
+
+        <path class="pl-path" d="M 10 88 C 20 86 26 80 34 78 C 42 76 40 66 44 58 C 48 50 42 44 46 34 C 50 24 66 22 88 12"/>
+
+        <g class="pl-node pl-node-start">
+          <circle cx="10" cy="88" r="2.2"/>
+        </g>
+        <g class="pl-node pl-node-target">
+          <circle class="pl-ring" cx="88" cy="12" r="2.2"/>
+          <circle class="pl-halo" cx="88" cy="12" r="2.2"/>
+        </g>
+
+        <!-- 粒子层：由 main.js 注入并逐帧更新 -->
+        <g class="pl-swarm"></g>
+
+        <text class="pl-tag" x="10" y="95.5" text-anchor="start">START</text>
+        <text class="pl-tag" x="88" y="6.5" text-anchor="end">TARGET</text>
+      </svg>
+
+      <p class="pl-verdict"><b>PATH FOUND</b><i>OPTIMAL PATH</i></p>
+      <p class="pl-egg" lang="ja">見つけた。</p>
+      <p class="pl-status" data-pl-status>INITIALIZING ALGORITHM</p>
+    </div>
+  </div>
+
+  <!-- Loading 的最后一个动作：路径收敛成一条横线，
+       并精确落到首页标题下划线的位置 —— 随后 Hero 的下划线从同一起点拉满，
+       视觉上是「同一条线」，不是「切了个页」。坐标由 JS 量出来写进 CSS 变量。 -->
+  <div class="pl-line" aria-hidden="true"></div>
+</div>
 
 <div class="scroll-progress" aria-hidden="true"></div>
 <header class="topbar">
