@@ -271,7 +271,10 @@ const BIN_RE = /\.(png|jpe?g|webp|gif|pdf|docx?|xlsx?|zip)$/i;
 let tracked = null;
 try {
   const { execFileSync } = await import('node:child_process');
-  tracked = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files'],
+  // --others --exclude-standard：把「未跟踪但不被 .gitignore 忽略」的文件也算进来。
+  // 只用 ls-files 会漏掉刚生成、还没 commit 的文件 —— 自检跑在 commit 之前，
+  // 所以第一次提交必然绕过检查。这个坑实际踩到过：两个没被引用的图混进了公开仓库。
+  tracked = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files', '--cached', '--others', '--exclude-standard'],
     { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
     .split('\n').map((s) => s.trim()).filter(Boolean);
 } catch {
@@ -280,7 +283,7 @@ try {
 if (tracked) {
   const strays = tracked.filter((f) => BIN_RE.test(f) && !ALLOWED_BIN.includes(f));
   for (const f of strays) problems.push(`公开仓库里跟踪了二进制文件：${f} —— 加进 .gitignore 并 git rm --cached`);
-  if (!strays.length) notes.push(`仓库内二进制检查：${tracked.length} 个跟踪文件，除图标与字体外无二进制`);
+  if (!strays.length) notes.push(`仓库内二进制检查：${tracked.length} 个文件（含待提交），除白名单 ${ALLOWED_BIN.length} 项外无二进制`);
 }
 
 // 不被 .gitignore 挡住的敏感目录 = 会被推上公开仓库

@@ -73,7 +73,7 @@ def apple_icon(size=180):
     return im.resize((size, size), Image.LANCZOS)
 
 
-for s in (16, 32, 48):
+for s in (16, 32):   # 只生成 HTML 真正引用到的两个尺寸
     p = os.path.join(OUT, f"favicon-{s}.png")
     icon(s).save(p, "PNG", optimize=True)
     print(f"  favicon-{s}.png  {os.path.getsize(p)} B")
