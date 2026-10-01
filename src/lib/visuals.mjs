@@ -31,8 +31,14 @@ export function rating(cf, w = 880, h = 605) {
   const handles = (cf?.codeforces?.handles ?? []).filter((x) => (x.ratingHistory ?? []).length > 1);
   if (!handles.length) return "";
 
-  // 右侧留够放段位名（最长 "international master"），否则会被 .work-media 的 overflow:hidden 裁掉
-  const pad = { t: 168, r: 142, b: 54, l: 58 };
+  /* ---- 内边距 M ----
+     容器 .work-media 有 border-radius + overflow:hidden，内容从 x=0 铺过去的话，
+     左上角的 "CODEFORCES" 会被圆角吃掉开头几个字母，右侧段位名也会顶到边框。
+     所以所有内容都退到 M 之内，四周留出呼吸位。 */
+  const M = 30;
+
+  // 右侧要留够放段位名（最长 "international master"），并且必须落在 w-M 以内
+  const pad = { t: M + 146, r: 160, b: 64, l: M + 54 };
   const all = handles.flatMap((x) => x.ratingHistory);
   const t0 = Math.min(...all.map((p) => Date.parse(p.at)));
   const t1 = Math.max(...all.map((p) => Date.parse(p.at)));
@@ -67,7 +73,7 @@ export function rating(cf, w = 880, h = 605) {
     if (RANKS.has(r)) {
       grid += `
       <text class="axis" x="${w - pad.r + 10}" y="${(y + 4).toFixed(1)}" text-anchor="start"
-            style="font-size:10px;letter-spacing:.04em">${RANKS.get(r)}</text>`;
+            style="font-size:9.6px;letter-spacing:0">${RANKS.get(r)}</text>`;
     }
   }
 
@@ -84,13 +90,13 @@ export function rating(cf, w = 880, h = 605) {
   // 顶部数字摘要：先给结论，再看曲线。
   // 一行一个账号 —— 「handle / 当前 rating / max / 段位」，不做多列对齐，避免列宽错位。
   const summary = handles.map((hd, i) => {
-    const y = 58 + i * 34;
+    const y = M + 58 + i * 34;
     const color = i === 0 ? ACCENT : DIM;
     return `
-      <circle cx="5" cy="${y - 4}" r="4" fill="${color}"/>
-      <text x="22" y="${y}" fill="${color}" font-family="var(--font-mono)" font-size="15">${esc(hd.handle)}</text>
-      <text x="190" y="${y}" fill="var(--fg)" font-family="var(--font-mono)" font-size="16" font-weight="600">${esc(num(hd.rating))}</text>
-      <text x="268" y="${y}" fill="${MUTE}" font-family="var(--font-mono)" font-size="12.5">· max ${esc(num(hd.maxRating))} · ${esc(hd.maxRank ?? "")}</text>`;
+      <circle cx="${M + 5}" cy="${y - 4}" r="4" fill="${color}"/>
+      <text x="${M + 22}" y="${y}" fill="${color}" font-family="var(--font-mono)" font-size="15">${esc(hd.handle)}</text>
+      <text x="${M + 190}" y="${y}" fill="var(--fg)" font-family="var(--font-mono)" font-size="16" font-weight="600">${esc(num(hd.rating))}</text>
+      <text x="${M + 268}" y="${y}" fill="${MUTE}" font-family="var(--font-mono)" font-size="12.5">· max ${esc(num(hd.maxRating))} · ${esc(hd.maxRank ?? "")}</text>`;
   }).join("");
 
   const fmt = (t) => {
@@ -98,15 +104,15 @@ export function rating(cf, w = 880, h = 605) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
   };
   const xLabels = [t0, (t0 + t1) / 2, t1].map((t, i) => `
-    <text class="axis" x="${X(t).toFixed(1)}" y="${h - 16}" text-anchor="${i === 0 ? "start" : i === 2 ? "end" : "middle"}">${fmt(t)}</text>`).join("");
+    <text class="axis" x="${X(t).toFixed(1)}" y="${h - M - 10}" text-anchor="${i === 0 ? "start" : i === 2 ? "end" : "middle"}">${fmt(t)}</text>`).join("");
 
   // 汇总提交数（两个账号相加），写在标题行里 —— 数字本身就是视觉元素
   const subs = Object.values(cf?.codeforces?.stats?.submissions ?? {}).reduce((a, b) => a + b, 0);
 
   return wrap(w, h, `
-    <text x="0" y="20" fill="${MUTE}" font-family="var(--font-mono)" font-size="11" letter-spacing="1.8">CODEFORCES RATING · ${all.length} RATED CONTESTS · ${esc(num(subs))} SUBMISSIONS</text>
+    <text x="${M}" y="${M + 16}" fill="${MUTE}" font-family="var(--font-mono)" font-size="11" letter-spacing="1.8">CODEFORCES RATING · ${all.length} RATED CONTESTS · ${esc(num(subs))} SUBMISSIONS</text>
     ${summary}
-    <line x1="0" y1="120" x2="${w}" y2="120" stroke="${LINE}"/>
+    <line x1="${M}" y1="${M + 120}" x2="${w - M}" y2="${M + 120}" stroke="${LINE}"/>
     ${grid}
     ${series}
     <line x1="${pad.l}" y1="${h - pad.b}" x2="${w - pad.r}" y2="${h - pad.b}" stroke="${LINE}"/>
