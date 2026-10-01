@@ -14,7 +14,8 @@ const OUT = resolve(arg("out", "预览/pl"));
 const WIDTH = parseInt(arg("width", "1440"), 10);
 const HEIGHT = parseInt(arg("height", "900"), 10);
 const DPR = parseFloat(arg("dpr", "1"));
-const SHOTS = (arg("at", "120,420,900,1200,1500,1900,2150,2450,3000")).split(",").map(Number);
+const SHOTS = argv.includes("--phases") ? null
+  : (arg("at", "120,420,900,1200,1500,1900,2150,2450,3000")).split(",").map(Number);
 const PORT = parseInt(arg("port", "9341"), 10);
 const MOBILE = argv.includes("--mobile");
 const CHROME = ["C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -54,10 +55,39 @@ const loaded = once("Page.loadEventFired");
 await send("Page.navigate", { url: URL_ });
 await loaded;
 
+// 锚点：等页面自己报告动画起始时刻（window.__PL.startedAt）。
+// 之前用 loadEventFired 起算，本地就偏了近 1 秒，每个阶段都标错位置。
+for (let i = 0; i < 400; i++) {
+  const r = await send("Runtime.evaluate", { expression: "window.__PL ? window.__PL.startedAt : 0", returnByValue: true });
+  if (r?.result?.value) break;
+  await sleep(10);
+}
+const info = await send("Runtime.evaluate", { expression: "JSON.stringify(window.__PL||null)", returnByValue: true });
+console.log("  页面报告的动画参数:", info?.result?.value);
+const PL = JSON.parse(info?.result?.value || "{}");
+
+/* --phases：按页面自己报的 shift 反推四个阶段的**确切**时刻。
+   at(ms) 实际在 ms - shift 触发，所以阶段时刻 = 配方值 - shift。
+   这样不管本次加载多慢、补偿多少，拍到的永远是真正的阶段画面，
+   而不是"差不多那个时间点"的猜。 */
+const PHASES = SHOTS || [
+  Math.max(20, 40 - (PL.shift || 0)),                    // EXPLORE 刚起
+  Math.max(60, 900 - (PL.shift || 0)),                   // CONVERGE 中段
+  Math.max(80, 1500 - (PL.shift || 0)),                  // PATH FOUND 路径刚画完
+  Math.max(100, 2000 - (PL.shift || 0)),                 // ENTER 横向拉伸中
+];
+if (!SHOTS) console.log("  四个阶段时刻:", PHASES.join(", "), "ms");
+
+// 之后按页面时钟等待，而不是按墙钟 —— CDP 往返开销不再累积成偏差
+const pageNow = async () => (await send("Runtime.evaluate", { expression: "Math.round(performance.now())", returnByValue: true }))?.result?.value || 0;
+const startedAt = (await send("Runtime.evaluate", { expression: "window.__PL ? window.__PL.startedAt : Math.round(performance.now())", returnByValue: true }))?.result?.value || 0;
+
 const t0 = Date.now();
-for (const at of SHOTS) {
-  const wait = at - (Date.now() - t0);
-  if (wait > 0) await sleep(wait);
+for (const at of PHASES) {
+  for (let i = 0; i < 400; i++) {
+    if ((await pageNow()) - startedAt >= at) break;
+    await sleep(8);
+  }
   const r = await send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
   if (!r || !r.data) { console.log(`  ${at}ms 截图失败`); continue; }
   const f = join(OUT, `t${String(at).padStart(4, "0")}.png`);

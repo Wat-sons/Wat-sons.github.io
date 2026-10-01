@@ -246,9 +246,19 @@
        （关键 CSS 已经内联，所以首帧就是 Preloader，量到的 lag 是真实的等待） */
     var lag = 0;
     try { lag = performance.now(); } catch (e) {}
-    // 加载本来就够久了（>2.6s）就不再完整播放，只走一段短的交接
+    /* grace：这段不算「等待」。
+       关键 CSS 已经内联，所以从首帧起就有东西在动（QUCHEN / 网格 / 障碍物
+       依次浮现，约 900ms）。这段时间用户是在看动画，不是在干等，
+       扣掉它反而会把 EXPLORE 整段吃掉。只有超出的部分才压缩。 */
+    var GRACE = 700;
     var FAST = lag > 2600;
-    var shift = FAST ? 0 : Math.min(lag, 1500);
+    var shift = FAST ? 0 : Math.max(0, Math.min(lag - GRACE, 1500));
+    // 暴露给 tools/plshot.mjs 与排障用；不含任何用户信息。
+    // startedAt 让截图工具能按**页面自己的时钟**定位，而不是靠 CDP 往返估算。
+    try {
+      window.__PL = { lag: Math.round(lag), shift: Math.round(shift), FAST: FAST,
+                      reduce: reduce, N: N, startedAt: Math.round(performance.now()) };
+    } catch (e) {}
 
     /* 时间线（ms）。正常合计约 2.4s（要求 1.8–2.5s，上限 3s）。
        收敛段给足 800ms —— 粒子要真的"游"过去，不能瞬移到位。 */
