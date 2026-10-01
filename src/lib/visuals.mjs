@@ -31,35 +31,45 @@ export function rating(cf, w = 880, h = 605) {
   const handles = (cf?.codeforces?.handles ?? []).filter((x) => (x.ratingHistory ?? []).length > 1);
   if (!handles.length) return "";
 
-  // 右侧留够位置放段位名（最长 "candidate master"），否则会被 .work-media 的 overflow:hidden 裁掉
-  const pad = { t: 176, r: 128, b: 54, l: 58 };
+  // 右侧留够放段位名（最长 "international master"），否则会被 .work-media 的 overflow:hidden 裁掉
+  const pad = { t: 168, r: 142, b: 54, l: 58 };
   const all = handles.flatMap((x) => x.ratingHistory);
   const t0 = Math.min(...all.map((p) => Date.parse(p.at)));
   const t1 = Math.max(...all.map((p) => Date.parse(p.at)));
-  const rMin = Math.min(...all.map((p) => p.rating));
-  const rMax = Math.max(...all.map((p) => p.rating));
 
-  const yMin = Math.max(0, Math.floor((rMin - 100) / 100) * 100);
-  const yMax = Math.ceil((rMax + 100) / 100) * 100;
+  /* ---- y 轴固定量程，不随数据收缩 ----
+     之前是按数据 min/max 自动算上下界，结果：两个账号第 1 场是 CF 的 provisional
+     评分（405 / 531），把轴一路拉到 300；而 87% 的点其实挤在 1200–2200，只占图高
+     53% —— 下半截空着，真正有内容的区间被压扁。同一份数据换个范围就是另一个斜率，
+     读者根本判断不出「陡」是真实的还是缩放造出来的。
+     现在固定 0 → 2400（Codeforces 段位带的上界）。只有数据真的超过 2400 才向上扩容，
+     那是必要的，不属于「神秘的缩放」。 */
+  const Y_MIN = 0;
+  const Y_MAX = Math.max(2400, Math.ceil((Math.max(...all.map((p) => p.rating)) + 100) / 200) * 200);
 
   const X = (t) => pad.l + ((t - t0) / (t1 - t0 || 1)) * (w - pad.l - pad.r);
-  const Y = (r) => pad.t + (1 - (r - yMin) / (yMax - yMin || 1)) * (h - pad.t - pad.b);
+  const Y = (r) => pad.t + (1 - (r - Y_MIN) / (Y_MAX - Y_MIN || 1)) * (h - pad.t - pad.b);
 
-  const RANKS = [
+  // Codeforces 官方段位分界
+  const RANKS = new Map([
     [1200, "newbie"], [1400, "pupil"], [1600, "specialist"],
-    [1800, "expert"], [2000, "candidate master"], [2200, "master"], [2400, "international master"],
-  ];
+    [1800, "expert"], [2000, "candidate master"], [2200, "master"],
+    [2400, "international master"],
+  ]);
 
-  const grid = RANKS
-    .filter(([r]) => r >= yMin && r <= yMax)
-    .map(([r, name]) => {
-      const y = Y(r);
-      return `
+  // 每 200 一条线，**每条都标数值** —— 轴上不留没有刻度的区域，任何位置都能读出来
+  let grid = "";
+  for (let r = Y_MIN; r <= Y_MAX; r += 200) {
+    const y = Y(r);
+    grid += `
       <line class="grid-line" x1="${pad.l}" y1="${y.toFixed(1)}" x2="${w - pad.r}" y2="${y.toFixed(1)}"/>
-      <text class="axis" x="${pad.l - 10}" y="${(y + 4).toFixed(1)}" text-anchor="end">${r}</text>
+      <text class="axis" x="${pad.l - 10}" y="${(y + 4).toFixed(1)}" text-anchor="end">${r}</text>`;
+    if (RANKS.has(r)) {
+      grid += `
       <text class="axis" x="${w - pad.r + 10}" y="${(y + 4).toFixed(1)}" text-anchor="start"
-            style="font-size:10px;letter-spacing:.04em">${esc(name)}</text>`;
-    }).join("");
+            style="font-size:10px;letter-spacing:.04em">${RANKS.get(r)}</text>`;
+    }
+  }
 
   const series = handles.map((hd, i) => {
     const pts = hd.ratingHistory.map((p) => [X(Date.parse(p.at)), Y(p.rating)]);
