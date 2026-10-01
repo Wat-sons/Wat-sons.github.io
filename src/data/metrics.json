@@ -17,17 +17,17 @@
   ],
 
   "timeline": {
-    "_comment": "PATH SO FAR —— 与 Loading 动画呼应：那边是算法正在找路，这边是我已经走过的路。只写成长与转折，不复述竞赛记录（详细记录在 competitions.json）。每年最多两行正文 + 三个关键词。side 决定内容落在路径的哪一侧，改这里就能翻转版式。文案用英文，跟首屏宣言的语气一致。",
+    "_comment": "PATH SO FAR —— 与 Loading 动画呼应：那边是算法正在找路，这边是我已经走过的路。只写成长与转折，不复述竞赛记录（详细记录在 competitions.json）。每年最多两行正文 + 三个关键词。side 决定内容落在路径的哪一侧，改这里就能翻转版式。【语言规则】全站统一：英文管结构（区块英文副标题、START/COMPETE 这类 mono 标签、技术名词、[2026]、BACK TO TOP），中文管内容（正文、描述、叙事）。所以这里的 intro / lines / next.line 一律中文，只有 tag 与 keys/miles 用英文。",
     "range": "2024 — 2026",
-    "intro": "A few years of algorithms, competitions, and things I decided to build.",
+    "intro": "几年算法、竞赛，以及一些我决定动手做出来的东西。",
     "stops": [
       {
         "year": "2024",
         "tag": "START",
         "side": "left",
         "lines": [
-          "Entered Taiyuan University of Technology.",
-          "Started systematic competitive programming training."
+          "入学太原理工大学人工智能学院。",
+          "开始系统训练算法竞赛，主战场 Codeforces。"
         ],
         "keys": ["AI", "C++", "Algorithms"]
       },
@@ -36,8 +36,8 @@
         "tag": "COMPETE",
         "side": "right",
         "lines": [
-          "First year of serious competition.",
-          "From provincial contests to national finals."
+          "第一年正式参赛。",
+          "从省赛一路打到全国总决赛。"
         ],
         "miles": ["CSP 270", "CCPC × 2", "RAICOM"]
       },
@@ -46,15 +46,15 @@
         "tag": "BUILD",
         "side": "left",
         "lines": [
-          "Competition became more than competition.",
-          "Starting to turn training, data and algorithms into tools."
+          "竞赛不再只是竞赛。",
+          "开始把训练、数据和算法做成能用的工具。"
         ],
         "miles": ["CSP 355", "CF 2089", "Website"]
       }
     ],
     "next": {
       "tag": "NEXT",
-      "line": "The path is still being generated.",
+      "line": "这条路还在生成中。",
       "cta": "PATH CONTINUES"
     }
   }

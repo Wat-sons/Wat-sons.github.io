@@ -218,6 +218,31 @@ try {
   if ('xcpc' in cf) problems.push('src/data/cf.json 里又冒出 xcpc 字段 —— 训练量统计不公开');
 } catch { /* 没有就跳过 */ }
 
+/* 全站语言规则：**英文管结构，中文管内容。**
+   英文：区块英文副标题、START/COMPETE 这类 mono 标签、技术名词、[2026]、BACK TO TOP、首屏宣言
+   中文：正文、描述、叙事
+   这条是踩过坑加的 —— Timeline 的正文曾经整段写成英文，
+   理由还被我当成"设计决定"写进了 README，其实只是照抄了需求里的英文原文。 */
+const CJK = /[\u4e00-\u9fff]/;
+{
+  const tl = metrics.timeline ?? {};
+  const content = [['timeline.intro', tl.intro]];
+  (tl.stops ?? []).forEach((s, i) => {
+    (s.lines ?? []).forEach((t, j) => content.push([`timeline.stops[${i}].lines[${j}]`, t]));
+  });
+  if (tl.next?.line) content.push(['timeline.next.line', tl.next.line]);
+  for (const [key, val] of content) {
+    if (val && !CJK.test(val)) {
+      problems.push(`src/data/metrics.json 的 ${key} 没有中文：${val}\n      正文该是中文（英文管结构，中文管内容）`);
+    }
+  }
+  // 结构类字段反过来不该有中文 —— 标签是 mono 大写字，混进中文会很难看
+  const labels = [['timeline.next.cta', tl.next?.cta], ...(tl.stops ?? []).map((s, i) => [`timeline.stops[${i}].tag`, s.tag])];
+  for (const [key, val] of labels) {
+    if (val && CJK.test(val)) problems.push(`src/data/metrics.json 的 ${key} 含中文：${val} —— 结构标签该是英文`);
+  }
+}
+
 // 仓库里不该出现二进制/位图 —— 除了图标与字体。
 // 用 git ls-files 查（那才是真正会被发布的集合），git 不可用时退回扫描根目录。
 // 背景：曾经因为一条命令里路径分隔符丢了，两张截图被拼成「预览N-xxx.png」落在仓库根目录

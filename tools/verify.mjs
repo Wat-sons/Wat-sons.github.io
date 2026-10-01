@@ -54,7 +54,18 @@ const send = (method, params = {}) => new Promise((r) => {
   const i = ++id; pending.set(i, (m) => r(m.result ?? m.error)); ws.send(JSON.stringify({ id: i, method, params }));
 });
 const once = (m) => new Promise((r) => events.set(m, r));
-const evalJs = async (expr) => (await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true })).result?.value;
+// 页面里抛错时 CDP 不会 reject，只是没有 result —— 静默变成 undefined，
+// 后面 JSON.parse 报一句莫名其妙的 "undefined is not valid JSON"。
+// 这里把真实异常打出来，省掉一次瞎猜。
+const evalJs = async (expr) => {
+  const res = await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true });
+  const ex = res?.exceptionDetails;
+  if (ex) {
+    const d = ex.exception?.description || ex.text || JSON.stringify(ex).slice(0, 200);
+    console.log('  ! 页面表达式抛错:', String(d).split('\n')[0].slice(0, 220));
+  }
+  return res?.result?.value;
+};
 
 async function load(url, { scroll = true } = {}) {
   const p = once('Page.loadEventFired');
