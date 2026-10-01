@@ -71,8 +71,60 @@
   align-items: center;
   gap: clamp(1rem, 3vw, 2.5rem);
 }
-/* 导航靠左，年份与菜单靠右。顶栏不再放 logo/昵称 ——
-   单页作品集里那只是把名字说了第二遍。 */
+
+/* ---------- 品牌：二次元头像 + quchen ----------
+   头像是全站唯一的彩色个人元素，代表「这是我」。
+   不加 border / glow / shadow / 装饰框 —— 它本身已经够抢眼，
+   再加壳子就从"签名"变成"装饰"了。 */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;                       /* 需求 §4：8–10px */
+  flex: none;
+  color: inherit;
+}
+.brand-avatar {
+  width: 32px;                    /* 桌面 32；移动端 30 见媒体查询 */
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  flex: none;
+}
+.brand-name {
+  font-size: var(--fs-body);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+@media (max-width: 860px) {
+  .brand-avatar { width: 30px; height: 30px; }
+  .brand-name { font-size: var(--fs-meta); }
+}
+
+/* ---------- 语言切换：刻意做得极小，只是个开关 ---------- */
+.lang { display: inline-flex; align-items: center; gap: 0.35rem; }
+.lang-btn {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  color: var(--fg-mute);
+  background: none;
+  border: 0;
+  padding: 0.15rem 0.1rem;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.lang-btn:hover { color: var(--fg-dim); }
+.lang-btn.is-on { color: var(--accent); }
+.lang-sep { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--line-strong); }
+
+/* 切语言时正文淡出淡入（需求 §26：不刷新、不重播 Loading） */
+html.is-switching main,
+html.is-switching .footer { opacity: 0; }
+main, .footer { transition: opacity 140ms var(--ease); }
+
+/* 导航靠左，年份与菜单靠右。 */
 .nav {
   display: flex;
   gap: clamp(0.75rem, 2vw, 1.75rem);
@@ -110,6 +162,8 @@
 /* 移动端：导航收成抽屉 */
 .nav-toggle { display: none; }
 @media (max-width: 860px) {
+  /* 移动端右侧只留「语言 + 菜单」，年份让位 —— 三者挤在 390px 里会打架 */
+  .year-tag { display: none; }
   .nav {
     position: fixed;
     inset: 0;

@@ -69,12 +69,25 @@ html = html.replace(
   `<style>\n${safeForInline(css)}\n</style>`
 );
 
-// 3) favicon → data URI
-const favicon = read('assets/favicon.svg');
-html = html.replace(
-  '<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">',
-  `<link rel="icon" type="image/svg+xml" href="${dataUri(Buffer.from(favicon, 'utf8'), 'image/svg+xml')}">`
-);
+// 3) 标识与头像 → data URI
+//    favicon 的 SVG 版本内联；PNG 版本与 apple-touch-icon 在单文件里直接删掉
+//    （同一个图标没必要在离线文件里存三份，SVG 那份已经够用）。
+{
+  const favSvg = read('assets/favicon/favicon.svg');
+  const favUri = dataUri(Buffer.from(favSvg, 'utf8'), 'image/svg+xml');
+  html = html.replace(
+    /<link rel="icon" href="assets\/favicon\/favicon\.svg" type="image\/svg\+xml">/,
+    `<link rel="icon" type="image/svg+xml" href="${favUri}">`
+  );
+  for (const rel of ['assets/favicon/favicon-32.png', 'assets/favicon/favicon-16.png', 'assets/favicon/apple-touch-icon.png']) {
+    html = html.replace(new RegExp(`<link rel="(?:icon|apple-touch-icon)"[^>]*${rel.replace(/[./]/g, '\\$&')}[^>]*>\\s*`), '');
+  }
+  // 导航头像：单文件版也要能离线显示
+  const av = read('assets/avatar/avatar-navbar.webp');
+  if (!html.includes('src="assets/avatar/avatar-navbar.webp"')) throw new Error('index.html 里找不到导航头像的引用');
+  html = html.replaceAll('src="assets/avatar/avatar-navbar.webp"',
+    `src="${dataUri(av, 'image/webp')}"`);
+}
 
 // 4) 外链脚本 → 内联
 if (!html.includes('<script src="assets/app.js"></script>')) {

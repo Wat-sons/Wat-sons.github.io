@@ -20,7 +20,7 @@
 
   "hero": {
     "railLeft": "[QUCHEN]",
-    "railRight": "AI · ALGORITHMS · RESEARCH",
+    "railRight": "AI · ALGORITHMS · BUILDING",
     "eyebrow": "Artificial Intelligence · Competitive Programming",
     "headline": ["I BUILD", "THINGS WITH", "AI & ALGORITHMS."],
     "markLine": 2,
@@ -68,6 +68,6 @@
 
   "footer": {
     "line1": "Built with curiosity.",
-    "line2": "AI · Algorithms · Research"
+    "line2": "AI · Algorithms · Building"
   }
 }

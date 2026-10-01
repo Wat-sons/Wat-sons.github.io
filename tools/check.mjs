@@ -112,7 +112,7 @@ if (html) {
   notes.push(`index.html ${(Buffer.byteLength(html, 'utf8') / 1024).toFixed(1)} KB`);
 }
 
-for (const f of ['assets/style.css', 'assets/app.js', 'assets/favicon.svg',
+for (const f of ['assets/style.css', 'assets/app.js', 'assets/favicon/favicon.svg',
                  'assets/fonts/space-grotesk-latin-var.woff2']) {
   try {
     const s = await stat(path.join(root, f));
@@ -139,7 +139,7 @@ const GRADES = ['86' + '.43', '24 / 1' + '40', '加权' + '成绩', '专业' + '
 
 const TEXT_EXT = new Set(['.html', '.css', '.js', '.mjs', '.json', '.md', '.svg', '.txt', '.gitignore', '.ps1']);
 const SCAN_ROOT_FILES = ['index.html', 'README.md', 'package.json', 'build.mjs',
-                         '.gitignore', 'publish.ps1', 'assets/style.css', 'assets/app.js', 'assets/favicon.svg'];
+                         '.gitignore', 'publish.ps1', 'assets/style.css', 'assets/app.js', 'assets/favicon/favicon.svg'];
 
 /**
  * 分级判定：
@@ -199,7 +199,16 @@ for (const f of pubFiles) {
   if (stripped.includes(CERT_DIR)) flag(f, `${f} 引用了 ${CERT_DIR} —— 证书图片不允许进公开仓库`);
   // 唯一获准进仓库的位图：首屏夜景插画（装饰用、无人信息、四边淡出已烘进 alpha）。
   // 白名单是**精确路径**，不是"允许 webp" —— 换个名字或换个目录一样会被拦。
-  const IMG_ALLOW = new Set(['assets/scenery/orbit.webp']);
+  // 获准进公开仓库的位图。**精确路径**，不是"允许 webp/png" ——
+  // 换个名字或换个目录一样会被拦。三类、各有明确用途：
+  //   装饰插画（无人信息） · 二次元头像（本人形象，非真人照片） · favicon 位图回退
+  const IMG_ALLOW = new Set([
+    'assets/scenery/orbit.webp',
+    'assets/avatar/avatar-navbar.webp',
+    'assets/favicon/favicon-16.png',
+    'assets/favicon/favicon-32.png',
+    'assets/favicon/apple-touch-icon.png',
+  ]);
   const localImgs = [...stripped.matchAll(/(?:src|href)\s*=\s*["']([^"']+\.(?:jpe?g|png|webp))["']/gi)]
     .map((m) => m[1])
     .filter((u) => !/^(?:https?:|data:|\/\/)/i.test(u))
@@ -248,9 +257,15 @@ const CJK = /[\u4e00-\u9fff]/;
 // 背景：曾经因为一条命令里路径分隔符丢了，两张截图被拼成「预览N-xxx.png」落在仓库根目录
 // 并被提交进公开仓库。光靠 .gitignore 挡不住这种意外落盘，必须有一道断言。
 const ALLOWED_BIN = [
-  'assets/favicon.svg',                       // 矢量图标
+  'assets/favicon/favicon.svg',                 // 矢量图标
   'assets/fonts/space-grotesk-latin-var.woff2', // 自托管字体
-  'assets/scenery/orbit.webp',                // 首屏夜景插画（唯一一张位图，四边淡出已烘进 alpha）
+  'assets/scenery/orbit.webp',                  // 首尾呼应插画
+  'assets/avatar/avatar-navbar.webp',           // 导航头像（32px @2x，2KB）
+  'assets/favicon/favicon-16.png',              // favicon 位图回退
+  'assets/favicon/favicon-32.png',
+  'assets/favicon/apple-touch-icon.png',
+  // 注意：assets/avatar/avatar-square.webp 与 avatar-navbar@2x-60.webp 没在用，
+  // 故意不列 —— 没被引用的资源不该进公开仓库。
 ];
 const BIN_RE = /\.(png|jpe?g|webp|gif|pdf|docx?|xlsx?|zip)$/i;
 let tracked = null;

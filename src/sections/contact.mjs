@@ -20,6 +20,8 @@ export const contact = ({ profile, ctx }) => {
   <div class="wrap">
     ${sectionHead({ num: ctx.num, title: "联系", titleEn: "Contact", note: ctx.note })}
 
+    <p class="contact-kicker reveal">The path continues</p>
+
     <h2 class="display contact-cta reveal">
       <span class="reveal-line"><span>LET'S</span></span>
       <span class="reveal-line"><span>BUILD</span></span>

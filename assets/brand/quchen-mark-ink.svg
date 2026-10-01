@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 30" width="120" height="90" role="img" aria-label="quchen">
+  <title>quchen</title>
+  <!-- Q 的环：起点与约束 -->
+  <circle cx="14.5" cy="14.5" r="10" fill="none" stroke="#111111" stroke-width="4"/>
+  <!-- 尾部 = 一小段路径，绕出去再收回来 -->
+  <path d="M 21.6 21.6 C 25.4 25.4 28.8 24.6 32.6 22.2" fill="none"
+        stroke="#D8FF4A" stroke-width="4" stroke-linecap="round"/>
+  <!-- 末端节点：和 Timeline / Preloader 里的 node 是同一个符号 -->
+  <circle cx="34.6" cy="21.4" r="2.3" fill="#D8FF4A"/>
+</svg>

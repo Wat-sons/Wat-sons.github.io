@@ -224,6 +224,37 @@ ENTER (路径→横线→Hero)          1900 ─ 2420ms
 | 内容文案用中文 | **全站语言规则：英文管结构，中文管内容。** 英文用于区块英文副标题、`START/COMPETE/BUILD` 这类 mono 标签、技术名词、`[2026]`、`BACK TO TOP`、首屏宣言；正文、描述、叙事一律中文。曾经把 Timeline 的正文写成英文 —— 那是内容，不是结构，破坏了一致性 |
 | 不做逐节点的通用 reveal | 点亮时机必须跟着路径走，通用 IntersectionObserver 做不到 |
 
+## QUCHEN 标识系统
+
+三层身份，**刻意不共用同一张图** —— 换了竞赛头像也不会动摇网站品牌：
+
+| 层 | 代表 | 实现 | 用在哪 |
+|---|---|---|---|
+| **Avatar** | 这是我 | 二次元头像（原图裁头部） | 导航左上角 |
+| **Mark** | 我的品牌 | `Q + Path` 抽象几何 | 页脚、favicon |
+| **Logo** | 我的品牌 | Mark + `quchen` 文字 | 独立文件（OG / 分享） |
+
+`Q` 的尾部不是普通一撇，而是一小段**带节点的路径** —— 和 Preloader「算法找路」、
+Timeline「PATH SO FAR」里的 node 是同一个符号。整站的叙事因此闭环：
+
+```
+LOADING   PATH FOUND      算法找到了路
+HERO      AI · ALGORITHMS · BUILDING
+TIMELINE  PATH SO FAR     我走过的路
+CONTACT   THE PATH CONTINUES
+```
+
+**颜色不写死**：`build.mjs` 从 `tokens.css` 里读出 `--accent` 注入 SVG，
+改令牌时 logo / favicon 跟着变，不会两处各写一份。
+
+| 决定 | 原因 |
+|---|---|
+| 头像不加 border / glow / shadow / 装饰框 | 它是全站唯一的彩色元素，本身够抢眼；再加壳子就从"签名"变成"装饰" |
+| 头像裁到「脸占满圆」而不是「全身」 | 32px 下只有脸能认出来。试过三档，最紧的那档把头饰切掉了，最终取中间档 |
+| favicon 用 `Q + Path` 而不是头像 | 需求 §8。16px 下画一张脸只会糊成一团；几何标识才立得住 |
+| favicon 的 PNG 用 Pillow 手画，不引 cairosvg | 形状只有「环 + 曲线 + 点」，手画准确且不给构建加重依赖。生成后提交，构建期不需要 Python。改几何要重跑 `python tools/make-icons.py` |
+| 位图白名单从 1 条扩到 5 条 | **精确路径**，不是"允许 png/webp"。没被引用的 `avatar-square.webp` 故意不列 —— 进公开仓库的应该只有线上真正用到的东西 |
+
 ## 已知取舍
 
 | 取舍 | 原因 |

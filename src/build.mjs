@@ -16,6 +16,7 @@ import { esc, embedJson } from "./lib/html.mjs";
 import { topbar } from "./sections/topbar.mjs";
 import { hero } from "./sections/hero.mjs";
 import { preloader } from "./lib/preloader.mjs";
+import { markSvg, logoSvg, faviconSvg } from "./lib/brand.mjs";
 import { work } from "./sections/work.mjs";
 import { competition } from "./sections/competition.mjs";
 import { timeline } from "./sections/timeline.mjs";
@@ -121,8 +122,25 @@ const rawCritical = [
 ].join("\n");
 const criticalCss = minifyCss(rawCritical);
 
+/* ---------- 品牌标识：构建期生成 SVG ----------
+   accent 从 tokens.css 里读出来注入 —— 标识和站点用同一份色值来源，
+   改令牌时 logo / favicon 会跟着变，不会两处各写一份。 */
+const ACCENT = (rawCritical.match(/--accent:\s*(#[0-9a-fA-F]{3,8})/) || [])[1] || "#D8FF4A";
+const BRAND = { accent: ACCENT, ink: "#EDEAE3" };
+const brandFiles = [
+  ["assets/brand/quchen-mark.svg", markSvg({ ...BRAND, size: 120 })],
+  ["assets/brand/quchen-logo.svg", logoSvg(BRAND)],
+  // 亮底版本（打印、浅色场景、放在米白背景上时用）
+  ["assets/brand/quchen-mark-ink.svg", markSvg({ accent: ACCENT, ink: "#111111", size: 120 })],
+  ["assets/favicon/favicon.svg", faviconSvg({ accent: ACCENT })],
+];
+for (const [rel, svg] of brandFiles) {
+  await mkdir(dirname(join(ROOT, rel)), { recursive: true });
+  await writeFile(join(ROOT, rel), svg, "utf8");
+}
+
 /* ---------- 3. 页面 ---------- */
-const title = `${profile.handle} — AI / Algorithms / Research`;
+const title = `${profile.handle} — AI / Algorithms / Building`;
 const description = "Artificial Intelligence student exploring algorithms, optimization and intelligent systems.";
 
 const html = `<!doctype html>
@@ -140,7 +158,10 @@ const html = `<!doctype html>
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="zh_CN">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/favicon/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/space-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
 <style>${criticalCss}</style>
 <link rel="stylesheet" href="assets/style.css">
@@ -171,7 +192,7 @@ ${hero({ profile, metrics })}
 ${sections}
 </main>
 
-${footer({ profile, year })}
+${footer({ profile, year, accent: ACCENT })}
 
 <noscript>
   <div class="noscript-note">浏览器禁用了 JavaScript：全部文字内容仍可正常阅读，仅导航高亮、滚动进度与数字动画不可用。</div>

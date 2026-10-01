@@ -167,7 +167,13 @@ await send('Runtime.evaluate', {
 let r = JSON.parse(await evalJs(`JSON.stringify({
   imgs: document.querySelectorAll('img').length,
   sceneImgs: document.querySelectorAll('.hero-scenery img, .contact-scenery img').length,
-  abroadImgs: Array.prototype.filter.call(document.querySelectorAll('img'), function (i) { return !i.closest('.hero-scenery, .contact-scenery'); }).length,
+  brandImgs: document.querySelectorAll('.brand-avatar').length,
+  abroadImgs: Array.prototype.filter.call(document.querySelectorAll('img'), function (i) { return !i.closest('.hero-scenery, .contact-scenery') && !i.classList.contains('brand-avatar'); }).length,
+  brandAlt: (document.querySelector('.brand-avatar') || {}).alt || '',
+  brandName: !!document.querySelector('.brand-name'),
+  langBtns: document.querySelectorAll('[data-lang]').length,
+  footerMark: !!document.querySelector('.footer-mark svg'),
+  favicons: document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]').length,
   reveals: document.querySelectorAll('.reveal').length,
   notIn: document.querySelectorAll('.reveal:not(.is-in)').length,
   ready: !!window.__SITE_READY,
@@ -202,9 +208,17 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   heroVisible: getComputedStyle(document.querySelector('.hero')).visibility === 'visible',
   markOn: getComputedStyle(document.querySelector('.display .reveal-line:last-child .mark'), '::after').transform
 })`));
-check('位图只有那两张呼应插画（首屏 + 页尾）',
-  r.imgs === 2 && r.sceneImgs === 2 && r.abroadImgs === 0,
-  `共 ${r.imgs} 张 · 插画 ${r.sceneImgs} · 其他 ${r.abroadImgs}`);
+check('位图只有：呼应插画 ×2 + 导航头像 ×1，无其它',
+  r.imgs === 3 && r.sceneImgs === 2 && r.brandImgs === 1 && r.abroadImgs === 0,
+  `共 ${r.imgs} 张 · 插画 ${r.sceneImgs} · 头像 ${r.brandImgs} · 其他 ${r.abroadImgs}`);
+
+/* ---------- QUCHEN 标识系统 ---------- */
+check('导航左上角是头像 + quchen（alt 可读）',
+  r.brandImgs === 1 && r.brandName && r.brandAlt === 'quchen',
+  `头像 ${r.brandImgs} · 名字 ${r.brandName} · alt="${r.brandAlt}"`);
+// 语言切换（中 / EN）等英文文案落实后再上；届时在这里补 langBtns === 2 的断言。
+check('favicon 三件套 + Apple Touch Icon 都已声明', r.favicons === 4, `${r.favicons} 条 link`);
+check('页脚有 Q+Path 标识', r.footerMark === true);
 check('入场动画全部收尾', r.notIn === 0, `${r.reveals} 个 reveal，未进场 ${r.notIn}`);
 check('app.js 正常收尾', r.ready === true);
 check('有无障碍跳转链接', r.skip === true);
@@ -261,8 +275,8 @@ for (const [needle, label] of OFFLINE) {
   check(`页面不含 ${label}`, !bodyText.includes(needle));
 }
 check('页面无未获准的本地位图引用',
-  !/src="(?![^"]*assets\/scenery\/orbit\.webp)[^"]*\.(png|jpe?g|webp)"/i.test(bodyText),
-  '唯一允许的是 assets/scenery/orbit.webp');
+  !/src="(?![^"]*assets\/(?:scenery\/orbit|avatar\/avatar-navbar)\.webp)[^"]*\.(png|jpe?g|webp)"/i.test(bodyText),
+  '只允许 scenery/orbit.webp 与 avatar/avatar-navbar.webp');
 
 const DATA_FILES = ['src/data/profile.json', 'src/data/metrics.json', 'src/data/projects.json',
                     'src/data/research.json', 'src/data/competitions.json',
