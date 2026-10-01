@@ -6,9 +6,8 @@ import { ghostTitle } from "../components/ghost-title.mjs";
 import { sectionHead } from "../components/section-head.mjs";
 import { compStat } from "../components/stat-block.mjs";
 import { awardRow } from "../components/award-row.mjs";
-import { VISUALS } from "../lib/visuals.mjs";
 
-export const competition = ({ competitions, metrics, cf, ctx }) => {
+export const competition = ({ competitions, metrics, ctx }) => {
   const levels = competitions.levels ?? {};
 
   // 按获奖时间先后（早 → 晚）。想改成最新在前，把下面两个参数对调即可。
@@ -39,8 +38,6 @@ export const competition = ({ competitions, metrics, cf, ctx }) => {
     })}
 
     <div class="comp-stats">${(metrics.competition ?? []).map(compStat).join("")}</div>
-
-    <div class="comp-chart reveal">${VISUALS.rating(cf)}</div>
 
     <ul class="award-list">${rows}</ul>
     ${certBlock}

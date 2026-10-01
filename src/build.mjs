@@ -16,7 +16,6 @@ import { esc, embedJson } from "./lib/html.mjs";
 import { topbar } from "./sections/topbar.mjs";
 import { hero } from "./sections/hero.mjs";
 import { work } from "./sections/work.mjs";
-import { research } from "./sections/research.mjs";
 import { competition } from "./sections/competition.mjs";
 import { timeline } from "./sections/timeline.mjs";
 import { about } from "./sections/about.mjs";
@@ -35,9 +34,11 @@ const readText = async (rel) => readFile(join(ROOT, rel), "utf8");
 const profile = await readJSON("profile.json");
 const metrics = await readJSON("metrics.json");
 const projects = await readJSON("projects.json");
-const researchData = await readJSON("research.json");
 const competitions = await readJSON("competitions.json");
 const contests = await readJSON("contests.json");
+
+// research.json 仍保留在 src/data 里，但“科研方向”区块已按本人要求下线。
+// 要恢复：把 _archive 里的 research.mjs 取回、在下面注册、并在 profile.json 的 nav 里加回 research。
 
 // cf.json 由 tools/sync.mjs 生成；缺了也不该让构建挂掉，只是图表留空
 let cf = null;
@@ -52,14 +53,13 @@ const ctx = (num, note) => ({ num, note });
 
 const sections = [
   work({ projects, cf, ctx: ctx("/01", "只放能确认的真实项目，没有把握的一律不写。") }),
-  research({ research: researchData, ctx: ctx("/02", null) }),
   competition({
     competitions, metrics, cf,
-    ctx: ctx("/03", `${competitions.awards.length} 条记录 · 数字与曲线均来自真实数据`),
+    ctx: ctx("/02", `${competitions.awards.length} 条记录 · 按获奖时间先后排列 · 数字均来自真实数据`),
   }),
-  timeline({ metrics, ctx: ctx("/04", "每年只写确实发生过的事。") }),
-  about({ profile, ctx: ctx("/05", null) }),
-  contact({ profile, ctx: ctx("/06", null) }),
+  timeline({ metrics, ctx: ctx("/03", "每年只写确实发生过的事。") }),
+  about({ profile, ctx: ctx("/04", null) }),
+  contact({ profile, ctx: ctx("/05", null) }),
 ].join("\n");
 
 const year = new Date().getFullYear();
@@ -138,7 +138,7 @@ console.log("构建完成");
 console.log(`  index.html        ${kb(html)} KB · ${sections.split("<section").length - 1} 个区块 · ${nav} 项导航`);
 console.log(`  assets/style.css  ${kb(cssParts.join(""))} KB · ${CSS_ORDER.length} 个样式层`);
 console.log(`  assets/app.js     ${kb(await readText("assets/app.js"))} KB`);
-console.log(`  奖项 ${competitions.awards.length} 条 · 项目 ${projects.items.length} 个 · 研究方向 ${researchData.items.length} 个`);
+console.log(`  奖项 ${competitions.awards.length} 条 · 项目 ${projects.items.length} 个 · 时间线 ${metrics.timeline.length} 年`);
 if (cf) {
   console.log(`  CF 数据同步于 ${cf.syncedAt.slice(0, 10)} · ${cf.codeforces.handles.map((h) => h.handle).join(" / ")}`);
 }

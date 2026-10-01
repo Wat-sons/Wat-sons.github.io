@@ -57,7 +57,7 @@ for (const a of competitions.awards) {
 }
 
 // 项目 visual 必须是已知的生成器
-const KNOWN_VISUALS = ['pipeline', 'activity', 'rating', 'none'];
+const KNOWN_VISUALS = ['pipeline', 'rating', 'none'];
 for (const p of projects.items) {
   if (p.visual && !KNOWN_VISUALS.includes(p.visual)) {
     problems.push(`项目 ${p.id} 的 visual「${p.visual}」没有对应生成器（可用：${KNOWN_VISUALS.join(' / ')}）`);
@@ -91,7 +91,7 @@ if (html) {
     ['assets/fonts/space-grotesk-latin-var.woff2', '字体预加载'],
     ['class="display"', 'Hero 显示字'],
     ['class="ghost"', '幽灵区块标题'],
-    ['class="comp-chart', 'rating 曲线容器'],
+    ['class="chart"', 'rating 曲线'],
     ['class="work-item', '项目大卡'],
   ];
   for (const [needle, label] of must) {

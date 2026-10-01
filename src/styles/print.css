@@ -31,18 +31,17 @@
 
   html.js .reveal { opacity: 1 !important; transform: none !important; }
 
-  .work-media, .comp-chart, .work-item, .award-row, .tl-row, .research-item {
+  .work-media, .work-item, .award-row, .tl-row {
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  .work-media { background: #fff !important; aspect-ratio: 16 / 11; }
-  .comp-chart { background: #fff !important; }
-  .comp-chart .grid-line { stroke: #ddd; }
-  .comp-chart .axis { fill: #555; }
-  .comp-chart .series-0 { stroke: #1c4ed8; }
-  .comp-chart .series-1 { stroke: #999; }
+  .work-media { background: #fff !important; }
+  .chart .grid-line { stroke: #ddd; }
+  .chart .axis { fill: #555; }
+  .chart .series-0 { stroke: #1c4ed8; }
+  .chart .series-1 { stroke: #999; }
 
-  .award-row:hover, .research-item:hover { background: none !important; padding-left: 0 !important; }
+  .award-row:hover { background: none !important; padding-left: 0 !important; }
   .work-item:hover .work-media > svg { transform: none !important; }
 
   /* 链接补出 URL，纸质版才有意义 */

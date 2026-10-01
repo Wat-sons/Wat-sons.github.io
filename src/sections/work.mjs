@@ -10,7 +10,6 @@ import { VISUALS } from "../lib/visuals.mjs";
 export const work = ({ projects, cf, ctx }) => {
   const visualFor = (key) => {
     if (key === "pipeline") return VISUALS.pipeline();
-    if (key === "activity") return VISUALS.activity(cf);
     if (key === "rating") return VISUALS.rating(cf);
     return "";
   };

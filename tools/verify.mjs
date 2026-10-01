@@ -124,24 +124,27 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   skip: !!document.querySelector('.skip-link'),
   sections: document.querySelectorAll('main section').length,
   ghosts: document.querySelectorAll('.section-ghost .ghost').length,
-  chartSvg: document.querySelectorAll('.comp-chart svg').length,
-  chartPaths: document.querySelectorAll('.comp-chart path.series').length,
-  dots: document.querySelectorAll('.work-media svg circle').length,
+  chartSvg: document.querySelectorAll('.work-media svg.chart').length,
+  chartPaths: document.querySelectorAll('.work-media path.series').length,
   awards: document.querySelectorAll('.award-row').length,
   navLinks: document.querySelectorAll('.nav a').length,
   anchorsOk: [...document.querySelectorAll('.nav a')]
-    .every(a => !!document.querySelector(a.getAttribute('href')))
+    .every(a => !!document.querySelector(a.getAttribute('href'))),
+  hasDotMatrix: /1 DOT = 1 CONTEST/.test(document.body.innerHTML),
+  hasResearch: /科研方向|WHAT I'M EXPLORING/.test(document.body.innerHTML)
 })`));
 check('零位图', r.imgs === 0, `img=${r.imgs}`);
 check('入场动画全部收尾', r.notIn === 0, `${r.reveals} 个 reveal，未进场 ${r.notIn}`);
 check('app.js 正常收尾', r.ready === true);
 check('有无障碍跳转链接', r.skip === true);
-check('7 个 section（含 Hero）+ 6 条导航且锚点齐全',
-  r.sections === 7 && r.navLinks === 6 && r.anchorsOk,
+check('6 个 section（含 Hero）+ 5 条导航且锚点齐全',
+  r.sections === 6 && r.navLinks === 5 && r.anchorsOk,
   `sections=${r.sections} nav=${r.navLinks} anchors=${r.anchorsOk}`);
-check('幽灵区块标题已渲染', r.ghosts === 6, `${r.ghosts} 个`);
-check('rating 曲线含两条真实序列', r.chartSvg === 1 && r.chartPaths === 2, `svg=${r.chartSvg} series=${r.chartPaths}`);
-check('参与记录点阵已渲染', r.dots > 400, `${r.dots} 个点`);
+check('幽灵区块标题已渲染', r.ghosts === 5, `${r.ghosts} 个`);
+check('rating 曲线挂在项目卡内、含两条真实序列', r.chartSvg === 1 && r.chartPaths === 2,
+  `svg=${r.chartSvg} series=${r.chartPaths}`);
+check('已移除参与记录点阵', r.hasDotMatrix === false);
+check('已下线科研方向区块', r.hasResearch === false);
 check('奖项行已渲染', r.awards >= 20, `${r.awards} 行`);
 
 /* ---------- 3. 隐私：页面 + 公开 JSON ---------- */
@@ -215,7 +218,7 @@ if (existsSync(SINGLE)) {
     fontLoaded: document.fonts.check('700 48px "Space Grotesk Variable"'),
     styled: getComputedStyle(document.querySelector('.brand-mark')).backgroundColor,
     awards: document.querySelectorAll('.award-row').length,
-    chart: document.querySelectorAll('.comp-chart path.series').length,
+    chart: document.querySelectorAll('.work-media path.series').length,
     notIn: document.querySelectorAll('.reveal:not(.is-in)').length
   })`));
   check('单文件版可离线打开', /quchen/.test(r.title), r.title);

@@ -10,7 +10,6 @@
 
   "nav": [
     { "id": "work",        "label": "Work" },
-    { "id": "research",    "label": "Research" },
     { "id": "competition", "label": "Competition" },
     { "id": "timeline",    "label": "Timeline" },
     { "id": "about",       "label": "About" },

@@ -59,17 +59,17 @@ Minimal / Editorial 风格的 AI & Algorithms 个人作品集。
 │   ├── build.mjs            构建入口：数据 → HTML，拼 CSS，拷 JS
 │   ├── lib/
 │   │   ├── html.mjs         转义 / 拼接工具
-│   │   └── visuals.mjs      构建期 SVG：架构图 / 参与点阵 / rating 曲线
+│   │   └── visuals.mjs      构建期 SVG：架构图 / rating 曲线
 │   ├── components/          ghost-title · section-head · project-card
 │   │                        stat-block · award-row · rail · pill
-│   ├── sections/            topbar · hero · work · research · competition
+│   ├── sections/            topbar · hero · work · competition
 │   │                        timeline · about · contact · footer
 │   ├── data/                ★ 内容唯一事实来源（改内容只动这里）
 │   │   ├── profile.json     身份、导航、Hero 文案、自述、技能、教育、校园
 │   │   ├── metrics.json     首屏四数字 / 竞赛四数字 / 时间线
-│   │   ├── projects.json    项目（visual 字段选 SVG 生成器）
-│   │   ├── research.json    研究方向（note 留空 → 显示「整理中」）
-│   │   ├── competitions.json 奖项 + 证书名称
+│   │   ├── projects.json    项目（visual 字段选 SVG 生成器：pipeline / rating / none）
+│   │   ├── research.json    ⚠️ 当前不参与渲染（科研方向区块已下线，数据保留待恢复）
+│   │   ├── competitions.json 奖项 + 证书名称（页面按 date 升序）
 │   │   ├── contests.json    CF handles 与更新日志
 │   │   └── cf.json          ← tools/sync.mjs 自动生成，别手改
 │   ├── styles/              tokens · base · typography · layout
@@ -150,7 +150,19 @@ Token 在 <https://github.com/settings/tokens/new?scopes=repo,workflow&descripti
 |---|---|
 | 不做图片 / 视频背景 / 外部字体 | 参考站评论区里翻车最多的就是加载慢与国内打不开 |
 | 视觉素材全部用真实数据生成 | 没有摄影素材，硬塞 stock 图立刻变模板；算法图反而是这个站的辨识点 |
+| **视觉必须一眼读懂** | 曾经做过一版「506 场参与记录点阵」（1 点 = 1 场），78% 的点是灰的，读者得读小字图例才明白，已删除。现在只保留架构图与 rating 折线 —— 折线是人人都懂的语言 |
+| 科研方向区块已下线 | 本人暂无可以声称的成果。`research.json` 保留，恢复方法见下 |
 | 章节编号由渲染器自动算 | 手工编号插一章要改五个地方 |
 | 统计数字全部从数据算，不写死 | 手写的 summary 一定会跟列表跑偏 |
+| 竞赛列表按 `date` 升序 | 本人要求按获奖时间先后。改成最新在前只需对调 `competition.mjs` 里 `localeCompare` 的两个参数 |
 | 完整的 `@media print` | HR 更可能 Ctrl+P 存 PDF 而不是翻网页 |
 | 单文件导出（内联字体） | 国内访问 GitHub Pages 时好时坏，离线文件最稳 |
+
+### 恢复「科研方向」区块
+
+```
+1. 把 _archive/v2-sections/research.mjs 拷回 src/sections/
+2. 在 src/build.mjs 里 import 并注册该区块（注意后续区块的编号要顺延）
+3. 在 src/data/profile.json 的 nav 里加回 { "id": "research", "label": "Research" }
+4. 在 src/data/research.json 里给每个方向补 note
+```
