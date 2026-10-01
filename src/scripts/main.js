@@ -251,7 +251,10 @@
        依次浮现，约 900ms）。这段时间用户是在看动画，不是在干等，
        扣掉它反而会把 EXPLORE 整段吃掉。只有超出的部分才压缩。 */
     var GRACE = 700;
-    var FAST = lag > 2600;
+    // 阈值定在 3200ms：低于它还能"压缩播放"（五个阶段都还在，只是更快），
+    // 高于它才切成极简版。曾经定在 2600 —— 结果国内访问 GitHub Pages
+    // 的 lag 稳定在 2700 上下，永远看不到完整动画，那这个动画就白做了。
+    var FAST = lag > 3200;
     var shift = FAST ? 0 : Math.max(0, Math.min(lag - GRACE, 1500));
     // 暴露给 tools/plshot.mjs 与排障用；不含任何用户信息。
     // startedAt 让截图工具能按**页面自己的时钟**定位，而不是靠 CDP 往返估算。
@@ -261,9 +264,10 @@
     } catch (e) {}
 
     /* 时间线（ms）。正常合计约 2.4s（要求 1.8–2.5s，上限 3s）。
-       收敛段给足 800ms —— 粒子要真的"游"过去，不能瞬移到位。 */
+       收敛段给足 800ms —— 粒子要真的"游"过去，不能瞬移到位。
+       FAST 版仍保留全部五个阶段，每段 250–350ms，够看清但不拖时间。 */
     var T = FAST
-      ? { explore: 0, converge: 60, found: 130, draw: 150, enter: 380, exit: 620, end: 780 }
+      ? { explore: 0, converge: 120, found: 380, draw: 420, enter: 720, exit: 1000, end: 1250 }
       : reduce
         ? { explore: 0, converge: 120, found: 240, draw: 250, enter: 480, exit: 660, end: 860 }
         : { explore: 150, converge: 650, found: 1450, draw: 1520, enter: 1900, exit: 2200, end: 2420 };
