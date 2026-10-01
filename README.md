@@ -155,7 +155,7 @@ Token 在 <https://github.com/settings/tokens/new?scopes=repo,workflow&descripti
 | 科研方向区块已下线 | 本人暂无可以声称的成果。`research.json` 保留，恢复方法见下 |
 | 章节编号由渲染器自动算 | 手工编号插一章要改五个地方 |
 | 统计数字全部从数据算，不写死 | 手写的 summary 一定会跟列表跑偏 |
-| 竞赛列表按 `date` 升序 | 本人要求按获奖时间先后。改成最新在前只需对调 `competition.mjs` 里 `localeCompare` 的两个参数 |
+| 竞赛列表按 `date` 升序 | 本人要求按获奖时间先后。`date` 允许 `YYYY-MM` 或 `YYYY-MM-DD`：**有据可查就到日，只知道月份就写到月**。字典序里 `"2025-08" < "2025-08-27"`，所以只知月份的条目自然落在当月最前（省赛这种「早于国赛但不知具体哪天」正好合适）。改成最新在前只需对调 `competition.mjs` 里 `localeCompare` 的两个参数 |
 | 完整的 `@media print` | HR 更可能 Ctrl+P 存 PDF 而不是翻网页 |
 | 单文件导出（内联字体） | 国内访问 GitHub Pages 时好时坏，离线文件最稳 |
 

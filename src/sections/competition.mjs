@@ -10,7 +10,11 @@ import { awardRow } from "../components/award-row.mjs";
 export const competition = ({ competitions, metrics, ctx }) => {
   const levels = competitions.levels ?? {};
 
-  // 按获奖时间先后（早 → 晚）。想改成最新在前，把下面两个参数对调即可。
+  // 按获奖时间先后（早 → 晚）。
+  // date 可能是 YYYY-MM 也可能是 YYYY-MM-DD：只知道月份的排在当月最前
+  // （字典序里 "2025-08" < "2025-08-27"），省赛这种「早于国赛但不知具体哪天」
+  // 的情况正好落在前面。同一天的按数组顺序（sort 是稳定的）。
+  // 想改成最新在前，把下面两个参数对调即可。
   const awards = [...(competitions.awards ?? [])]
     .sort((a, b) => String(a.date).localeCompare(String(b.date)));
 

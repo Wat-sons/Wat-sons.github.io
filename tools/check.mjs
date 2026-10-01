@@ -53,7 +53,9 @@ for (const a of competitions.awards) {
   if (ids.has(a.id)) problems.push(`奖项 id 重复：${a.id}`);
   ids.add(a.id);
   if (!competitions.levels[a.level]) problems.push(`奖项 ${a.id} 用了未定义的 level：${a.level}`);
-  if (!/^\d{4}-\d{2}$/.test(a.date)) problems.push(`奖项 ${a.id} 的 date 不是 YYYY-MM：${a.date}`);
+  if (!/^\d{4}-\d{2}(-\d{2})?$/.test(a.date)) {
+    problems.push(`奖项 ${a.id} 的 date 既不是 YYYY-MM 也不是 YYYY-MM-DD：${a.date}`);
+  }
 }
 
 // 项目 visual 必须是已知的生成器
