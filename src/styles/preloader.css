@@ -140,6 +140,8 @@ html.is-booting { overflow: hidden; }
   animation: pl-fade 400ms var(--ease) 520ms forwards;
 }
 .pl-status::after { content: "…"; }
+/* 找到之后不该再带省略号 —— "PATH FOUND…" 看起来像还没跑完 */
+.pl-stage.is-found .pl-status::after { content: ""; }
 
 /* ---------- PATH FOUND ---------- */
 .pl-verdict {

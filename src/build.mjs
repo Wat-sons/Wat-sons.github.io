@@ -97,6 +97,30 @@ const sections = [
 
 const year = new Date().getFullYear();
 
+/* 关键 CSS 内联。
+   Preloader 必须在**首次绘制**就出现 —— 它的样式如果留在外部 style.css 里，
+   慢网下要等 CSS 到达才画得出来，用户先看到一段白屏，然后才开始动画，
+   总时长变成「加载 + 动画」的叠加（实测慢网到过 7s）。
+   tokens 一起内联是因为 preloader.css 用了 var(--bg) / var(--accent) 等令牌。
+   两者在 assets/style.css 里仍然保留一份（同值，重复无副作用）。
+
+   内联的代价是 index.html 变大、直接阻塞首屏，所以这份要压缩。
+   压缩规则刻意保守：只去注释和多余空白，不动 : 和 > ——
+   免得误伤 media query 或 url() 里的内容。 */
+const minifyCss = (s) => s
+  .replace(/\/\*[\s\S]*?\*\//g, "")
+  .replace(/[ \t]+/g, " ")
+  .replace(/ ?\n ?/g, "\n")
+  .replace(/\n{2,}/g, "\n")
+  .replace(/\s*([{};,])\s*/g, "$1")
+  .trim();
+
+const rawCritical = [
+  await readFile(join(SRC, "styles", "tokens.css"), "utf8"),
+  await readFile(join(SRC, "styles", "preloader.css"), "utf8"),
+].join("\n");
+const criticalCss = minifyCss(rawCritical);
+
 /* ---------- 3. 页面 ---------- */
 const title = `${profile.handle} — AI / Algorithms / Research`;
 const description = "Artificial Intelligence student exploring algorithms, optimization and intelligent systems.";
@@ -118,6 +142,7 @@ const html = `<!doctype html>
 <meta property="og:locale" content="zh_CN">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/space-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<style>${criticalCss}</style>
 <link rel="stylesheet" href="assets/style.css">
 <!-- 渐进增强：只有 JS 真跑起来才隐藏待入场元素；app.js 若加载失败，2.5s 后自动解除隐藏。
      Preloader 同理 —— is-booting 只在这里加，所以「无 JS」时它根本不会出现。

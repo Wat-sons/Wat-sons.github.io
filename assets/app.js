@@ -217,12 +217,6 @@
     var NS = "http://www.w3.org/2000/svg";
     var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // 时间线（ms）。合计约 2.4s（要求 1.8–2.5s，上限 3s）。
-    // 收敛段给足 700ms —— 粒子要真的"游"过去，不能瞬移到位。
-    var T = reduce
-      ? { explore: 0, converge: 120, found: 240, draw: 250, enter: 480, exit: 660, end: 860 }
-      : { explore: 150, converge: 650, found: 1450, draw: 1520, enter: 1900, exit: 2200, end: 2420 };
-
     var START = [10, 88], TARGET = [88, 12];
     // 一个"看起来像解、其实不是"的假吸引子：让一部分粒子先往错的方向走
     var DECOY = [64, 76];
@@ -241,10 +235,33 @@
     var cores = navigator.hardwareConcurrency || 4;
     var N = reduce ? 0 : (cores <= 4 ? Math.round(base * 0.6) : base);
 
+    /* ---------- 时钟补偿 ----------
+       动画的时钟应该从**首次绘制**起算，而不是从 app.js 执行到这里起算。
+       慢网下 app.js 可能 2 秒后才到，用户已经等过了；如果那时再放满 2.4s，
+       总时长就成了「加载 + 动画」的叠加（实测线上到过 4.9s）。
+       所以在这里把已经流逝的时间从时间线里扣掉：
+         · 加载很快        → 完整播放
+         · 加载慢了一点    → 压缩播放，总墙钟时间仍然控制在 ~2.5s 左右
+         · 加载本来就很久  → 只留最后的交接，不再让用户额外等
+       （关键 CSS 已经内联，所以首帧就是 Preloader，量到的 lag 是真实的等待） */
+    var lag = 0;
+    try { lag = performance.now(); } catch (e) {}
+    // 加载本来就够久了（>2.6s）就不再完整播放，只走一段短的交接
+    var FAST = lag > 2600;
+    var shift = FAST ? 0 : Math.min(lag, 1500);
+
+    /* 时间线（ms）。正常合计约 2.4s（要求 1.8–2.5s，上限 3s）。
+       收敛段给足 800ms —— 粒子要真的"游"过去，不能瞬移到位。 */
+    var T = FAST
+      ? { explore: 0, converge: 60, found: 130, draw: 150, enter: 380, exit: 620, end: 780 }
+      : reduce
+        ? { explore: 0, converge: 120, found: 240, draw: 250, enter: 480, exit: 660, end: 860 }
+        : { explore: 150, converge: 650, found: 1450, draw: 1520, enter: 1900, exit: 2200, end: 2420 };
+
     var parts = [];
     var raf = 0, t0 = 0, timers = [];
     var phase = 0;              // 0 = 探索，1 = 收敛（决定拉力与限速）
-    var at = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
+    var at = function (ms, fn) { timers.push(setTimeout(fn, Math.max(0, ms - shift))); };
     var setStatus = function (s) { if (statusEl) statusEl.textContent = s; };
 
     /* ---------- 建粒子 ---------- */
@@ -327,7 +344,8 @@
     function loop(now) {
       if (!t0) t0 = now;
       step();
-      if (now - t0 < T.found) raf = requestAnimationFrame(loop);
+      // 同样要扣掉补偿：粒子的探索时间不能超出压缩后的收敛点
+      if (now - t0 < Math.max(160, T.found - shift)) raf = requestAnimationFrame(loop);
     }
 
     /* ---------- 量出首页下划线的位置 ---------- */
