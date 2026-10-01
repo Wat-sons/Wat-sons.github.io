@@ -58,18 +58,18 @@
       "certs": []
     },
     {
-      "id": "astar-2025-gold",
+      "id": "astar-2025-bronze",
       "date": "2025-08",
       "title": "第 21 届百度之星程序设计大赛（人才专项赛道）",
       "series": "百度之星",
       "stage": "全国总决赛",
-      "level": "gold",
-      "result": "金奖",
+      "level": "bronze",
+      "result": "铜奖",
       "extra": null,
       "weight": 20,
       "vault": "2025/2025-baidu-final-talent_*.jpg",
       "certs": [
-        "第 21 届百度之星程序设计大赛 决赛（人才专项赛道）金奖证书",
+        "第 21 届百度之星程序设计大赛 决赛（人才专项赛道）铜奖证书",
         "第 21 届百度之星程序设计大赛 初赛（人才专项赛道）获奖证书"
       ]
     },
@@ -86,21 +86,6 @@
       "vault": "2025/2025-raicom-national_*.jpg",
       "certs": [
         "睿抗机器人开发者大赛（RAICOM）编程技能赛道 全国总决赛 一等奖证书"
-      ]
-    },
-    {
-      "id": "mati-2026-gold",
-      "date": "2026-08",
-      "title": "第八届码蹄杯程序设计大赛 · 本科院校赛道国赛",
-      "series": "码蹄杯",
-      "stage": "全国总决赛",
-      "level": "gold",
-      "result": "金奖",
-      "extra": null,
-      "weight": 40,
-      "vault": "2026/2026-mati-national_*.jpg",
-      "certs": [
-        "第八届码蹄杯程序设计大赛 本科院校赛道国赛 金奖证书"
       ]
     },
     {
@@ -288,18 +273,18 @@
       ]
     },
     {
-      "id": "astar-2026-finalist",
+      "id": "astar-2026-gold",
       "date": "2026-08",
       "title": "第 22 届百度之星程序设计大赛（人才专项赛道）",
       "series": "百度之星",
       "stage": "全国总决赛",
-      "level": "finalist",
-      "result": "决赛入围",
+      "level": "gold",
+      "result": "金奖",
       "extra": null,
       "weight": 170,
       "vault": "2026/2026-baidu-final_*.jpg",
       "certs": [
-        "第 22 届百度之星程序设计大赛 决赛（人才专项赛道）学生证书"
+        "第 22 届百度之星程序设计大赛 决赛（人才专项赛道）金奖证书"
       ]
     },
     {

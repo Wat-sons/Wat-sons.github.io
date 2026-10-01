@@ -1,11 +1,11 @@
 {
-  "_comment": "首屏与区块用到的关键数字。全部来自真实数据源，改这里即可全局生效。",
+  "_comment": "首屏与区块用到的关键数字。全部来自真实数据源。带 from 字段的会在构建期从 src/data/competitions.json 自动算出来 —— 别手写奖项数量，手写的 summary 一定会跟列表跑偏。note 里可以用 {total} {national} {provincial} {cert} 占位。",
   "updatedAt": "2026-10-01",
 
   "hero": [
     { "value": 355,  "unit": "分", "label": "CCF-CSP 最高分",      "note": "累计排名前 1.76%" },
     { "value": 2089, "unit": "",   "label": "Codeforces 历史最高",  "note": "Candidate Master" },
-    { "value": 20,   "unit": "项", "label": "竞赛获奖",            "note": "其中全国性 16 项" },
+    { "from": "total", "unit": "项", "label": "竞赛获奖",           "note": "其中全国性 {national} 项" },
     { "value": 67,   "unit": "场", "label": "Codeforces rated",    "note": "两个账号 · 2749 次提交" }
   ],
 
@@ -13,7 +13,7 @@
     { "value": 2089, "unit": "",   "label": "Codeforces 峰值 rating", "note": "Candidate Master · @quchen666" },
     { "value": 355,  "unit": "分", "label": "CCF-CSP 最高分",         "note": "第 43 次认证 · 前 1.76%" },
     { "value": 2749, "unit": "",   "label": "Codeforces 提交",        "note": "506 场 · 67 场 rated" },
-    { "value": 20,   "unit": "项", "label": "竞赛获奖",               "note": "全国性 16 · 省赛区域 4" }
+    { "from": "total", "unit": "项", "label": "竞赛获奖",             "note": "全国性 {national} · 省赛区域 {provincial}" }
   ],
 
   "timeline": [
@@ -41,7 +41,7 @@
       "items": [
         "CCPC 全国邀请赛贵阳站 银牌 · 秦皇岛站 铜奖",
         "CCF-CSP 第 43 次 355 分（前 1.76%）· Codeforces 峰值 2089",
-        "码蹄杯本科院校赛道国赛 金奖 · 天梯赛全国总决赛 个人二等奖",
+        "第 22 届百度之星决赛（人才专项赛道）金奖 · 天梯赛全国总决赛 个人二等奖",
         "开始把训练过程做成工具与站点"
       ]
     }

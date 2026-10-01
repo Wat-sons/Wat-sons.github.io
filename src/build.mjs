@@ -48,6 +48,29 @@ try {
   console.warn("  ! src/data/cf.json 读不到（跑 npm run sync 生成），rating 曲线会留空");
 }
 
+/* ---------- 1b. 奖项统计：从 competitions.json 算，不手写 ---------- */
+// metrics.json 里带 from 的条目会在这里被填上真实数值；
+// note 里的 {total} {national} {provincial} {cert} 也会被替换。
+// 这样删/加一条奖，首屏和竞赛区的数字自动跟着变，不会脱节。
+const NATIONAL_LEVELS = new Set(["gold", "first", "second", "silver", "third", "bronze", "finalist"]);
+const AW = competitions.awards;
+const awardStats = {
+  all: AW.length,
+  total: AW.filter((a) => a.level !== "cert").length,
+  national: AW.filter((a) => NATIONAL_LEVELS.has(a.level)).length,
+  provincial: AW.filter((a) => String(a.level).startsWith("provincial-")).length,
+  cert: AW.filter((a) => a.level === "cert").length,
+};
+const resolveMetric = (s) => {
+  if (!s.from) return s;
+  const value = awardStats[s.from];
+  if (value === undefined) throw new Error(`metrics.json 里出现未知的 from: "${s.from}"（可用：${Object.keys(awardStats).join(" / ")}）`);
+  const note = s.note ? s.note.replace(/\{(\w+)\}/g, (_, k) => (awardStats[k] ?? `{${k}}`)) : s.note;
+  return { ...s, value, note };
+};
+metrics.hero = metrics.hero.map(resolveMetric);
+metrics.competition = metrics.competition.map(resolveMetric);
+
 /* ---------- 2. 区块（顺序 = 页面顺序 = 导航顺序 = 编号顺序） ---------- */
 const ctx = (num, note) => ({ num, note });
 
@@ -138,7 +161,8 @@ console.log("构建完成");
 console.log(`  index.html        ${kb(html)} KB · ${sections.split("<section").length - 1} 个区块 · ${nav} 项导航`);
 console.log(`  assets/style.css  ${kb(cssParts.join(""))} KB · ${CSS_ORDER.length} 个样式层`);
 console.log(`  assets/app.js     ${kb(await readText("assets/app.js"))} KB`);
-console.log(`  奖项 ${competitions.awards.length} 条 · 项目 ${projects.items.length} 个 · 时间线 ${metrics.timeline.length} 年`);
+console.log(`  奖项 ${AW.length} 条（竞赛 ${awardStats.total} · 全国性 ${awardStats.national} · 省赛区域 ${awardStats.provincial} · 认证 ${awardStats.cert}）`);
+console.log(`  项目 ${projects.items.length} 个 · 时间线 ${metrics.timeline.length} 年`);
 if (cf) {
   console.log(`  CF 数据同步于 ${cf.syncedAt.slice(0, 10)} · ${cf.codeforces.handles.map((h) => h.handle).join(" / ")}`);
 }

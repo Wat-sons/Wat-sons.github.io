@@ -212,6 +212,30 @@ try {
   if ('xcpc' in cf) problems.push('src/data/cf.json 里又冒出 xcpc 字段 —— 训练量统计不公开');
 } catch { /* 没有就跳过 */ }
 
+// 仓库里不该出现二进制/位图 —— 除了图标与字体。
+// 用 git ls-files 查（那才是真正会被发布的集合），git 不可用时退回扫描根目录。
+// 背景：曾经因为一条命令里路径分隔符丢了，两张截图被拼成「预览N-xxx.png」落在仓库根目录
+// 并被提交进公开仓库。光靠 .gitignore 挡不住这种意外落盘，必须有一道断言。
+const ALLOWED_BIN = [
+  'assets/favicon.svg',                       // 矢量图标
+  'assets/fonts/space-grotesk-latin-var.woff2', // 自托管字体
+];
+const BIN_RE = /\.(png|jpe?g|webp|gif|pdf|docx?|xlsx?|zip)$/i;
+let tracked = null;
+try {
+  const { execFileSync } = await import('node:child_process');
+  tracked = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-files'],
+    { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
+    .split('\n').map((s) => s.trim()).filter(Boolean);
+} catch {
+  notes.push('git 不可用，跳过「仓库内二进制」检查');
+}
+if (tracked) {
+  const strays = tracked.filter((f) => BIN_RE.test(f) && !ALLOWED_BIN.includes(f));
+  for (const f of strays) problems.push(`公开仓库里跟踪了二进制文件：${f} —— 加进 .gitignore 并 git rm --cached`);
+  if (!strays.length) notes.push(`仓库内二进制检查：${tracked.length} 个跟踪文件，除图标与字体外无二进制`);
+}
+
 // 不被 .gitignore 挡住的敏感目录 = 会被推上公开仓库
 for (const bad of ['awards-repo', 'awards-vault', '_rendered', '_archive']) {
   if (await exists(bad)) {
