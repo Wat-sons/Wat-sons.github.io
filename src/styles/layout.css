@@ -56,14 +56,28 @@
   inset: 0 0 auto;
   z-index: 50;
   padding-block: 1.1rem;
-  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease),
-              backdrop-filter var(--dur) var(--ease);
-  border-bottom: 1px solid transparent;
 }
-.topbar.is-stuck {
+/* 毛玻璃放在伪元素上，**不能直接放在 .topbar 上**。
+   原因：backdrop-filter 非 none 的元素会成为 position:fixed 后代的包含块。
+   移动端抽屉 .nav 是这个 header 的后代、且用 inset:0 铺满视口 ——
+   一旦 topbar 变成 is-stuck 带上 backdrop-filter，抽屉的包含块就从视口
+   变成这条 75px 高的导航条，整个抽屉塌成一条，页面内容从下面透出来。
+   （只在"页面顶部"打开抽屉是正常的，往下滚一点就崩 —— 就是这个原因。）
+   放到 ::before 上，毛玻璃照旧，但 .topbar 本身不再制造包含块。 */
+.topbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: color-mix(in srgb, var(--bg) 82%, transparent);
   backdrop-filter: saturate(150%) blur(12px);
   -webkit-backdrop-filter: saturate(150%) blur(12px);
+  border-bottom: 1px solid transparent;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.topbar.is-stuck::before {
+  opacity: 1;
   border-bottom-color: var(--line);
 }
 .topbar-inner {

@@ -30,8 +30,7 @@
   /* ---------- 字号阶梯 ---------- */
   /* 显示字 / 正文 / meta ≈ 8 : 1.3 : 1，靠比值而非绝对值制造层级 */
   --fs-display: clamp(2.75rem, 9.5vw, 8rem);      /* Hero 宣言     44 → 128px */
-  --fs-ghost:   clamp(3.5rem, 14vw, 11rem);       /* 幽灵区块标题  56 → 176px */
-  --fs-h2:      clamp(1.75rem, 4.4vw, 3rem);      /* 区块标题      28 → 48px  */
+  --fs-ghost:   clamp(3.5rem, 14vw, 11rem);       /* 幽灵区块标题  56 → 176px  */  --fs-h2:      clamp(1.75rem, 4.4vw, 3rem);      /* 区块标题      28 → 48px  */
   --fs-h3:      clamp(1.25rem, 2.4vw, 1.875rem);  /* 卡片标题      20 → 30px  */
   --fs-num:     clamp(2.25rem, 6vw, 4.5rem);      /* 大数字        36 → 72px  */
   --fs-num-sm:  clamp(1.5rem, 3vw, 2.25rem);
@@ -56,4 +55,14 @@
 /* 尊重系统设置：关闭一切非必要动效 */
 @media (prefers-reduced-motion: reduce) {
   :root { --dur: 1ms; --dur-slow: 1ms; }
+}
+
+/* 窄屏上幽灵标题按视口比例缩放。
+   基准值 clamp(3.5rem, 14vw, 11rem) 在手机上会被**下限**顶住，
+   字宽不随视口缩小 —— 一旦某个词比视口宽，两侧就各被裁掉一截，
+   看起来像"只显示了一半"。
+   13vw 让最长的 "COMPETITION" 稳定占视口约 77%：够大、有压场感，
+   又永远进得去。上限 7rem 保证平板过渡处不跳。 */
+@media (max-width: 720px) {
+  :root { --fs-ghost: clamp(2.5rem, 13vw, 7rem); }
 }

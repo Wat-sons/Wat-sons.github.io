@@ -141,6 +141,44 @@ for (const vp of VIEWPORTS) {
   })`));
   check(`${vp.label} 无横向溢出`, r.sw === r.cw && r.overflow.length === 0,
     r.sw === r.cw ? 'ok' : `${r.sw}/${r.cw} ${r.overflow.join(', ')}`);
+
+  // 幽灵标题必须在视口内**完整**显示。
+  // 基准值在手机上被 clamp 下限顶住，字宽不随视口缩小，
+  // 某个词一旦比视口宽就会两侧各被裁掉一截 —— 看起来像"只显示了一半"。
+  const g = JSON.parse(await evalJs(`JSON.stringify(
+    [...document.querySelectorAll('.section-ghost .ghost')].map(el => {
+      const r = document.createRange(); r.selectNodeContents(el);
+      const b = r.getBoundingClientRect();
+      return { t: el.textContent.trim().slice(0, 14), left: Math.round(b.left), right: Math.round(b.right) };
+    }))`));
+  const vw = await evalJs('document.documentElement.clientWidth');
+  const cut = g.filter((x) => x.left < -1 || x.right > vw + 1);
+  check(`${vp.label} 幽灵标题完整显示`, cut.length === 0,
+    cut.length ? cut.map((x) => `${x.t}(${x.left}..${x.right}/${vw})`).join(' ') : `${g.length} 个都在视口内`);
+
+  // 移动端抽屉必须在**滚到中部之后**依然铺满视口。
+  // 曾经的 bug：.topbar.is-stuck 上的 backdrop-filter 会成为 position:fixed
+  // 后代的包含块，抽屉的 inset:0 于是相对那条 75px 高的导航条解析，整个塌掉。
+  // 在页面顶部测是好的，所以只有"滚下去再打开"才暴露。
+  if (vp.w <= 900) {
+    const d = JSON.parse(await evalJs(`(async () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      scrollTo(0, document.documentElement.scrollHeight * 0.45);
+      await new Promise(r => setTimeout(r, 300));
+      document.querySelector('.nav-toggle').click();
+      await new Promise(r => setTimeout(r, 900));
+      const nav = document.querySelector('.nav');
+      const b = nav.getBoundingClientRect();
+      const stuck = document.querySelector('.topbar').classList.contains('is-stuck');
+      document.querySelector('.nav-toggle').click();
+      await new Promise(r => setTimeout(r, 500));
+      return JSON.stringify({ h: Math.round(b.height), w: Math.round(b.width), stuck,
+                              vh: innerHeight, vw: innerWidth });
+    })()`));
+    check(`${vp.label} 滚到中部后抽屉仍铺满视口`,
+      d.stuck && d.h >= d.vh - 1 && d.w >= d.vw - 1,
+      `抽屉 ${d.w}×${d.h} / 视口 ${d.vw}×${d.vh} · is-stuck=${d.stuck}`);
+  }
 }
 
 /* ---------- 2. 桌面端结构 ---------- */
