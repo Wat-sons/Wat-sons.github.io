@@ -333,21 +333,6 @@
       ]
     },
     {
-      "id": "mati-2025-provincial",
-      "date": "2025-08",
-      "title": "第七届码蹄杯程序设计大赛 · 本科院校赛道省赛",
-      "series": "码蹄杯",
-      "stage": "省赛",
-      "level": "provincial-second",
-      "result": "获奖",
-      "extra": null,
-      "weight": 210,
-      "vault": "2025/2025-mati-provincial_*.jpg",
-      "certs": [
-        "第七届码蹄杯程序设计大赛 本科院校赛道省赛 获奖证书"
-      ]
-    },
-    {
       "id": "ccf-csp-42",
       "date": "2026-06-03",
       "title": "第 42 次 CCF-CSP 认证",
