@@ -15,7 +15,7 @@
   --bg-sunken:   #121317;
   --fg:          #F0EEE8;   /* 柔和暖白，比纯白低一点刺激 */
   --fg-dim:      #9B978F;
-  --fg-mute:     #6F6C66;
+  --fg-mute:     #86827B;   /* 在 #17191E 上约 4.6:1，过 WCAG AA */
   --fg-ghost:    #23262D;   /* 幽灵标题：只比底色亮一点点 */
   --line:        #2A2D35;
   --line-strong: #3C404A;
