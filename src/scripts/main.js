@@ -600,6 +600,69 @@
     }
   }
 
+  /* 当前语言。中/EN 切换按钮还没上线，但所有会随语言变的东西
+     统一读这一个属性 —— 等切换做完，这些地方一行都不用改。 */
+  function langIsEn() {
+    return document.documentElement.getAttribute("data-lang") === "en";
+  }
+
+  /* ═══════════════ 上线计时 ═══════════════
+     页脚那行 SITE AGE。
+
+     全程用 **绝对时间差**（Date.now() − 起始时刻）现算，不是每秒 +1 ——
+     所以标签页被挂起、系统休眠、定时器被浏览器节流之后再回来，
+     显示的值依然是对的，不会累积漂移。
+
+     起始日期来自 HTML 上的 data-since（构建期从 profile.json 注入），
+     页面上不写死任何数字；元素不存在或日期非法时直接返回，
+     其它内容完全不受影响。
+
+     **算的是「网站上线至今」，不是「服务器在线时长」** —— 静态站没有常驻进程，
+     这个数字不能当成可用性指标。 */
+  function setupSiteAge() {
+    var el = document.querySelector("[data-site-age]");
+    if (!el) return;
+
+    var since = Date.parse(el.getAttribute("data-since") || "");
+    if (isNaN(since)) { el.remove(); return; }   // 日期缺失/非法：整块撤掉，不留占位符
+
+    var nDay = el.querySelector("[data-age-d]");
+    var nHms = el.querySelector("[data-age-hms]");
+    var nUnit = el.querySelector("[data-age-ud]");
+    if (!nDay || !nHms) return;
+
+    var timer = 0;
+    var pad = function (n) { return n < 10 ? "0" + n : "" + n; };
+
+    function render() {
+      var ms = Date.now() - since;
+      if (ms < 0) ms = 0;                       // 起始日期在未来 → 按 0，不显示负数
+      var total = Math.floor(ms / 1000);
+      var d = Math.floor(total / 86400);
+      var h = Math.floor((total % 86400) / 3600);
+      var m = Math.floor((total % 3600) / 60);
+      var s = total % 60;
+      nDay.textContent = d.toLocaleString("en-US");   // 千分位，「1,280 天」更好读
+      nHms.textContent = pad(h) + ":" + pad(m) + ":" + pad(s);
+      if (nUnit) nUnit.textContent = langIsEn() ? (d === 1 ? "day" : "days") : "天";
+    }
+
+    function start() { if (!timer) timer = setInterval(render, 1000); }
+    function stop() { if (timer) { clearInterval(timer); timer = 0; } }
+
+    render();
+    start();
+
+    // 切到后台就停表（省电）；回前台先补算一次再继续 ——
+    // 挂起期间浏览器会把 setInterval 节流到分钟级，靠这个事件纠正
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) { stop(); } else { render(); start(); }
+    });
+    // 组件卸载 / 页面离开：清掉定时器
+    window.addEventListener("pagehide", stop);
+    window.addEventListener("beforeunload", stop);
+  }
+
   /* ------------------------------------------------------------------ */
   setupReveal();
   setupCounters();
@@ -608,6 +671,7 @@
   setupTheme();
   setupTopbar();
   setupDrawer();
+  setupSiteAge();
   setupPointer();
 
   // 告诉 <head> 里的守卫脚本：JS 一切正常，可以保持入场动画

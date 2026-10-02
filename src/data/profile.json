@@ -69,5 +69,11 @@
   "footer": {
     "line1": "Built with curiosity.",
     "line2": "AI · Algorithms · Building"
+  },
+  "site": {
+    "_comment": "上线日期。改这一行就能改页脚的 SITE AGE 计时基准。",
+    "_evidence": "GitHub Pages 首次构建成功于 2026-10-01T13:43:21Z（北京时间 2026-10-01 21:43:21），仓库创建于同日 13:42:31Z —— 取自 Pages builds API，不是仓库创建日期冒充。",
+    "_howto": "格式必须是带时区的 ISO 8601（Z 或 ±08:00）。想暂停计时就填 null，页脚整块会自动消失，不影响其它内容。",
+    "launchedAt": "2026-10-01T13:43:21Z"
   }
 }

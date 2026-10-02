@@ -286,6 +286,50 @@ main, .footer { transition: opacity 140ms var(--ease); }
   line-height: 2;
 }
 .footer-line b { color: var(--fg-dim); font-weight: 500; }
+
+/* ---------- 上线计时 ----------
+   低调地待在页脚中间：不抢 Hero 的注意力，也不和「回到顶部」争右端。
+   margin-inline:auto 让它在 flex 里居中，换行后落到单独一行也不会贴边。 */
+.site-age {
+  display: none;          /* 见下方 html.js 规则 */
+  align-items: center;
+  gap: 0.5rem;
+  margin-inline: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  color: var(--fg-mute);
+  white-space: nowrap;
+  cursor: help;
+}
+/* 没有 JS 就整块不显示 —— 否则会一直挂着「– 天 --:--:--」这种占位符。
+   和站点其它地方一样走 .js 渐进增强：脚本没跑，这一块就当不存在。 */
+html.js .site-age { display: inline-flex; }
+.age-orbit {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--fg-mute);
+  /* 节点绕圈：12s 一圈，慢到只是"余光里在动" */
+  animation: age-spin 12s linear infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes age-spin { to { transform: rotate(360deg); } }
+.age-label { text-transform: uppercase; }
+.age-value { color: var(--fg-dim); }
+/* 等宽数字：每秒刷新时宽度不变，整块不会左右抖 */
+.age-value b {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  color: var(--fg);
+}
+.age-value i {
+  font-style: normal;
+  margin-inline: 0.15em 0.45em;
+  color: var(--fg-mute);
+}
+.age-value i:last-child { margin-right: 0; }
 .to-top {
   display: inline-flex;
   align-items: center;

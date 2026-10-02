@@ -107,6 +107,8 @@ async function load(url, { scroll = true } = {}) {
 }
 
 const results = [];
+/** "HH:MM:SS" → 秒，用于把上线计时换算成单一数值再比 */
+const hms2s = (s) => { const [a, b, c] = s.split(':').map(Number); return a * 3600 + b * 60 + c; };
 const check = (name, pass, detail = '') => results.push({ name, pass, detail });
 
 await send('Page.enable');
@@ -209,7 +211,17 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   brandImgs: document.querySelectorAll('.brand-avatar').length,
   abroadImgs: Array.prototype.filter.call(document.querySelectorAll('img'), function (i) { return !i.classList.contains('brand-avatar'); }).length,
   themeBtn: document.querySelectorAll('[data-theme-toggle]').length,
-  themeAttr: document.documentElement.getAttribute('data-theme'),
+themeAttr: document.documentElement.getAttribute('data-theme'),
+  age: (() => { const el = document.querySelector('[data-site-age]');
+    if (!el) return null;
+    const v = el.querySelector('.age-value');
+    return { since: el.getAttribute('data-since'),
+             d: el.querySelector('[data-age-d]').textContent,
+             u: el.querySelector('[data-age-ud]').textContent,
+             hms: el.querySelector('[data-age-hms]').textContent,
+             title: el.getAttribute('title'),
+             tnum: /tabular-nums/.test(getComputedStyle(el.querySelector('[data-age-d]')).fontVariantNumeric) };
+  })(),
   brandAlt: (document.querySelector('.brand-avatar') || {}).alt || '',
   brandName: !!document.querySelector('.brand-name'),
   langBtns: document.querySelectorAll('[data-lang]').length,
@@ -262,6 +274,23 @@ check('导航左上角是头像 + quchen（alt 可读）',
 // 语言切换（中 / EN）等英文文案落实后再上；届时在这里补 langBtns === 2 的断言。
 check('favicon 三件套 + Apple Touch Icon 都已声明', r.favicons === 4, `${r.favicons} 条 link`);
 check('页脚有 Q+Path 标识', r.footerMark === true);
+
+/* ---------- 上线计时 ---------- */
+check('页脚有上线计时，基准来自 data-since 而非写死数字', r.age && /^\d{4}-\d{2}-\d{2}T/.test(r.age.since), r.age ? `since=${r.age.since}` : '缺失');
+if (r.age) {
+  const expect = (() => {
+    const tt = Math.floor((Date.now() - Date.parse(r.age.since)) / 1000);
+    const p = (n) => (n < 10 ? '0' + n : '' + n);
+    return `${Math.floor(tt / 86400)}|${p(Math.floor((tt % 86400) / 3600))}:${p(Math.floor((tt % 3600) / 60))}:${p(tt % 60)}`;
+  })();
+  const got = `${r.age.d.replace(/,/g, '')}|${r.age.hms}`;
+  // 允许 2 秒误差（量的时候秒针刚好跳过）
+  const [ed, eh] = expect.split('|'); const [gd, gh] = got.split('|');
+  const near = Math.abs(Number(ed) * 86400 + hms2s(eh) - (Number(gd) * 86400 + hms2s(gh))) <= 2;
+  check('计时值与真实时间一致（±2s）', near, `页面 ${r.age.d}${r.age.u} ${r.age.hms} · 期望 ${ed}天 ${eh}`);
+  check('数字用等宽 tabular-nums（每秒刷新不抖）', r.age.tnum === true, `font-variant-numeric=${r.age.tnum}`);
+  check('计时块声明了「非服务器在线时长」', /不代表服务器在线时长|不代表.*在线/.test(r.age.title || ''), r.age.title || '');
+}
 check('入场动画全部收尾', r.notIn === 0, `${r.reveals} 个 reveal，未进场 ${r.notIn}`);
 check('app.js 正常收尾', r.ready === true);
 check('有无障碍跳转链接', r.skip === true);

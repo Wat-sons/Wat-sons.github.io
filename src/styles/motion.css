@@ -59,5 +59,6 @@ html.js .reveal[data-delay="4"].is-in { transition-delay: 320ms; }
   .pill .dot { animation: none !important; }
   .work-item:hover .work-media > svg { transform: none !important; }
   .to-top:hover svg { transform: none !important; }
+  .age-orbit { animation: none !important; }   /* 页脚那颗绕圈的节点 */
   * { transition-duration: 1ms !important; }
 }
