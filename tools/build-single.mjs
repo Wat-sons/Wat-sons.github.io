@@ -43,18 +43,18 @@ const fontBuf = readFileSync(join(ROOT, 'assets/fonts/space-grotesk-latin-var.wo
 if (!css.includes(fontRel)) throw new Error(`style.css 里找不到字体引用 ${fontRel}`);
 css = css.replaceAll(`url("${fontRel}")`, `url("${dataUri(fontBuf, 'font/woff2')}")`);
 
-// 1b) 首屏夜景插画：同样内联成 data URI（34 KB -> base64 约 45 KB）。
-// 单文件版的卖点就是「离线双击就能看」，所以图也必须进去。
-const sceneRel = 'assets/scenery/orbit.webp';
-const sceneAbs = join(ROOT, sceneRel);
-if (!existsSync(sceneAbs)) throw new Error(`缺 ${sceneRel}`);
-const sceneBuf = readFileSync(sceneAbs);
-if (!html.includes(`src="${sceneRel}"`)) throw new Error(`index.html 里找不到 ${sceneRel} 的引用`);
-// 首屏与页尾是同一张图（首尾呼应），这里两处都会内联成 data URI。
-// 单文件因此比之前大 ~45 KB —— 换来的是"离线双击就能看，且插画也在里面"。
-// 试过用 CSS 变量 / 伪元素去重，但那样只在单文件路径里存在一套别的渲染方式，
-// 维护风险大于省下的 45 KB，所以作罢。
-html = html.replaceAll(`src="${sceneRel}"`, `src="${dataUri(sceneBuf, 'image/webp')}"`);
+// 1b) 首尾插画已改成 **CSS 背景**（这样亮/暗两套只下载当前主题那张），
+//     所以要在 css 变量上替换 url()，而不是 HTML 里的 <img src>。
+//     必须操作 css 而不是 html —— 此时样式还没内联进 HTML。
+//     两套主题各内联一份：离线文件里换主题也得有图。
+for (const rel of ['orbit.webp', 'orbit-light.webp']) {
+  const abs = join(ROOT, 'assets/scenery', rel);
+  if (!existsSync(abs)) throw new Error(`缺 assets/scenery/${rel}`);
+  const uri = dataUri(readFileSync(abs), 'image/webp');
+  const needle = `url(scenery/${rel})`;
+  if (!css.includes(needle)) throw new Error(`style.css 里找不到 ${needle}`);
+  css = css.replaceAll(needle, `url("${uri}")`);
+}
 
 // 2) 外链 CSS → 内联 <style>，同时去掉字体 preload（已内联，无需预加载）
 if (!html.includes('<link rel="stylesheet" href="assets/style.css">')) {
@@ -87,6 +87,11 @@ html = html.replace(
   if (!html.includes('src="assets/avatar/avatar-navbar.webp"')) throw new Error('index.html 里找不到导航头像的引用');
   html = html.replaceAll('src="assets/avatar/avatar-navbar.webp"',
     `src="${dataUri(av, 'image/webp')}"`);
+  // 首尾插画改成 CSS 背景了，两套主题各内联一份
+  for (const rel of ['orbit.webp', 'orbit-light.webp']) {
+    const buf = read(`assets/scenery/${rel}`);
+    html = html.replaceAll(`url(scenery/${rel})`, `url("${dataUri(buf, 'image/webp')}")`);
+  }
 }
 
 // 4) 外链脚本 → 内联

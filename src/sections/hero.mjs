@@ -21,9 +21,7 @@ export const hero = ({ profile, metrics }) => {
 
   return `
 <section id="top" class="hero">
-  <div class="hero-scenery" aria-hidden="true">
-    <img src="assets/scenery/orbit.webp" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
-  </div>
+  <div class="hero-scenery" aria-hidden="true"></div>
   <div class="wrap">
     ${rail(h.railLeft, h.railRight)}
 

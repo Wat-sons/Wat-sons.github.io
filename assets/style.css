@@ -1,26 +1,41 @@
 /* ==== src/styles/tokens.css ==== */
 /* ============================================================
    tokens.css — 设计令牌（唯一的「设计决策集中地」）
-   改颜色 / 字号 / 间距 / 节奏，只动这个文件。
+
+   主题系统：**只在这里定义两套颜色**，其余样式一律引用变量。
+   切换方式是 <html data-theme="dark|light">，由 <head> 里的内联脚本
+   在首次绘制前写好，所以不会有亮暗闪烁。
    ============================================================ */
 
 :root {
-  /* ---------- 色彩 ---------- */
-  /* 暖调近黑。不用纯黑：纯黑在 OLED 上会显得廉价，且失去层次。 */
-  --bg:          #0B0B0C;
-  --bg-raise:    #131315;   /* 卡片底，只比页面亮一档 */
-  --bg-sunken:   #08080A;
-  --fg:          #EDEAE3;   /* 暖白，比纯白柔和 */
-  --fg-dim:      #8A8781;
-  --fg-mute:     #57554F;
-  --fg-ghost:    #1A1A1D;   /* 幽灵标题：只比底色亮一点点 */
-  --line:        #232327;
-  --line-strong: #34343B;
+  /* ---------- 色彩 · DARK（默认） ---------- */
+  /* 深灰黑，不是纯黑：纯黑在 OLED 上显廉价，也失去层次。 */
+  --bg:          #17191E;
+  --bg-raise:    #1E2027;   /* 卡片底，只比页面亮一档 */
+  --bg-sunken:   #121317;
+  --fg:          #F0EEE8;   /* 柔和暖白，比纯白低一点刺激 */
+  --fg-dim:      #9B978F;
+  --fg-mute:     #6F6C66;
+  --fg-ghost:    #23262D;   /* 幽灵标题：只比底色亮一点点 */
+  --line:        #2A2D35;
+  --line-strong: #3C404A;
 
   /* 全站唯一强调色。只允许出现在：大数字 / 链接 hover / 状态点 / 焦点环 / 一处陈述 */
   --accent:      #D8FF4A;
   --accent-deep: #A7C93A;
   --accent-glow: rgba(216, 255, 74, 0.14);
+
+  /* 底纹辉光（base.css 的 body::before）与奖牌色，也随主题走 */
+  --glow:        rgba(120, 140, 255, 0.06);
+  --tone-gold:   #F0C45A;
+  --tone-silver: #C6CDD8;
+  --tone-bronze: #D08A55;
+
+  /* 图表：与背景反向的抽稀线 */
+  --chart-grid:  var(--line);
+  --chart-axis:  var(--fg-mute);
+
+  color-scheme: dark;
 
   /* ---------- 字体 ---------- */
   /* Space Grotesk 无中日韩字形，中文自动落到后面的系统栈 */
@@ -51,6 +66,56 @@
   --ease:    cubic-bezier(0.22, 0.61, 0.36, 1);
   --dur:     280ms;
   --dur-slow: 620ms;
+}
+
+/* ============================================================
+   LIGHT THEME
+
+   两处刻意的判断：
+
+   1) accent 在亮色下**压暗成同色相的深橄榄绿**，而不是照搬 #D8FF4A。
+      亮青柠在米白底上对比度约 1.2:1 —— 大数字、下划线、路径全都看不见。
+      同色相压暗是标准做法（GitHub 的绿也是这么分主题的），品牌色相没变。
+      填充用色仍是原来的青柠（见 --accent-fill）。
+
+   2) 背景保持"米白"而不是纯白：参考图里那种暖调奶油白，
+      和暗色的 #17191E 一样都不是极值，两边都留了层次。
+   ============================================================ */
+[data-theme="light"] {
+  --bg:          #F5F5F2;
+  --bg-raise:    #FFFFFF;
+  --bg-sunken:   #EBEBE6;
+  --fg:          #111111;
+  --fg-dim:      #57554F;
+  --fg-mute:     #766F67;
+  --fg-ghost:    #E4E2DB;
+  --line:        #DADADA;
+  --line-strong: #C2C0B9;
+
+  --accent:      #5C7500;   /* 同色相压暗：在 #F5F5F2 上对比度约 4.9:1 */
+  --accent-deep: #46590A;
+  --accent-glow: rgba(92, 117, 0, 0.12);
+
+  --glow:        rgba(90, 110, 180, 0.07);
+  --tone-gold:   #8A6A12;
+  --tone-silver: #5A6270;
+  --tone-bronze: #8A5228;
+
+  --chart-grid:  var(--line);
+  --chart-axis:  var(--fg-mute);
+
+  color-scheme: light;
+}
+
+/* 主题切换的过渡：只给会变色的属性加，150–250ms（需求区间）。
+   放在 html 上、并排除 reduced-motion —— 见文件末尾。 */
+@media (prefers-reduced-motion: no-preference) {
+  html.is-theming,
+  html.is-theming body,
+  html.is-theming body * {
+    transition: background-color 200ms var(--ease), border-color 200ms var(--ease),
+                color 200ms var(--ease), fill 200ms var(--ease), stroke 200ms var(--ease) !important;
+  }
 }
 
 /* 尊重系统设置：关闭一切非必要动效 */
@@ -116,7 +181,7 @@ body::before {
   pointer-events: none;
   background:
     radial-gradient(760px 520px at 8% -6%, var(--accent-glow), transparent 62%),
-    radial-gradient(900px 620px at 96% 4%, rgba(120, 140, 255, 0.06), transparent 66%);
+    radial-gradient(900px 620px at 96% 4%, var(--glow), transparent 66%);
 }
 
 img, svg, canvas { display: block; max-width: 100%; }
@@ -548,6 +613,33 @@ main, .footer { transition: opacity 140ms var(--ease); }
 .topbar-tail { display: flex; align-items: center; gap: 0.9rem; margin-left: auto; }
 .year-tag { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--fg-mute); letter-spacing: 0.1em; }
 
+/* ---------- 主题切换 ----------
+   不改变导航条高度与布局：按钮做成 28px 的方框，和年份标签同一视觉重量。
+   焦点态用 accent 的 outline —— 键盘 Tab 到它时必须看得出来。 */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: none;
+  color: var(--fg-dim);
+  cursor: pointer;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              background-color var(--dur) var(--ease), transform 120ms var(--ease);
+}
+.theme-toggle:hover { color: var(--fg); border-color: var(--line-strong); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle:active { transform: scale(0.94); }
+.theme-toggle .ti { width: 16px; height: 16px; display: block; }
+/* 显示「点了会切到哪一边」：暗色下给太阳，亮色下给月亮 */
+.theme-toggle .ti-moon { display: none; }
+[data-theme="light"] .theme-toggle .ti-sun { display: none; }
+[data-theme="light"] .theme-toggle .ti-moon { display: block; }
+
 /* 移动端：导航收成抽屉 */
 .nav-toggle { display: none; }
 @media (max-width: 860px) {
@@ -747,27 +839,26 @@ main, .footer { transition: opacity 140ms var(--ease); }
   aspect-ratio: 16 / 9;
   z-index: 0;
   pointer-events: none;
+  /* 插画走 CSS 背景而不是 <img>：主题切换时可以只下载当前那一张。
+     两套图都是各自主题的底色 + 四边 alpha 淡出，所以看不出边界。 */
+  background-image: url(scenery/orbit.webp);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   /* 三层微动：
        --sc-x / --sc-y  鼠标反向微移（景深）
        --sc-sy          滚动缓慢下移
      幅度都只有几 px —— 目标是"说不上来哪里动了，但画面是活的"。
      用独立的 translate 属性承载入场动画，避免和 transform 打架。 */
   transform: translate3d(var(--sc-x, 0px), calc(var(--sc-y, 0px) + var(--sc-sy, 0px)), 0);
-  animation: scenery-in 1800ms var(--ease) both;
-}
-.hero-scenery img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  /* 四边淡出已经烘进这张 WebP 的 alpha 通道了（见 tools/ 里的处理脚本），
-     所以这里不需要任何 mask，也不会有矩形边。contain 保证不裁掉淡出区。 */
-  object-fit: contain;
   /* 压到 0.62：行星退成背景里的一枚光斑，标题仍然是视觉主体 */
   opacity: 0.62;
+  animation: scenery-in 1800ms var(--ease) both;
 }
+[data-theme="light"] .hero-scenery { background-image: url(scenery/orbit-light.webp); }
 @keyframes scenery-in {
   from { opacity: 0; translate: 0 26px; }
-  to   { opacity: 1; translate: 0 0; }
+  to   { opacity: 0.62; translate: 0 0; }
 }
 /* 文字压在插画上时保持可读 */
 .hero h1, .hero .lead, .hero .eyebrow { position: relative; }
@@ -1000,9 +1091,9 @@ html.js.is-booting .hero-fade { animation: none; }
   border: 1px solid currentColor;
   white-space: nowrap;
 }
-.tone-gold   { color: #F0C45A; }
-.tone-silver { color: #C6CDD8; }
-.tone-bronze { color: #D08A55; }
+.tone-gold   { color: var(--tone-gold); }
+.tone-silver { color: var(--tone-silver); }
+.tone-bronze { color: var(--tone-bronze); }
 .tone-blue   { color: var(--fg-dim); }
 .award-more { margin-top: 1.75rem; }
 .award-more summary { cursor: pointer; list-style: none; width: fit-content; }
@@ -1218,12 +1309,17 @@ html.js.is-booting .hero-fade { animation: none; }
   right: -4%;
   bottom: -4%;
   width: min(58%, 820px);
+  aspect-ratio: 16 / 9;
   pointer-events: none;
   transform: scaleX(-1);
   opacity: 0.3;
   z-index: 0;
+  background-image: url(scenery/orbit.webp);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-.contact-scenery img { display: block; width: 100%; height: auto; }
+[data-theme="light"] .contact-scenery { background-image: url(scenery/orbit-light.webp); }
 #contact > .wrap { position: relative; z-index: 1; }
 
 /* ═══════════════ 响应式重排 ═══════════════ */

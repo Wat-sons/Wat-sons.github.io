@@ -7,8 +7,8 @@
 <meta name="description" content="Artificial Intelligence student exploring algorithms, optimization and intelligent systems.">
 <meta name="author" content="quchen">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#0B0B0C">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#17191E" id="meta-theme-color">
+<meta name="color-scheme" content="dark light">
 <meta property="og:type" content="profile">
 <meta property="og:title" content="quchen — AI / Algorithms / Building">
 <meta property="og:description" content="Artificial Intelligence student exploring algorithms, optimization and intelligent systems.">
@@ -18,7 +18,19 @@
 <link rel="icon" href="assets/favicon/favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/space-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
-<style>:root{--bg: #0B0B0C;--bg-raise: #131315;--bg-sunken: #08080A;--fg: #EDEAE3;--fg-dim: #8A8781;--fg-mute: #57554F;--fg-ghost: #1A1A1D;--line: #232327;--line-strong: #34343B;--accent: #D8FF4A;--accent-deep: #A7C93A;--accent-glow: rgba(216,255,74,0.14);--font-sans: "Space Grotesk Variable","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,sans-serif;--font-mono: ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;--fs-display: clamp(2.75rem,9.5vw,8rem);--fs-ghost: clamp(3.5rem,14vw,11rem);--fs-h2: clamp(1.75rem,4.4vw,3rem);--fs-h3: clamp(1.25rem,2.4vw,1.875rem);--fs-num: clamp(2.25rem,6vw,4.5rem);--fs-num-sm: clamp(1.5rem,3vw,2.25rem);--fs-lead: clamp(1rem,1.7vw,1.3125rem);--fs-body: clamp(0.9375rem,1.05vw,1.0625rem);--fs-meta: clamp(0.6875rem,0.85vw,0.8125rem);--gutter: clamp(1rem,3.5vw,2.5rem);--maxw: 1440px;--sec-y: clamp(4.5rem,13vh,10rem);--stack: clamp(1.25rem,2.5vw,2.25rem);--radius: 14px;--radius-sm: 9px;--ease: cubic-bezier(0.22,0.61,0.36,1);--dur: 280ms;--dur-slow: 620ms;}@media (prefers-reduced-motion: reduce){:root{--dur: 1ms;--dur-slow: 1ms;}}@media (max-width: 720px){:root{--fs-ghost: clamp(2.5rem,13vw,7rem);}}.preloader{display: none;}@keyframes pl-fade{from{opacity: 0;}to{opacity: 1;}}html.is-booting .preloader{display: grid;place-items: center;position: fixed;inset: 0;z-index: 200;background: var(--bg);cursor: default;}html.is-booting{overflow: hidden;}.pl-inner{display: flex;flex-direction: column;align-items: center;gap: clamp(1.5rem,3.5vh,2.5rem);padding: var(--gutter);}.pl-word{margin: 0;font-size: clamp(1.6rem,4.6vw,2.6rem);font-weight: 500;letter-spacing: -0.02em;color: var(--fg);opacity: 0;animation: pl-fade 620ms var(--ease) 60ms forwards;}.pl-stage{position: relative;width: min(58vh,34vw,460px);aspect-ratio: 1 / 1;}.pl-space{display: block;width: 100%;height: 100%;overflow: visible;}.pl-grid{opacity: 0;animation: pl-grid-in 900ms var(--ease) 120ms forwards;}@keyframes pl-grid-in{to{opacity: 0.55;}}.pl-obstacles{opacity: 0;animation: pl-fade 700ms var(--ease) 260ms forwards;}.pl-obstacles > *{fill: color-mix(in srgb,var(--fg) 4%,transparent);stroke: var(--line-strong);stroke-width: 0.35;}.pl-path{fill: none;stroke: var(--accent);stroke-width: 0.9;stroke-linecap: round;stroke-linejoin: round;opacity: 0;}.pl-stage.is-found .pl-path{opacity: 1;}.pl-node{opacity: 0;animation: pl-fade 600ms var(--ease) 380ms forwards;}.pl-node-start circle{fill: var(--fg-mute);}.pl-node-target .pl-ring{fill: var(--accent);}.pl-node-target .pl-halo{fill: none;stroke: var(--accent);stroke-width: 0.4;transform-origin: 88px 12px;animation: pl-halo 2200ms var(--ease) 600ms infinite;}@keyframes pl-halo{0%{transform: scale(1);opacity: 0.7;}70%{transform: scale(3.4);opacity: 0;}100%{transform: scale(3.4);opacity: 0;}}.pl-tag{fill: var(--fg-mute);font-family: var(--font-mono);font-size: 3.1px;letter-spacing: 0.16em;}.pl-swarm{opacity: 0;animation: pl-fade 500ms var(--ease) 300ms forwards;}.pl-swarm.is-done{opacity: 0;transition: opacity 420ms var(--ease);}.pl-particle{fill: var(--fg-dim);transition: fill 500ms var(--ease);}.pl-swarm.is-converging .pl-particle.is-best{fill: var(--accent);}.pl-trail{fill: none;stroke: var(--fg-mute);stroke-width: 0.28;stroke-linecap: round;opacity: 0.5;}.pl-swarm.is-converging .pl-trail{opacity: 0.75;}.pl-status{position: absolute;left: 0;right: 0;bottom: -2.4rem;margin: 0;text-align: center;font-family: var(--font-mono);font-size: 0.6875rem;letter-spacing: 0.24em;text-transform: uppercase;color: var(--fg-mute);opacity: 0;animation: pl-fade 400ms var(--ease) 520ms forwards;}.pl-status::after{content: "…";}.pl-stage.is-found .pl-status::after{content: "";}.pl-verdict{position: absolute;inset: 0;margin: 0;display: flex;flex-direction: column;align-items: center;justify-content: center;gap: 0.5rem;text-align: center;opacity: 0;pointer-events: none;}.pl-verdict b{display: block;font-family: var(--font-mono);font-size: clamp(0.9rem,1.6vw,1.15rem);font-weight: 500;letter-spacing: 0.3em;text-indent: 0.3em;color: var(--accent);background: var(--bg);padding: 0.35em 0.5em;}.pl-verdict i{font-family: var(--font-mono);font-style: normal;font-size: 0.625rem;letter-spacing: 0.28em;text-indent: 0.28em;color: var(--fg-mute);background: var(--bg);padding: 0.3em 0.5em;}.pl-stage.is-found .pl-verdict{animation: pl-fade 300ms var(--ease) forwards;}.pl-egg{position: absolute;right: -1.2rem;top: 4%;margin: 0;font-size: 0.75rem;letter-spacing: 0.06em;color: var(--fg-mute);opacity: 0;pointer-events: none;}.pl-stage.is-found .pl-egg{animation: pl-egg 1500ms var(--ease) 120ms forwards;}@keyframes pl-egg{0%{opacity: 0;transform: translateY(5px);}18%{opacity: 0.9;transform: translateY(0);}62%{opacity: 0.9;}100%{opacity: 0;}}.pl-stage,.pl-word,.pl-status{transition: opacity 420ms var(--ease),transform 620ms var(--ease);}.preloader.is-enter .pl-stage{opacity: 0;transform: scale(1.08);}.preloader.is-enter .pl-word{opacity: 0;transform: translateY(-8px);}.preloader.is-enter .pl-status{opacity: 0;}.pl-line{position: fixed;left: var(--pl-x,50%);top: var(--pl-y,50%);width: var(--pl-w,0px);height: var(--pl-h,3px);background: var(--accent);transform: scaleX(0);transform-origin: left center;opacity: 0;pointer-events: none;}.preloader.is-enter .pl-line{transform: scaleX(1);opacity: 1;transition: transform 480ms var(--ease),opacity 160ms linear;}.preloader.is-exit{transition: opacity 520ms var(--ease);opacity: 0;}@media (max-width: 860px){.pl-stage{width: min(66vh,78vw,340px);}.pl-egg{right: -0.5rem;}}@media (max-width: 480px){.pl-status{bottom: -2rem;font-size: 0.625rem;letter-spacing: 0.18em;}}.preloader.is-reduced .pl-swarm,.preloader.is-reduced .pl-obstacles,.preloader.is-reduced .pl-grid{opacity: 0.5;animation: none;}.preloader.is-reduced .pl-path{opacity: 1;}.preloader.is-reduced .pl-node-target .pl-halo{animation: none;opacity: 0.4;}.preloader.is-reduced .pl-egg{display: none;}</style>
+<!-- 主题必须在**首次绘制之前**定下来，否则会先闪一下默认配色再跳成用户选的。
+     内联在这里（不是外部文件），所以没有网络等待；读 localStorage，
+     没存过就跟随系统 prefers-color-scheme。 -->
+<script>
+(function () {
+  var d = document.documentElement, saved = null;
+  try { saved = localStorage.getItem("theme"); } catch (e) {}
+  var theme = (saved === "light" || saved === "dark") ? saved
+    : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  d.setAttribute("data-theme", theme);
+})();
+</script>
+<style>:root{--bg: #17191E;--bg-raise: #1E2027;--bg-sunken: #121317;--fg: #F0EEE8;--fg-dim: #9B978F;--fg-mute: #6F6C66;--fg-ghost: #23262D;--line: #2A2D35;--line-strong: #3C404A;--accent: #D8FF4A;--accent-deep: #A7C93A;--accent-glow: rgba(216,255,74,0.14);--glow: rgba(120,140,255,0.06);--tone-gold: #F0C45A;--tone-silver: #C6CDD8;--tone-bronze: #D08A55;--chart-grid: var(--line);--chart-axis: var(--fg-mute);color-scheme: dark;--font-sans: "Space Grotesk Variable","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,sans-serif;--font-mono: ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;--fs-display: clamp(2.75rem,9.5vw,8rem);--fs-ghost: clamp(3.5rem,14vw,11rem);--fs-h2: clamp(1.75rem,4.4vw,3rem);--fs-h3: clamp(1.25rem,2.4vw,1.875rem);--fs-num: clamp(2.25rem,6vw,4.5rem);--fs-num-sm: clamp(1.5rem,3vw,2.25rem);--fs-lead: clamp(1rem,1.7vw,1.3125rem);--fs-body: clamp(0.9375rem,1.05vw,1.0625rem);--fs-meta: clamp(0.6875rem,0.85vw,0.8125rem);--gutter: clamp(1rem,3.5vw,2.5rem);--maxw: 1440px;--sec-y: clamp(4.5rem,13vh,10rem);--stack: clamp(1.25rem,2.5vw,2.25rem);--radius: 14px;--radius-sm: 9px;--ease: cubic-bezier(0.22,0.61,0.36,1);--dur: 280ms;--dur-slow: 620ms;}[data-theme="light"]{--bg: #F5F5F2;--bg-raise: #FFFFFF;--bg-sunken: #EBEBE6;--fg: #111111;--fg-dim: #57554F;--fg-mute: #766F67;--fg-ghost: #E4E2DB;--line: #DADADA;--line-strong: #C2C0B9;--accent: #5C7500;--accent-deep: #46590A;--accent-glow: rgba(92,117,0,0.12);--glow: rgba(90,110,180,0.07);--tone-gold: #8A6A12;--tone-silver: #5A6270;--tone-bronze: #8A5228;--chart-grid: var(--line);--chart-axis: var(--fg-mute);color-scheme: light;}@media (prefers-reduced-motion: no-preference){html.is-theming,html.is-theming body,html.is-theming body *{transition: background-color 200ms var(--ease),border-color 200ms var(--ease),color 200ms var(--ease),fill 200ms var(--ease),stroke 200ms var(--ease) !important;}}@media (prefers-reduced-motion: reduce){:root{--dur: 1ms;--dur-slow: 1ms;}}@media (max-width: 720px){:root{--fs-ghost: clamp(2.5rem,13vw,7rem);}}.preloader{display: none;}@keyframes pl-fade{from{opacity: 0;}to{opacity: 1;}}html.is-booting .preloader{display: grid;place-items: center;position: fixed;inset: 0;z-index: 200;background: var(--bg);cursor: default;}html.is-booting{overflow: hidden;}.pl-inner{display: flex;flex-direction: column;align-items: center;gap: clamp(1.5rem,3.5vh,2.5rem);padding: var(--gutter);}.pl-word{margin: 0;font-size: clamp(1.6rem,4.6vw,2.6rem);font-weight: 500;letter-spacing: -0.02em;color: var(--fg);opacity: 0;animation: pl-fade 620ms var(--ease) 60ms forwards;}.pl-stage{position: relative;width: min(58vh,34vw,460px);aspect-ratio: 1 / 1;}.pl-space{display: block;width: 100%;height: 100%;overflow: visible;}.pl-grid{opacity: 0;animation: pl-grid-in 900ms var(--ease) 120ms forwards;}@keyframes pl-grid-in{to{opacity: 0.55;}}.pl-obstacles{opacity: 0;animation: pl-fade 700ms var(--ease) 260ms forwards;}.pl-obstacles > *{fill: color-mix(in srgb,var(--fg) 4%,transparent);stroke: var(--line-strong);stroke-width: 0.35;}.pl-path{fill: none;stroke: var(--accent);stroke-width: 0.9;stroke-linecap: round;stroke-linejoin: round;opacity: 0;}.pl-stage.is-found .pl-path{opacity: 1;}.pl-node{opacity: 0;animation: pl-fade 600ms var(--ease) 380ms forwards;}.pl-node-start circle{fill: var(--fg-mute);}.pl-node-target .pl-ring{fill: var(--accent);}.pl-node-target .pl-halo{fill: none;stroke: var(--accent);stroke-width: 0.4;transform-origin: 88px 12px;animation: pl-halo 2200ms var(--ease) 600ms infinite;}@keyframes pl-halo{0%{transform: scale(1);opacity: 0.7;}70%{transform: scale(3.4);opacity: 0;}100%{transform: scale(3.4);opacity: 0;}}.pl-tag{fill: var(--fg-mute);font-family: var(--font-mono);font-size: 3.1px;letter-spacing: 0.16em;}.pl-swarm{opacity: 0;animation: pl-fade 500ms var(--ease) 300ms forwards;}.pl-swarm.is-done{opacity: 0;transition: opacity 420ms var(--ease);}.pl-particle{fill: var(--fg-dim);transition: fill 500ms var(--ease);}.pl-swarm.is-converging .pl-particle.is-best{fill: var(--accent);}.pl-trail{fill: none;stroke: var(--fg-mute);stroke-width: 0.28;stroke-linecap: round;opacity: 0.5;}.pl-swarm.is-converging .pl-trail{opacity: 0.75;}.pl-status{position: absolute;left: 0;right: 0;bottom: -2.4rem;margin: 0;text-align: center;font-family: var(--font-mono);font-size: 0.6875rem;letter-spacing: 0.24em;text-transform: uppercase;color: var(--fg-mute);opacity: 0;animation: pl-fade 400ms var(--ease) 520ms forwards;}.pl-status::after{content: "…";}.pl-stage.is-found .pl-status::after{content: "";}.pl-verdict{position: absolute;inset: 0;margin: 0;display: flex;flex-direction: column;align-items: center;justify-content: center;gap: 0.5rem;text-align: center;opacity: 0;pointer-events: none;}.pl-verdict b{display: block;font-family: var(--font-mono);font-size: clamp(0.9rem,1.6vw,1.15rem);font-weight: 500;letter-spacing: 0.3em;text-indent: 0.3em;color: var(--accent);background: var(--bg);padding: 0.35em 0.5em;}.pl-verdict i{font-family: var(--font-mono);font-style: normal;font-size: 0.625rem;letter-spacing: 0.28em;text-indent: 0.28em;color: var(--fg-mute);background: var(--bg);padding: 0.3em 0.5em;}.pl-stage.is-found .pl-verdict{animation: pl-fade 300ms var(--ease) forwards;}.pl-egg{position: absolute;right: -1.2rem;top: 4%;margin: 0;font-size: 0.75rem;letter-spacing: 0.06em;color: var(--fg-mute);opacity: 0;pointer-events: none;}.pl-stage.is-found .pl-egg{animation: pl-egg 1500ms var(--ease) 120ms forwards;}@keyframes pl-egg{0%{opacity: 0;transform: translateY(5px);}18%{opacity: 0.9;transform: translateY(0);}62%{opacity: 0.9;}100%{opacity: 0;}}.pl-stage,.pl-word,.pl-status{transition: opacity 420ms var(--ease),transform 620ms var(--ease);}.preloader.is-enter .pl-stage{opacity: 0;transform: scale(1.08);}.preloader.is-enter .pl-word{opacity: 0;transform: translateY(-8px);}.preloader.is-enter .pl-status{opacity: 0;}.pl-line{position: fixed;left: var(--pl-x,50%);top: var(--pl-y,50%);width: var(--pl-w,0px);height: var(--pl-h,3px);background: var(--accent);transform: scaleX(0);transform-origin: left center;opacity: 0;pointer-events: none;}.preloader.is-enter .pl-line{transform: scaleX(1);opacity: 1;transition: transform 480ms var(--ease),opacity 160ms linear;}.preloader.is-exit{transition: opacity 520ms var(--ease);opacity: 0;}@media (max-width: 860px){.pl-stage{width: min(66vh,78vw,340px);}.pl-egg{right: -0.5rem;}}@media (max-width: 480px){.pl-status{bottom: -2rem;font-size: 0.625rem;letter-spacing: 0.18em;}}.preloader.is-reduced .pl-swarm,.preloader.is-reduced .pl-obstacles,.preloader.is-reduced .pl-grid{opacity: 0.5;animation: none;}.preloader.is-reduced .pl-path{opacity: 1;}.preloader.is-reduced .pl-node-target .pl-halo{animation: none;opacity: 0.4;}.preloader.is-reduced .pl-egg{display: none;}</style>
 <link rel="stylesheet" href="assets/style.css">
 <!-- 渐进增强：只有 JS 真跑起来才隐藏待入场元素；app.js 若加载失败，2.5s 后自动解除隐藏。
      Preloader 同理 —— is-booting 只在这里加，所以「无 JS」时它根本不会出现。
@@ -98,6 +110,18 @@
 
     <div class="topbar-tail">
       <span class="year-tag">[2026]</span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="切换到亮色主题">
+        <!-- 图标显示的是「点了会切到哪一边」：暗色下显示太阳，亮色下显示月亮 -->
+        <svg class="ti ti-sun" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor"
+             stroke-width="1.4" stroke-linecap="round">
+          <circle cx="8" cy="8" r="3.1"/>
+          <path d="M8 1.2v1.8M8 13v1.8M1.2 8h1.8M13 8h1.8M3.2 3.2l1.3 1.3M11.5 11.5l1.3 1.3M12.8 3.2l-1.3 1.3M4.5 11.5l-1.3 1.3"/>
+        </svg>
+        <svg class="ti ti-moon" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor"
+             stroke-width="1.4" stroke-linejoin="round">
+          <path d="M13.2 9.7A5.6 5.6 0 0 1 6.3 2.8a5.6 5.6 0 1 0 6.9 6.9Z"/>
+        </svg>
+      </button>
       <button class="nav-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="nav">
         <span></span><span></span>
       </button>
@@ -108,9 +132,7 @@
 <main>
 
 <section id="top" class="hero">
-  <div class="hero-scenery" aria-hidden="true">
-    <img src="assets/scenery/orbit.webp" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
-  </div>
+  <div class="hero-scenery" aria-hidden="true"></div>
   <div class="wrap">
     <div class="rail hero-fade"><span>[QUCHEN]</span><span>AI · ALGORITHMS · BUILDING</span></div>
 
@@ -655,10 +677,9 @@
   </div>
 
   <!-- 首尾呼应：同一张插画镜像后淡淡压在右下角。
-       不引入第二种画风，只让页面开头和结尾看到同一片天。 -->
-  <div class="contact-scenery" aria-hidden="true">
-    <img src="assets/scenery/orbit.webp" alt="" width="1920" height="1080" loading="lazy" decoding="async">
-  </div>
+       不引入第二种画风，只让页面开头和结尾看到同一片天。
+       图由 CSS 背景给出（见 sections.css）—— 这样亮/暗两套只下载当前主题那一张。 -->
+  <div class="contact-scenery" aria-hidden="true"></div>
 </section>
 </main>
 
@@ -674,9 +695,9 @@
   <circle cx="14.5" cy="14.5" r="10" fill="none" stroke="currentColor" stroke-width="4"/>
   <!-- 尾部 = 一小段路径，绕出去再收回来 -->
   <path d="M 21.6 21.6 C 25.4 25.4 28.8 24.6 32.6 22.2" fill="none"
-        stroke="#D8FF4A" stroke-width="4" stroke-linecap="round"/>
+        stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
   <!-- 末端节点：和 Timeline / Preloader 里的 node 是同一个符号 -->
-  <circle cx="34.6" cy="21.4" r="2.3" fill="#D8FF4A"/>
+  <circle cx="34.6" cy="21.4" r="2.3" fill="var(--accent)"/>
 </svg>
 </span>
       <div class="footer-line">

@@ -204,9 +204,12 @@ await send('Runtime.evaluate', {
 
 let r = JSON.parse(await evalJs(`JSON.stringify({
   imgs: document.querySelectorAll('img').length,
-  sceneImgs: document.querySelectorAll('.hero-scenery img, .contact-scenery img').length,
+  sceneBg: (() => { const el = document.querySelector('.hero-scenery');
+    return el ? getComputedStyle(el).backgroundImage.slice(0, 200) : ''; })(),
   brandImgs: document.querySelectorAll('.brand-avatar').length,
-  abroadImgs: Array.prototype.filter.call(document.querySelectorAll('img'), function (i) { return !i.closest('.hero-scenery, .contact-scenery') && !i.classList.contains('brand-avatar'); }).length,
+  abroadImgs: Array.prototype.filter.call(document.querySelectorAll('img'), function (i) { return !i.classList.contains('brand-avatar'); }).length,
+  themeBtn: document.querySelectorAll('[data-theme-toggle]').length,
+  themeAttr: document.documentElement.getAttribute('data-theme'),
   brandAlt: (document.querySelector('.brand-avatar') || {}).alt || '',
   brandName: !!document.querySelector('.brand-name'),
   langBtns: document.querySelectorAll('[data-lang]').length,
@@ -246,9 +249,11 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   heroVisible: getComputedStyle(document.querySelector('.hero')).visibility === 'visible',
   markOn: getComputedStyle(document.querySelector('.display .reveal-line:last-child .mark'), '::after').transform
 })`));
-check('位图只有：呼应插画 ×2 + 导航头像 ×1，无其它',
-  r.imgs === 3 && r.sceneImgs === 2 && r.brandImgs === 1 && r.abroadImgs === 0,
-  `共 ${r.imgs} 张 · 插画 ${r.sceneImgs} · 头像 ${r.brandImgs} · 其他 ${r.abroadImgs}`);
+check('位图只剩导航头像（插画已改为 CSS 背景，按主题只加载一张）',
+  r.imgs === 1 && r.brandImgs === 1 && r.abroadImgs === 0 && /scenery\/orbit/.test(r.sceneBg),
+  `共 ${r.imgs} 张 · 头像 ${r.brandImgs} · 其他 ${r.abroadImgs} · 插画背景=${/scenery/.test(r.sceneBg) ? 'ok' : r.sceneBg}`);
+check('主题切换按钮存在且有初始主题', r.themeBtn === 1 && (r.themeAttr === 'dark' || r.themeAttr === 'light'),
+  `按钮 ${r.themeBtn} 个 · data-theme=${r.themeAttr}`);
 
 /* ---------- QUCHEN 标识系统 ---------- */
 check('导航左上角是头像 + quchen（alt 可读）',

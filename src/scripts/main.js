@@ -548,11 +548,64 @@
     build();
   }
 
+  /* ═══════════════ 主题切换 ═══════════════
+     首次应用在 <head> 的内联脚本里就完成了（避免闪屏），这里只负责：
+       · 补齐按钮的 aria 状态与 meta theme-color
+       · 点击切换 + 持久化
+       · 用户没手动选过时跟随系统变化
+     与语言切换互不干涉：语言状态存在自己的键上，主题从不读它。 */
+  function setupTheme() {
+    var root = document.documentElement;
+    var btn = document.querySelector("[data-theme-toggle]");
+    var meta = document.querySelector("#meta-theme-color");
+    var mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+    var SWATCH = { dark: "#17191E", light: "#F5F5F2" };
+    var animTimer = 0;
+
+    function savedTheme() {
+      try { return localStorage.getItem("theme"); } catch (e) { return null; }
+    }
+
+    function apply(theme, animate) {
+      root.setAttribute("data-theme", theme);
+      if (meta) meta.setAttribute("content", SWATCH[theme] || SWATCH.dark);
+      if (btn) {
+        btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+        btn.setAttribute("aria-label", theme === "light" ? "切换到暗色主题" : "切换到亮色主题");
+      }
+      // 只在切换的那一刻挂过渡类。常驻的话，页面里其它属性的变化也会被拖慢。
+      if (animate && !reduce) {
+        root.classList.add("is-theming");
+        clearTimeout(animTimer);
+        animTimer = setTimeout(function () { root.classList.remove("is-theming"); }, 260);
+      }
+    }
+
+    // <head> 已经设过一次，这里只是把 aria / meta 补齐
+    apply(root.getAttribute("data-theme") === "light" ? "light" : "dark", false);
+
+    if (btn) {
+      btn.addEventListener("click", function () {
+        var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+        try { localStorage.setItem("theme", next); } catch (e) {}
+        apply(next, true);
+      });
+    }
+
+    // 用户没主动选过 → 跟随系统
+    if (mq) {
+      var onSys = function () { if (!savedTheme()) apply(mq.matches ? "light" : "dark", true); };
+      if (mq.addEventListener) mq.addEventListener("change", onSys);
+      else if (mq.addListener) mq.addListener(onSys);
+    }
+  }
+
   /* ------------------------------------------------------------------ */
   setupReveal();
   setupCounters();
   setupScroll();
   setupPath();
+  setupTheme();
   setupTopbar();
   setupDrawer();
   setupPointer();

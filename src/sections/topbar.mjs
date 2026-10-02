@@ -34,6 +34,18 @@ export const topbar = ({ profile, year }) => {
 
     <div class="topbar-tail">
       <span class="year-tag">[${esc(year)}]</span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="切换到亮色主题">
+        <!-- 图标显示的是「点了会切到哪一边」：暗色下显示太阳，亮色下显示月亮 -->
+        <svg class="ti ti-sun" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor"
+             stroke-width="1.4" stroke-linecap="round">
+          <circle cx="8" cy="8" r="3.1"/>
+          <path d="M8 1.2v1.8M8 13v1.8M1.2 8h1.8M13 8h1.8M3.2 3.2l1.3 1.3M11.5 11.5l1.3 1.3M12.8 3.2l-1.3 1.3M4.5 11.5l-1.3 1.3"/>
+        </svg>
+        <svg class="ti ti-moon" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor"
+             stroke-width="1.4" stroke-linejoin="round">
+          <path d="M13.2 9.7A5.6 5.6 0 0 1 6.3 2.8a5.6 5.6 0 1 0 6.9 6.9Z"/>
+        </svg>
+      </button>
       <button class="nav-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="nav">
         <span></span><span></span>
       </button>

@@ -275,7 +275,8 @@ const CJK = /[\u4e00-\u9fff]/;
 const ALLOWED_BIN = [
   'assets/favicon/favicon.svg',                 // 矢量图标
   'assets/fonts/space-grotesk-latin-var.woff2', // 自托管字体
-  'assets/scenery/orbit.webp',                  // 首尾呼应插画
+  'assets/scenery/orbit.webp',                  // 首尾呼应插画（暗色主题）
+  'assets/scenery/orbit-light.webp',            // 同一位置的亮色主题插画（CSS 背景，只加载当前主题那张）
   'assets/avatar/avatar-navbar.webp',           // 导航头像（32px @2x，2KB）
   'assets/favicon/favicon-16.png',              // favicon 位图回退
   'assets/favicon/favicon-32.png',

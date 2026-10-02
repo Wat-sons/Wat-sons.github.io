@@ -37,27 +37,26 @@
   aspect-ratio: 16 / 9;
   z-index: 0;
   pointer-events: none;
+  /* 插画走 CSS 背景而不是 <img>：主题切换时可以只下载当前那一张。
+     两套图都是各自主题的底色 + 四边 alpha 淡出，所以看不出边界。 */
+  background-image: url(scenery/orbit.webp);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   /* 三层微动：
        --sc-x / --sc-y  鼠标反向微移（景深）
        --sc-sy          滚动缓慢下移
      幅度都只有几 px —— 目标是"说不上来哪里动了，但画面是活的"。
      用独立的 translate 属性承载入场动画，避免和 transform 打架。 */
   transform: translate3d(var(--sc-x, 0px), calc(var(--sc-y, 0px) + var(--sc-sy, 0px)), 0);
-  animation: scenery-in 1800ms var(--ease) both;
-}
-.hero-scenery img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  /* 四边淡出已经烘进这张 WebP 的 alpha 通道了（见 tools/ 里的处理脚本），
-     所以这里不需要任何 mask，也不会有矩形边。contain 保证不裁掉淡出区。 */
-  object-fit: contain;
   /* 压到 0.62：行星退成背景里的一枚光斑，标题仍然是视觉主体 */
   opacity: 0.62;
+  animation: scenery-in 1800ms var(--ease) both;
 }
+[data-theme="light"] .hero-scenery { background-image: url(scenery/orbit-light.webp); }
 @keyframes scenery-in {
   from { opacity: 0; translate: 0 26px; }
-  to   { opacity: 1; translate: 0 0; }
+  to   { opacity: 0.62; translate: 0 0; }
 }
 /* 文字压在插画上时保持可读 */
 .hero h1, .hero .lead, .hero .eyebrow { position: relative; }
@@ -290,9 +289,9 @@ html.js.is-booting .hero-fade { animation: none; }
   border: 1px solid currentColor;
   white-space: nowrap;
 }
-.tone-gold   { color: #F0C45A; }
-.tone-silver { color: #C6CDD8; }
-.tone-bronze { color: #D08A55; }
+.tone-gold   { color: var(--tone-gold); }
+.tone-silver { color: var(--tone-silver); }
+.tone-bronze { color: var(--tone-bronze); }
 .tone-blue   { color: var(--fg-dim); }
 .award-more { margin-top: 1.75rem; }
 .award-more summary { cursor: pointer; list-style: none; width: fit-content; }
@@ -508,12 +507,17 @@ html.js.is-booting .hero-fade { animation: none; }
   right: -4%;
   bottom: -4%;
   width: min(58%, 820px);
+  aspect-ratio: 16 / 9;
   pointer-events: none;
   transform: scaleX(-1);
   opacity: 0.3;
   z-index: 0;
+  background-image: url(scenery/orbit.webp);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
-.contact-scenery img { display: block; width: 100%; height: auto; }
+[data-theme="light"] .contact-scenery { background-image: url(scenery/orbit-light.webp); }
 #contact > .wrap { position: relative; z-index: 1; }
 
 /* ═══════════════ 响应式重排 ═══════════════ */

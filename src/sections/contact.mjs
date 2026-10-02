@@ -40,9 +40,8 @@ export const contact = ({ profile, ctx }) => {
   </div>
 
   <!-- 首尾呼应：同一张插画镜像后淡淡压在右下角。
-       不引入第二种画风，只让页面开头和结尾看到同一片天。 -->
-  <div class="contact-scenery" aria-hidden="true">
-    <img src="assets/scenery/orbit.webp" alt="" width="1920" height="1080" loading="lazy" decoding="async">
-  </div>
+       不引入第二种画风，只让页面开头和结尾看到同一片天。
+       图由 CSS 背景给出（见 sections.css）—— 这样亮/暗两套只下载当前主题那一张。 -->
+  <div class="contact-scenery" aria-hidden="true"></div>
 </section>`;
 };

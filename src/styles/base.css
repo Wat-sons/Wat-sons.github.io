@@ -45,7 +45,7 @@ body::before {
   pointer-events: none;
   background:
     radial-gradient(760px 520px at 8% -6%, var(--accent-glow), transparent 62%),
-    radial-gradient(900px 620px at 96% 4%, rgba(120, 140, 255, 0.06), transparent 66%);
+    radial-gradient(900px 620px at 96% 4%, var(--glow), transparent 66%);
 }
 
 img, svg, canvas { display: block; max-width: 100%; }

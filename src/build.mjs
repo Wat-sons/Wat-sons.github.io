@@ -152,8 +152,8 @@ const html = `<!doctype html>
 <meta name="description" content="${esc(description)}">
 <meta name="author" content="${esc(profile.handle)}">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#0B0B0C">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#17191E" id="meta-theme-color">
+<meta name="color-scheme" content="dark light">
 <meta property="og:type" content="profile">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
@@ -163,6 +163,18 @@ const html = `<!doctype html>
 <link rel="icon" href="assets/favicon/favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/space-grotesk-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+<!-- 主题必须在**首次绘制之前**定下来，否则会先闪一下默认配色再跳成用户选的。
+     内联在这里（不是外部文件），所以没有网络等待；读 localStorage，
+     没存过就跟随系统 prefers-color-scheme。 -->
+<script>
+(function () {
+  var d = document.documentElement, saved = null;
+  try { saved = localStorage.getItem("theme"); } catch (e) {}
+  var theme = (saved === "light" || saved === "dark") ? saved
+    : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  d.setAttribute("data-theme", theme);
+})();
+</script>
 <style>${criticalCss}</style>
 <link rel="stylesheet" href="assets/style.css">
 <!-- 渐进增强：只有 JS 真跑起来才隐藏待入场元素；app.js 若加载失败，2.5s 后自动解除隐藏。
@@ -192,7 +204,7 @@ ${hero({ profile, metrics })}
 ${sections}
 </main>
 
-${footer({ profile, year, accent: ACCENT })}
+${footer({ profile, year, accent: "var(--accent)" })}
 
 <noscript>
   <div class="noscript-note">浏览器禁用了 JavaScript：全部文字内容仍可正常阅读，仅导航高亮、滚动进度与数字动画不可用。</div>
