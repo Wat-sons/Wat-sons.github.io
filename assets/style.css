@@ -1328,6 +1328,11 @@ html.js.is-booting .hero-fade { animation: none; }
   .tl-body > *, .tl-cta { opacity: 1 !important; transform: none !important; }
 }
 
+/* 英文模式下隐藏项目的**中文副标题**。
+   项目主标题本身是英文（品牌层，不翻），中文副标题是它的补充说明 ——
+   在英文界面里挂着反而像没翻干净。 */
+[data-lang="en"] .cn { display: none; }
+
 /* ═══════════════ CONTACT ═══════════════ */
 /* 与 Path 叙事收尾呼应：Loading 是 PATH FOUND，Timeline 是 PATH SO FAR，
    到这里是 THE PATH CONTINUES，然后才是那句 CTA。 */

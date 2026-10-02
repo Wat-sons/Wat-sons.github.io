@@ -9,6 +9,7 @@
 
 import { esc } from "../lib/html.mjs";
 import { ghostTitle } from "../components/ghost-title.mjs";
+import { bi } from "../lib/i18n.mjs";
 import { sectionHead } from "../components/section-head.mjs";
 
 const stop = (s) => `
@@ -19,7 +20,7 @@ const stop = (s) => `
     <div class="tl-body">
       <span class="tl-tag">${esc(s.tag)}</span>
       <h3 class="tl-year">${esc(s.year)}</h3>
-      ${(s.lines ?? []).map((t) => `<p class="tl-line">${esc(t)}</p>`).join("")}
+      ${(s.lines ?? []).map((t, j) => `<p class="tl-line"${bi(t, (s.linesEn ?? [])[j])}>${esc(t)}</p>`).join("")}
       ${(s.keys ?? []).length
         ? `<p class="tl-keys">${s.keys.map((k) => `<span>${esc(k)}</span>`).join("")}</p>`
         : ""}
@@ -43,7 +44,7 @@ export const timeline = ({ metrics, ctx }) => {
     </span>
     <div class="tl-body">
       <span class="tl-tag">${esc(nx.tag ?? "NEXT")}</span>
-      <p class="tl-line tl-line-next">${esc(nx.line ?? "")}</p>
+      <p class="tl-line tl-line-next"${bi(nx.line, nx.lineEn)}>${esc(nx.line ?? "")}</p>
     </div>
   </article>`;
 
@@ -58,7 +59,7 @@ export const timeline = ({ metrics, ctx }) => {
       note: tl.range ?? null,
     })}
 
-    <p class="tl-intro reveal">${esc(tl.intro ?? "")}</p>
+    <p class="tl-intro reveal"${bi(tl.intro, tl.introEn)}>${esc(tl.intro ?? "")}</p>
 
     <div class="tl-track" data-tl-track>
       <svg class="tl-svg" aria-hidden="true" preserveAspectRatio="none">

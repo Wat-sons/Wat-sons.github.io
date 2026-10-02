@@ -1,7 +1,6 @@
 {
   "_comment": "身份与各区块文案。本文件在公开仓库里 —— 不要写真名 / 学号 / 电话 / 成绩 / 排名 / 课程。",
   "updatedAt": "2026-10-01",
-
   "handle": "quchen",
   "github": "Wat-sons",
   "email": "2673052046@qq.com",
@@ -9,25 +8,41 @@
   "nowcoder": "https://ac.nowcoder.com/acm/contest/profile/951251697",
   "nowcoderHandle": "quchen666",
   "location": "山西 · 太原",
-
   "nav": [
-    { "id": "work",        "label": "Work" },
-    { "id": "competition", "label": "Competition" },
-    { "id": "timeline",    "label": "Timeline" },
-    { "id": "about",       "label": "About" },
-    { "id": "contact",     "label": "Contact" }
+    {
+      "id": "work",
+      "label": "Work"
+    },
+    {
+      "id": "competition",
+      "label": "Competition"
+    },
+    {
+      "id": "timeline",
+      "label": "Timeline"
+    },
+    {
+      "id": "about",
+      "label": "About"
+    },
+    {
+      "id": "contact",
+      "label": "Contact"
+    }
   ],
-
   "hero": {
     "railLeft": "[QUCHEN]",
     "railRight": "AI · ALGORITHMS · BUILDING",
     "eyebrow": "Artificial Intelligence · Competitive Programming",
-    "headline": ["I BUILD", "THINGS WITH", "AI & ALGORITHMS."],
+    "headline": [
+      "I BUILD",
+      "THINGS WITH",
+      "AI & ALGORITHMS."
+    ],
     "markLine": 2,
     "lead": "太原理工大学人工智能学院在读，日常在 Codeforces 上刷题，也把算法写成能跑起来、能被人用的小工具。这里放我做过的东西、拿到的成绩，以及正在琢磨的问题。",
     "leadEn": "I'm studying in the AI college at Taiyuan University of Technology. Most days I'm on Codeforces, and I like turning algorithms into small tools that actually run and that people can use. This is where I keep what I've made, what I've won, and whatever I'm still puzzling over."
   },
-
   "about": {
     "secNote": "关于我在做什么，而不是一串履历字段。",
     "lead": "比起把知识停在笔记里，我更喜欢把它推到一个|会被评测机打分|的地方。这大概就是我一直打竞赛的原因。",
@@ -36,26 +51,105 @@
       "除了比赛，我也愿意把训练过程做成工具：数据驱动的站点、自动同步的战绩面板、能复用的模板。做出来、跑起来、有人用，比写完就归档更让我有动力。"
     ],
     "currently": [
-      { "marker": "Studying", "text": "人工智能专业（本科）· 2024 级 · 太原理工大学人工智能学院" },
-      { "marker": "Competing", "text": "Codeforces 历史最高 2089（Candidate Master）· 牛客 Rating 2225 · 累计 {total} 项竞赛获奖" },
-      { "marker": "Building", "text": "数据驱动、零依赖的静态站点与自用工具" }
+      {
+        "marker": "Studying",
+        "text": "人工智能专业（本科）· 2024 级 · 太原理工大学人工智能学院",
+        "textEn": "BSc in Artificial Intelligence · Class of 2024 · College of AI, Taiyuan University of Technology"
+      },
+      {
+        "marker": "Competing",
+        "text": "Codeforces 历史最高 2089（Candidate Master）· 牛客 Rating 2225 · 累计 {total} 项竞赛获奖",
+        "textEn": "Codeforces peak 2089 (Candidate Master) · Nowcoder rating 2225 · {total} competition awards so far"
+      },
+      {
+        "marker": "Building",
+        "text": "数据驱动、零依赖的静态站点与自用工具",
+        "textEn": "Data-driven, dependency-free static sites and tools for my own use"
+      }
+    ],
+    "secNoteEn": "About what I'm actually doing, not a list of résumé fields.",
+    "leadEn": "Rather than leave what I learn sitting in a notebook, I'd rather push it somewhere it gets |graded by a judge|. That's probably why I keep competing.",
+    "paragraphsEn": [
+      "To me, algorithms are more a way of thinking: break a vague problem into small checkable steps, then squeeze it toward something better, one step at a time. Competition pushes that to the limit — a clock, opponents, and a result that's either right or wrong.",
+      "Beyond contests, I like turning the training process itself into tools: data-driven sites, self-updating stat panels, templates I can reuse. Shipping something that runs and that someone uses motivates me far more than filing it away once it's done."
     ]
   },
-
   "skills": [
-    { "group": "Languages", "items": ["C++（主力）", "Python", "JavaScript", "Shell"] },
-    { "group": "Algorithms", "items": ["图论", "动态规划", "数据结构", "复杂度分析", "限时编码"] },
-    { "group": "Data / ML", "items": ["NumPy", "Pandas", "Matplotlib", "PyTorch", "CNN / RNN 基础"] },
-    { "group": "Tools", "items": ["Git", "Linux", "FastAPI / MySQL 基础", "Codeforces / QOJ"] }
+    {
+      "group": "Languages",
+      "items": [
+        "C++（主力）",
+        "Python",
+        "JavaScript",
+        "Shell"
+      ],
+      "itemsEn": [
+        "C++ (primary)",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "group": "Algorithms",
+      "items": [
+        "图论",
+        "动态规划",
+        "数据结构",
+        "复杂度分析",
+        "限时编码"
+      ],
+      "itemsEn": [
+        "Graph theory",
+        "Dynamic programming",
+        "Data structures",
+        "Complexity analysis",
+        "Timed coding"
+      ]
+    },
+    {
+      "group": "Data / ML",
+      "items": [
+        "NumPy",
+        "Pandas",
+        "Matplotlib",
+        "PyTorch",
+        "CNN / RNN 基础"
+      ],
+      "itemsEn": [
+        "",
+        "",
+        "",
+        "",
+        "CNN / RNN fundamentals"
+      ]
+    },
+    {
+      "group": "Tools",
+      "items": [
+        "Git",
+        "Linux",
+        "FastAPI / MySQL 基础",
+        "Codeforces / QOJ"
+      ],
+      "itemsEn": [
+        "",
+        "",
+        "FastAPI / MySQL basics",
+        ""
+      ]
+    }
   ],
-
   "education": {
     "school": "太原理工大学",
     "college": "人工智能学院",
     "major": "人工智能（本科）",
-    "period": "2024.09 – 至今"
+    "period": "2024.09 – 至今",
+    "schoolEn": "Taiyuan University of Technology",
+    "collegeEn": "College of Artificial Intelligence",
+    "majorEn": "Artificial Intelligence (BSc)",
+    "periodEn": "2024.09 – present"
   },
-
   "campus": [
     {
       "org": "太原理工大学 自律委员会 学风建设部",
@@ -63,10 +157,14 @@
       "points": [
         "参与学院日常学风督查，负责课堂出勤与自习纪律检查并做记录上报。",
         "对接班级学习委员协调检查时间与结果反馈，保证检查按计划推进。"
+      ],
+      "orgEn": "Self-Discipline Committee · Academic Atmosphere Dept., TYUT",
+      "pointsEn": [
+        "Took part in daily academic-conduct inspections: checked class attendance and study-room discipline, kept records and reported them.",
+        "Coordinated schedules and result feedback with each class's academic representative so inspections stayed on plan."
       ]
     }
   ],
-
   "footer": {
     "line1": "Built with curiosity.",
     "line2": "AI · Algorithms · Building"
@@ -80,5 +178,6 @@
     "_evidence": "GitHub Pages 首次构建成功于 2026-10-01T13:43:21Z（北京时间 2026-10-01 21:43:21），仓库创建于同日 13:42:31Z —— 取自 Pages builds API，不是仓库创建日期冒充。",
     "_howto": "格式必须是带时区的 ISO 8601（Z 或 ±08:00）。想暂停计时就填 null，页脚整块会自动消失，不影响其它内容。",
     "launchedAt": "2026-10-01T13:43:21Z"
-  }
+  },
+  "locationEn": "Shanxi · Taiyuan"
 }

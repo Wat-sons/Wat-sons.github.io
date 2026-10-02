@@ -621,6 +621,7 @@
     var btns = document.querySelectorAll("[data-lang-btn]");
     var nodes = document.querySelectorAll("[data-en]");
     var titles = document.querySelectorAll("[data-en-title]");
+    var htmls = document.querySelectorAll("[data-en-html]");
     var fadeTimer = 0;
 
     function paint(lang) {
@@ -635,6 +636,11 @@
         }
         if (textNodes.length) textNodes[0].nodeValue = next;
         else n.textContent = next;
+      });
+      // 内容里本来带标签的（about 的 |高亮|）：换 innerHTML。
+      // 两边的 HTML 都是构建期我们自己生成的，不含用户输入。
+      Array.prototype.forEach.call(htmls, function (n) {
+        n.innerHTML = isEn ? n.getAttribute("data-en-html") : n.getAttribute("data-zh-html");
       });
       Array.prototype.forEach.call(titles, function (n) {
         n.setAttribute("title", isEn ? n.getAttribute("data-en-title") : n.getAttribute("data-zh-title"));

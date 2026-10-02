@@ -4,6 +4,7 @@
    宁可留白，也别摆一张说不清楚的东西。 */
 
 import { esc } from "../lib/html.mjs";
+import { bi } from "../lib/i18n.mjs";
 import { tag, textLink } from "./pill.mjs";
 
 export const projectCard = ({ item, visual, flipped }) => `
@@ -15,7 +16,7 @@ export const projectCard = ({ item, visual, flipped }) => `
         ${esc(item.title)}
         ${item.titleCn ? `<span class="cn">${esc(item.titleCn)}</span>` : ""}
       </h3>
-      <p class="work-desc">${esc(item.desc)}</p>
+      <p class="work-desc"${bi(item.desc, item.descEn)}>${esc(item.desc)}</p>
       <div class="work-tags">${(item.tags ?? []).map(tag).join("")}</div>
       ${(item.links ?? []).length
         ? `<div class="work-links">${item.links.map((l) => textLink({ href: l.url, label: l.label })).join("")}</div>`

@@ -30,5 +30,10 @@ export const bi = (zh, en) =>
 export const biTitle = (zh, en) =>
   en ? ` data-zh-title="${esc(zh)}" data-en-title="${esc(en)}"` : "";
 
+/** 内容里本来就带标签（比如 about 的 |高亮|）时用这个，切换时换 innerHTML。
+    两边的 HTML 都是我们自己在构建期生成的，不涉及用户输入。 */
+export const biHtml = (zh, en) =>
+  en ? ` data-zh-html="${esc(zh)}" data-en-html="${esc(en)}"` : "";
+
 /** 从成对字段里取英文，容忍缺失 */
 export const en = (obj, key) => obj && obj[key + "En"] ? obj[key + "En"] : "";

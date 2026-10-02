@@ -360,5 +360,34 @@
         "CCF-CSP 第 37 次认证成绩单"
       ]
     }
-  ]
+  ],
+  "stageEn": {
+    "全国": "National",
+    "全国总决赛": "National Final",
+    "全国邀请赛": "National Invitational",
+    "省赛": "Provincial",
+    "西北赛区": "Northwest Region"
+  },
+  "resultEn": {
+    "金奖": "Gold Award",
+    "银牌": "Silver Medal",
+    "铜牌": "Bronze Medal",
+    "铜奖": "Bronze Award",
+    "一等奖": "First Prize",
+    "二等奖": "Second Prize",
+    "三等奖": "Third Prize",
+    "个人二等奖": "Individual Second Prize",
+    "团队二等奖": "Team Second Prize",
+    "团队三等奖": "Team Third Prize",
+    "355 分": "355 pts",
+    "310 分": "310 pts",
+    "270 分": "270 pts"
+  },
+  "extraEn": {
+    "累计排名前 1.76%": "Top 1.76% overall",
+    "累计排名前 3.46%": "Top 3.46% overall",
+    "累计排名前 7.2%": "Top 7.2% overall",
+    "最终排名 219": "Final rank 219",
+    "团队二等奖": "Team Second Prize"
+  }
 }

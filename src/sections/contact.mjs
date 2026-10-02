@@ -2,6 +2,7 @@
    巨型 CTA 收尾。联系方式用胶囊按钮，不用「Email: / GitHub:」这种字段表。 */
 
 import { esc } from "../lib/html.mjs";
+import { bi } from "../lib/i18n.mjs";
 import { ghostTitle } from "../components/ghost-title.mjs";
 import { sectionHead } from "../components/section-head.mjs";
 import { pill } from "../components/pill.mjs";
@@ -18,7 +19,7 @@ export const contact = ({ profile, ctx }) => {
 <section id="contact" class="section has-ghost">
   ${ghostTitle("CONTACT")}
   <div class="wrap">
-    ${sectionHead({ num: ctx.num, title: "联系", titleEn: "Contact", note: ctx.note })}
+    ${sectionHead({ num: ctx.num, title: "联系", titleEn: "Contact", note: ctx.note, noteEn: ctx.noteEn })}
 
     <p class="contact-kicker reveal">The path continues</p>
 
@@ -28,14 +29,14 @@ export const contact = ({ profile, ctx }) => {
       <span class="reveal-line"><span><span class="mark">SOMETHING.</span></span></span>
     </h2>
 
-    <p class="contact-lead reveal" data-delay="1">
+    <p class="contact-lead reveal" data-delay="1"${bi("有想法、想聊算法或竞赛，或者只是想指出这个站哪里做得不好 —— 都欢迎写信给我。", "Got an idea, want to talk algorithms or competitions, or just want to point out something this site gets wrong — write me.")}>
       有想法、想聊算法或竞赛，或者只是想指出这个站哪里做得不好 —— 都欢迎写信给我。
     </p>
 
     <div class="contact-links reveal" data-delay="2">${links}</div>
 
     <p class="contact-sign">
-      ${esc(profile.handle)} · ${esc(profile.location)}
+      ${esc(profile.handle)} · <span${bi(profile.location, profile.locationEn)}>${esc(profile.location)}</span>
     </p>
   </div>
 

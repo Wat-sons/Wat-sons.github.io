@@ -39,25 +39,32 @@
       "value": 2089,
       "unit": "",
       "label": "Codeforces 峰值 rating",
-      "note": "Candidate Master · @quchen666"
+      "note": "Candidate Master · @quchen666",
+      "labelEn": "Codeforces Peak Rating"
     },
     {
       "value": 2225,
       "unit": "",
       "label": "牛客 Rating",
-      "note": "Rating 排名 465 · @quchen666"
+      "note": "Rating 排名 465 · @quchen666",
+      "labelEn": "Nowcoder Rating",
+      "noteEn": "Rank 465 · @quchen666"
     },
     {
       "value": 355,
       "unit": "分",
       "label": "CCF-CSP 最高分",
-      "note": "第 43 次认证 · 前 1.76%"
+      "note": "第 43 次认证 · 前 1.76%",
+      "labelEn": "CCF-CSP Best",
+      "noteEn": "43rd round · Top 1.76%"
     },
     {
       "from": "total",
       "unit": "项",
       "label": "竞赛获奖",
-      "note": "全国性 {national} · 省赛区域 {provincial}"
+      "note": "全国性 {national} · 省赛区域 {provincial}",
+      "labelEn": "Competition Awards",
+      "noteEn": "{national} national · {provincial} regional"
     }
   ],
   "timeline": {
@@ -77,6 +84,10 @@
           "AI",
           "C++",
           "Algorithms"
+        ],
+        "linesEn": [
+          "Started at the AI college, Taiyuan University of Technology.",
+          "Began training for competitive programming in earnest, mostly on Codeforces."
         ]
       },
       {
@@ -91,6 +102,10 @@
           "CSP 270",
           "CCPC × 2",
           "RAICOM"
+        ],
+        "linesEn": [
+          "First year of real competition.",
+          "Worked my way up from provincial rounds to national finals."
         ]
       },
       {
@@ -105,13 +120,19 @@
           "CSP 355",
           "CF 2089",
           "Website"
+        ],
+        "linesEn": [
+          "Competition stopped being just competition.",
+          "Started turning training, data and algorithms into tools I could actually use."
         ]
       }
     ],
     "next": {
       "tag": "NEXT",
       "line": "这条路还在生成中。",
-      "cta": "PATH CONTINUES"
-    }
+      "cta": "PATH CONTINUES",
+      "lineEn": "This path is still being generated."
+    },
+    "introEn": "A few years of algorithms, contests, and some things I decided to actually build."
   }
 }

@@ -85,13 +85,15 @@ if (profile.about?.currently) {
 }
 
 /* ---------- 2. 区块（顺序 = 页面顺序 = 导航顺序 = 编号顺序） ---------- */
-const ctx = (num, note) => ({ num, note });
+const ctx = (num, note, noteEn) => ({ num, note, noteEn });
 
 const sections = [
-  work({ projects, cf, ctx: ctx("/01", "只放能确认的真实项目，没有把握的一律不写。") }),
+  work({ projects, cf, ctx: ctx("/01", "只放能确认的真实项目，没有把握的一律不写。",
+      "Only projects I can stand behind. If I am not sure about it, it does not go here.") }),
   competition({
     competitions, metrics, cf,
-    ctx: ctx("/02", `${competitions.awards.length} 条记录 · 按获奖时间先后排列 · 数字均来自真实数据`),
+    ctx: ctx("/02", `${competitions.awards.length} 条记录 · 按获奖时间先后排列 · 数字均来自真实数据`,
+      `${competitions.awards.length} records, oldest first. Every number comes from real data.`),
   }),
   timeline({ metrics, ctx: ctx("/03", null) }),
   about({ profile, ctx: ctx("/04", null) }),

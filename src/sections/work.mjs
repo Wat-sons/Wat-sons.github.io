@@ -30,7 +30,7 @@ export const work = ({ projects, cf, ctx }) => {
       num: ctx.num,
       title: "项目",
       titleEn: "Selected Work",
-      note: ctx.note,
+      note: ctx.note, noteEn: ctx.noteEn,
     })}
     <div class="work-list">${body}</div>
   </div>
