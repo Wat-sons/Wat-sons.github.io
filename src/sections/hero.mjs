@@ -4,6 +4,7 @@
    宣言逐行升起用纯 CSS animation-delay，不依赖 JS。 */
 
 import { esc } from "../lib/html.mjs";
+import { bi } from "../lib/i18n.mjs";
 import { rail } from "../components/rail.mjs";
 import { statBlock } from "../components/stat-block.mjs";
 
@@ -28,7 +29,7 @@ export const hero = ({ profile, metrics }) => {
     <div class="hero-main">
       <span class="eyebrow hero-fade">${esc(h.eyebrow)}</span>
       <h1 class="display">${lines}</h1>
-      <p class="lead hero-fade">${esc(h.lead)}</p>
+      <p class="lead hero-fade"${bi(h.lead, h.leadEn)}>${esc(h.lead)}</p>
     </div>
 
     <div class="hero-stats">${stats}</div>

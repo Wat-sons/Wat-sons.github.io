@@ -2,6 +2,7 @@
 
 import { esc } from "../lib/html.mjs";
 import { markSvg } from "../lib/brand.mjs";
+import { biTitle } from "../lib/i18n.mjs";
 
 const UP = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor"
   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -30,11 +31,11 @@ export const footer = ({ profile, year, accent }) => {
   const age = valid
     ? `
       <div class="site-age" data-site-age data-since="${esc(launchedAt)}"
-           title="自 ${esc(launchedAt.slice(0, 10))} 首次上线至今的墙钟时间，不代表服务器在线时长">
+           ${biTitle(profile.siteAge?.title ?? "", profile.siteAge?.titleEn ?? "")}>
         ${ORBIT}
         <span class="age-label">Site age</span>
         <span class="age-value">
-          <b data-age-d>–</b><i data-age-ud>天</i>
+          <b data-age-d>–</b><i data-age-ud data-zh="天" data-en="days">天</i>
           <b data-age-hms>--:--:--</b>
         </span>
       </div>`

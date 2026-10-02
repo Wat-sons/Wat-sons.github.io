@@ -33,6 +33,13 @@ export const topbar = ({ profile, year }) => {
     <nav class="nav" id="nav" aria-label="章节导航">${links}</nav>
 
     <div class="topbar-tail">
+      <!-- 语言切换：只切「内容层」，品牌层的导航 / 区块标题 / 阶段标签两边都不变。
+           中 / EN 各自是个独立按钮（不是一个开关），因为将来可能加更多语言。 -->
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" class="lang-btn is-on" data-lang-btn="zh" lang="zh" aria-pressed="true">中</button>
+        <span class="lang-sep" aria-hidden="true">/</span>
+        <button type="button" class="lang-btn" data-lang-btn="en" lang="en" aria-pressed="false">EN</button>
+      </div>
       <span class="year-tag">[${esc(year)}]</span>
       <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="切换到亮色主题">
         <!-- 图标显示的是「点了会切到哪一边」：暗色下显示太阳，亮色下显示月亮 -->

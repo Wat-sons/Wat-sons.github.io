@@ -275,6 +275,38 @@ check('导航左上角是头像 + quchen（alt 可读）',
 check('favicon 三件套 + Apple Touch Icon 都已声明', r.favicons === 4, `${r.favicons} 条 link`);
 check('页脚有 Q+Path 标识', r.footerMark === true);
 
+/* ---------- 中英文切换 ---------- */
+{
+  const en = JSON.parse(await evalJs(`(async () => {
+    document.querySelector('[data-lang-btn="en"]').click();
+    await new Promise(r => setTimeout(r, 700));
+    const q = (s) => (document.querySelector(s) || {}).textContent || '';
+    return JSON.stringify({
+      attr: document.documentElement.getAttribute('data-lang'),
+      htmlLang: document.documentElement.lang,
+      lead: q('.hero .lead'),
+      statLabel: q('.stat-label'),
+      nav: q('.nav a'), ghost: q('.section-ghost .ghost'),
+      theme: document.documentElement.getAttribute('data-theme'),
+    });
+  })()`));
+
+  // 品牌层：这些必须在英文模式下**一模一样**。它们压根没有 data-en，
+  // 所以切不到 —— 这条断言守的就是"结构上切不到"，不是靠自觉。
+  check('品牌层保持英文（导航 / 幽灵标题）',
+    /WORK|Work/.test(en.nav) && en.ghost === 'WORK', `nav="${en.nav.trim()}" ghost="${en.ghost}"`);
+  // 内容层：必须真的换了
+  check('内容层随语言切换（Hero 介绍 / 成绩说明）',
+    !/[\u4e00-\u9fff]/.test(en.lead) && !/[\u4e00-\u9fff]/.test(en.statLabel),
+    `lead="${en.lead.slice(0, 40)}…" label="${en.statLabel}"`);
+  check('切换语言不影响主题', en.theme === r.themeAttr, `主题 ${en.theme}（切换前 ${r.themeAttr}）`);
+  check('切换语言不改 <html lang>',
+    en.htmlLang === 'en', `lang="${en.htmlLang}"`);
+
+  // 回到中文，别把后面的断言带偏
+  await evalJs(`document.querySelector('[data-lang-btn="zh"]').click()`);
+  await new Promise((res) => setTimeout(res, 400));
+}
 /* ---------- 上线计时 ---------- */
 check('页脚有上线计时，基准来自 data-since 而非写死数字', r.age && /^\d{4}-\d{2}-\d{2}T/.test(r.age.since), r.age ? `since=${r.age.since}` : '缺失');
 if (r.age) {

@@ -600,10 +600,82 @@
     }
   }
 
-  /* 当前语言。中/EN 切换按钮还没上线，但所有会随语言变的东西
-     统一读这一个属性 —— 等切换做完，这些地方一行都不用改。 */
+  /* 当前语言。由 <head> 的内联脚本在首屏前写好，切换时改同一个属性。
+     所有会随语言变的东西统一读它 —— 主题、计时器、将来新加的组件都走这里。 */
   function langIsEn() {
     return document.documentElement.getAttribute("data-lang") === "en";
+  }
+
+  /* ═══════════════ 中英文切换 ═══════════════
+     只切「内容层」。品牌层（导航、区块标题、阶段标签、品牌名、
+     Loading 文案、平台名 / 官方赛事名）**根本没有 data-en 属性**，
+     所以切不到它们 —— 这是结构上的保证，不是靠自觉。
+
+     页面上永远只有一份内容：中文渲染进 HTML（首屏 / SEO / 无 JS 都靠它），
+     英文只挂在 data-en 属性上。切换 = 换 textContent，不复制 DOM。
+
+     刷新不丢、不动滚动位置、不重播 Loading、与主题互不干涉
+     （两者各存各的 localStorage 键）。 */
+  function setupLang() {
+    var root = document.documentElement;
+    var btns = document.querySelectorAll("[data-lang-btn]");
+    var nodes = document.querySelectorAll("[data-en]");
+    var titles = document.querySelectorAll("[data-en-title]");
+    var fadeTimer = 0;
+
+    function paint(lang) {
+      var isEn = lang === "en";
+      Array.prototype.forEach.call(nodes, function (n) {
+        var next = isEn ? n.getAttribute("data-en") : n.getAttribute("data-zh");
+        if (next === null) return;
+        // 只替换直接文本节点，别把子元素（比如 <small> 里的单位）冲掉
+        var textNodes = [];
+        for (var i = 0; i < n.childNodes.length; i++) {
+          if (n.childNodes[i].nodeType === 3 && n.childNodes[i].nodeValue.trim()) textNodes.push(n.childNodes[i]);
+        }
+        if (textNodes.length) textNodes[0].nodeValue = next;
+        else n.textContent = next;
+      });
+      Array.prototype.forEach.call(titles, function (n) {
+        n.setAttribute("title", isEn ? n.getAttribute("data-en-title") : n.getAttribute("data-zh-title"));
+      });
+      Array.prototype.forEach.call(btns, function (b) {
+        var on = b.getAttribute("data-lang-btn") === lang;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      root.setAttribute("lang", isEn ? "en" : "zh-CN");
+    }
+
+    function apply(lang, animate) {
+      var done = function () {
+        paint(lang);
+        root.classList.remove("is-switching");
+        // 通知依赖语言的组件（页脚计时器的单位要跟着换）
+        document.dispatchEvent(new CustomEvent("langchange", { detail: { lang: lang } }));
+      };
+      if (animate && !reduce) {
+        // 140ms 淡出 → 换字 → CSS 过渡淡入。纯 opacity，不做位移，不会引起布局抖动。
+        root.classList.add("is-switching");
+        clearTimeout(fadeTimer);
+        fadeTimer = setTimeout(done, 140);
+      } else {
+        done();
+      }
+    }
+
+    // 首屏：<head> 已经定好属性，这里按它把内容刷成对应语言（不带动画）
+    apply(langIsEn() ? "en" : "zh", false);
+
+    Array.prototype.forEach.call(btns, function (b) {
+      b.addEventListener("click", function () {
+        var next = b.getAttribute("data-lang-btn");
+        if (next === root.getAttribute("data-lang")) return;
+        root.setAttribute("data-lang", next);
+        try { localStorage.setItem("lang", next); } catch (e) {}
+        apply(next, true);
+      });
+    });
   }
 
   /* ═══════════════ 上线计时 ═══════════════
@@ -659,6 +731,8 @@
       if (document.hidden) { stop(); } else { render(); start(); }
     });
     // 组件卸载 / 页面离开：清掉定时器
+    // 语言切换后单位要跟着换（天 / days）
+    document.addEventListener("langchange", render);
     window.addEventListener("pagehide", stop);
     window.addEventListener("beforeunload", stop);
   }
@@ -669,6 +743,7 @@
   setupScroll();
   setupPath();
   setupTheme();
+  setupLang();
   setupTopbar();
   setupDrawer();
   setupSiteAge();

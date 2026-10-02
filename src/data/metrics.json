@@ -1,21 +1,65 @@
 {
   "_comment": "首屏与区块用到的关键数字。全部来自真实数据源。带 from 字段的会在构建期从 src/data/competitions.json 自动算出来 —— 别手写奖项数量，手写的 summary 一定会跟列表跑偏。note 里可以用 {total} {national} {provincial} {cert} 占位。",
   "updatedAt": "2026-10-01",
-
   "hero": [
-    { "value": 355,  "unit": "分", "label": "CCF-CSP 最高分",      "note": "累计排名前 1.76%" },
-    { "value": 2089, "unit": "",   "label": "Codeforces 历史最高",  "note": "Candidate Master" },
-    { "value": 2225, "unit": "",   "label": "牛客 Rating",         "note": "Rating 排名 465 · 参赛 90 次" },
-    { "from": "total", "unit": "项", "label": "竞赛获奖",           "note": "其中全国性 {national} 项" }
+    {
+      "value": 355,
+      "unit": "分",
+      "label": "CCF-CSP 最高分",
+      "note": "累计排名前 1.76%",
+      "labelEn": "CCF-CSP Best",
+      "noteEn": "Top 1.76% overall"
+    },
+    {
+      "value": 2089,
+      "unit": "",
+      "label": "Codeforces 历史最高",
+      "note": "Candidate Master",
+      "labelEn": "Codeforces Peak"
+    },
+    {
+      "value": 2225,
+      "unit": "",
+      "label": "牛客 Rating",
+      "note": "Rating 排名 465 · 参赛 90 次",
+      "labelEn": "Nowcoder Rating",
+      "noteEn": "Rank 465 · 90 contests"
+    },
+    {
+      "from": "total",
+      "unit": "项",
+      "label": "竞赛获奖",
+      "note": "其中全国性 {national} 项",
+      "labelEn": "Competition Awards",
+      "noteEn": "{national} national-level"
+    }
   ],
-
   "competition": [
-    { "value": 2089, "unit": "",   "label": "Codeforces 峰值 rating", "note": "Candidate Master · @quchen666" },
-    { "value": 2225, "unit": "",   "label": "牛客 Rating",            "note": "Rating 排名 465 · @quchen666" },
-    { "value": 355,  "unit": "分", "label": "CCF-CSP 最高分",         "note": "第 43 次认证 · 前 1.76%" },
-    { "from": "total", "unit": "项", "label": "竞赛获奖",             "note": "全国性 {national} · 省赛区域 {provincial}" }
+    {
+      "value": 2089,
+      "unit": "",
+      "label": "Codeforces 峰值 rating",
+      "note": "Candidate Master · @quchen666"
+    },
+    {
+      "value": 2225,
+      "unit": "",
+      "label": "牛客 Rating",
+      "note": "Rating 排名 465 · @quchen666"
+    },
+    {
+      "value": 355,
+      "unit": "分",
+      "label": "CCF-CSP 最高分",
+      "note": "第 43 次认证 · 前 1.76%"
+    },
+    {
+      "from": "total",
+      "unit": "项",
+      "label": "竞赛获奖",
+      "note": "全国性 {national} · 省赛区域 {provincial}"
+    }
   ],
-
   "timeline": {
     "_comment": "PATH SO FAR —— 与 Loading 动画呼应：那边是算法正在找路，这边是我已经走过的路。只写成长与转折，不复述竞赛记录（详细记录在 competitions.json）。每年最多两行正文 + 三个关键词。side 决定内容落在路径的哪一侧，改这里就能翻转版式。【语言规则】全站统一：英文管结构（区块英文副标题、START/COMPETE 这类 mono 标签、技术名词、[2026]、BACK TO TOP），中文管内容（正文、描述、叙事）。所以这里的 intro / lines / next.line 一律中文，只有 tag 与 keys/miles 用英文。",
     "range": "2024 — 2026",
@@ -29,7 +73,11 @@
           "入学太原理工大学人工智能学院。",
           "开始系统训练算法竞赛，主战场 Codeforces。"
         ],
-        "keys": ["AI", "C++", "Algorithms"]
+        "keys": [
+          "AI",
+          "C++",
+          "Algorithms"
+        ]
       },
       {
         "year": "2025",
@@ -39,7 +87,11 @@
           "第一年正式参赛。",
           "从省赛一路打到全国总决赛。"
         ],
-        "miles": ["CSP 270", "CCPC × 2", "RAICOM"]
+        "miles": [
+          "CSP 270",
+          "CCPC × 2",
+          "RAICOM"
+        ]
       },
       {
         "year": "2026",
@@ -49,7 +101,11 @@
           "竞赛不再只是竞赛。",
           "开始把训练、数据和算法做成能用的工具。"
         ],
-        "miles": ["CSP 355", "CF 2089", "Website"]
+        "miles": [
+          "CSP 355",
+          "CF 2089",
+          "Website"
+        ]
       }
     ],
     "next": {

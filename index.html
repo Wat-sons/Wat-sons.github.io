@@ -23,11 +23,14 @@
      没存过就跟随系统 prefers-color-scheme。 -->
 <script>
 (function () {
-  var d = document.documentElement, saved = null;
-  try { saved = localStorage.getItem("theme"); } catch (e) {}
+  var d = document.documentElement, saved = null, lang = null;
+  try { saved = localStorage.getItem("theme"); lang = localStorage.getItem("lang"); } catch (e) {}
   var theme = (saved === "light" || saved === "dark") ? saved
     : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
   d.setAttribute("data-theme", theme);
+  // 语言同理：首屏就要定下来，否则会先闪中文再跳英文。
+  // 默认中文 —— 这是中文优先的个人站，不跟随浏览器语言猜测。
+  d.setAttribute("data-lang", lang === "en" ? "en" : "zh");
 })();
 </script>
 <style>:root{--bg: #17191E;--bg-raise: #1E2027;--bg-sunken: #121317;--fg: #F0EEE8;--fg-dim: #9B978F;--fg-mute: #86827B;--fg-ghost: #23262D;--line: #2A2D35;--line-strong: #3C404A;--accent: #D8FF4A;--accent-deep: #A7C93A;--accent-glow: rgba(216,255,74,0.14);--glow: rgba(120,140,255,0.06);--tone-gold: #F0C45A;--tone-silver: #C6CDD8;--tone-bronze: #D08A55;--chart-grid: var(--line);--chart-axis: var(--fg-mute);color-scheme: dark;--font-sans: "Space Grotesk Variable","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,sans-serif;--font-mono: ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;--fs-display: clamp(2.75rem,9.5vw,8rem);--fs-ghost: clamp(3.5rem,14vw,11rem);--fs-h2: clamp(1.75rem,4.4vw,3rem);--fs-h3: clamp(1.25rem,2.4vw,1.875rem);--fs-num: clamp(2.25rem,6vw,4.5rem);--fs-num-sm: clamp(1.5rem,3vw,2.25rem);--fs-lead: clamp(1rem,1.7vw,1.3125rem);--fs-body: clamp(0.9375rem,1.05vw,1.0625rem);--fs-meta: clamp(0.6875rem,0.85vw,0.8125rem);--gutter: clamp(1rem,3.5vw,2.5rem);--maxw: 1440px;--sec-y: clamp(4.5rem,13vh,10rem);--stack: clamp(1.25rem,2.5vw,2.25rem);--radius: 14px;--radius-sm: 9px;--ease: cubic-bezier(0.22,0.61,0.36,1);--dur: 280ms;--dur-slow: 620ms;}[data-theme="light"]{--bg: #F5F5F2;--bg-raise: #FFFFFF;--bg-sunken: #EBEBE6;--fg: #111111;--fg-dim: #57554F;--fg-mute: #766F67;--fg-ghost: #E4E2DB;--line: #DADADA;--line-strong: #C2C0B9;--accent: #5C7500;--accent-deep: #46590A;--accent-glow: rgba(92,117,0,0.12);--glow: rgba(90,110,180,0.07);--tone-gold: #8A6A12;--tone-silver: #5A6270;--tone-bronze: #8A5228;--chart-grid: var(--line);--chart-axis: var(--fg-mute);color-scheme: light;}@media (prefers-reduced-motion: no-preference){html.is-theming,html.is-theming body,html.is-theming body *{transition: background-color 200ms var(--ease),border-color 200ms var(--ease),color 200ms var(--ease),fill 200ms var(--ease),stroke 200ms var(--ease) !important;}}@media (prefers-reduced-motion: reduce){:root{--dur: 1ms;--dur-slow: 1ms;}}@media (max-width: 720px){:root{--fs-ghost: clamp(2.5rem,13vw,7rem);}}.preloader{display: none;}@keyframes pl-fade{from{opacity: 0;}to{opacity: 1;}}html.is-booting .preloader{display: grid;place-items: center;position: fixed;inset: 0;z-index: 200;background: var(--bg);cursor: default;}html.is-booting{overflow: hidden;}.pl-inner{display: flex;flex-direction: column;align-items: center;gap: clamp(1.5rem,3.5vh,2.5rem);padding: var(--gutter);}.pl-word{margin: 0;font-size: clamp(1.6rem,4.6vw,2.6rem);font-weight: 500;letter-spacing: -0.02em;color: var(--fg);opacity: 0;animation: pl-fade 620ms var(--ease) 60ms forwards;}.pl-stage{position: relative;width: min(58vh,34vw,460px);aspect-ratio: 1 / 1;}.pl-space{display: block;width: 100%;height: 100%;overflow: visible;}.pl-grid{opacity: 0;animation: pl-grid-in 900ms var(--ease) 120ms forwards;}@keyframes pl-grid-in{to{opacity: 0.55;}}.pl-obstacles{opacity: 0;animation: pl-fade 700ms var(--ease) 260ms forwards;}.pl-obstacles > *{fill: color-mix(in srgb,var(--fg) 4%,transparent);stroke: var(--line-strong);stroke-width: 0.35;}.pl-path{fill: none;stroke: var(--accent);stroke-width: 0.9;stroke-linecap: round;stroke-linejoin: round;opacity: 0;}.pl-stage.is-found .pl-path{opacity: 1;}.pl-node{opacity: 0;animation: pl-fade 600ms var(--ease) 380ms forwards;}.pl-node-start circle{fill: var(--fg-mute);}.pl-node-target .pl-ring{fill: var(--accent);}.pl-node-target .pl-halo{fill: none;stroke: var(--accent);stroke-width: 0.4;transform-origin: 88px 12px;animation: pl-halo 2200ms var(--ease) 600ms infinite;}@keyframes pl-halo{0%{transform: scale(1);opacity: 0.7;}70%{transform: scale(3.4);opacity: 0;}100%{transform: scale(3.4);opacity: 0;}}.pl-tag{fill: var(--fg-mute);font-family: var(--font-mono);font-size: 3.1px;letter-spacing: 0.16em;}.pl-swarm{opacity: 0;animation: pl-fade 500ms var(--ease) 300ms forwards;}.pl-swarm.is-done{opacity: 0;transition: opacity 420ms var(--ease);}.pl-particle{fill: var(--fg-dim);transition: fill 500ms var(--ease);}.pl-swarm.is-converging .pl-particle.is-best{fill: var(--accent);}.pl-trail{fill: none;stroke: var(--fg-mute);stroke-width: 0.28;stroke-linecap: round;opacity: 0.5;}.pl-swarm.is-converging .pl-trail{opacity: 0.75;}.pl-status{position: absolute;left: 0;right: 0;bottom: -2.4rem;margin: 0;text-align: center;font-family: var(--font-mono);font-size: 0.6875rem;letter-spacing: 0.24em;text-transform: uppercase;color: var(--fg-mute);opacity: 0;animation: pl-fade 400ms var(--ease) 520ms forwards;}.pl-status::after{content: "…";}.pl-stage.is-found .pl-status::after{content: "";}.pl-verdict{position: absolute;inset: 0;margin: 0;display: flex;flex-direction: column;align-items: center;justify-content: center;gap: 0.5rem;text-align: center;opacity: 0;pointer-events: none;}.pl-verdict b{display: block;font-family: var(--font-mono);font-size: clamp(0.9rem,1.6vw,1.15rem);font-weight: 500;letter-spacing: 0.3em;text-indent: 0.3em;color: var(--accent);background: var(--bg);padding: 0.35em 0.5em;}.pl-verdict i{font-family: var(--font-mono);font-style: normal;font-size: 0.625rem;letter-spacing: 0.28em;text-indent: 0.28em;color: var(--fg-mute);background: var(--bg);padding: 0.3em 0.5em;}.pl-stage.is-found .pl-verdict{animation: pl-fade 300ms var(--ease) forwards;}.pl-egg{position: absolute;right: -1.2rem;top: 4%;margin: 0;font-size: 0.75rem;letter-spacing: 0.06em;color: var(--fg-mute);opacity: 0;pointer-events: none;}.pl-stage.is-found .pl-egg{animation: pl-egg 1500ms var(--ease) 120ms forwards;}@keyframes pl-egg{0%{opacity: 0;transform: translateY(5px);}18%{opacity: 0.9;transform: translateY(0);}62%{opacity: 0.9;}100%{opacity: 0;}}.pl-stage,.pl-word,.pl-status{transition: opacity 420ms var(--ease),transform 620ms var(--ease);}.preloader.is-enter .pl-stage{opacity: 0;transform: scale(1.08);}.preloader.is-enter .pl-word{opacity: 0;transform: translateY(-8px);}.preloader.is-enter .pl-status{opacity: 0;}.pl-line{position: fixed;left: var(--pl-x,50%);top: var(--pl-y,50%);width: var(--pl-w,0px);height: var(--pl-h,3px);background: var(--accent);transform: scaleX(0);transform-origin: left center;opacity: 0;pointer-events: none;}.preloader.is-enter .pl-line{transform: scaleX(1);opacity: 1;transition: transform 480ms var(--ease),opacity 160ms linear;}.preloader.is-exit{transition: opacity 520ms var(--ease);opacity: 0;}@media (max-width: 860px){.pl-stage{width: min(66vh,78vw,340px);}.pl-egg{right: -0.5rem;}}@media (max-width: 480px){.pl-status{bottom: -2rem;font-size: 0.625rem;letter-spacing: 0.18em;}}.preloader.is-reduced .pl-swarm,.preloader.is-reduced .pl-obstacles,.preloader.is-reduced .pl-grid{opacity: 0.5;animation: none;}.preloader.is-reduced .pl-path{opacity: 1;}.preloader.is-reduced .pl-node-target .pl-halo{animation: none;opacity: 0.4;}.preloader.is-reduced .pl-egg{display: none;}</style>
@@ -109,6 +112,13 @@
     <nav class="nav" id="nav" aria-label="章节导航"><a href="#work"><span class="idx">01</span>Work</a><a href="#competition"><span class="idx">02</span>Competition</a><a href="#timeline"><span class="idx">03</span>Timeline</a><a href="#about"><span class="idx">04</span>About</a><a href="#contact"><span class="idx">05</span>Contact</a></nav>
 
     <div class="topbar-tail">
+      <!-- 语言切换：只切「内容层」，品牌层的导航 / 区块标题 / 阶段标签两边都不变。
+           中 / EN 各自是个独立按钮（不是一个开关），因为将来可能加更多语言。 -->
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" class="lang-btn is-on" data-lang-btn="zh" lang="zh" aria-pressed="true">中</button>
+        <span class="lang-sep" aria-hidden="true">/</span>
+        <button type="button" class="lang-btn" data-lang-btn="en" lang="en" aria-pressed="false">EN</button>
+      </div>
       <span class="year-tag">[2026]</span>
       <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="切换到亮色主题">
         <!-- 图标显示的是「点了会切到哪一边」：暗色下显示太阳，亮色下显示月亮 -->
@@ -139,25 +149,25 @@
     <div class="hero-main">
       <span class="eyebrow hero-fade">Artificial Intelligence · Competitive Programming</span>
       <h1 class="display"><span class="reveal-line"><span>I BUILD</span></span><span class="reveal-line"><span>THINGS WITH</span></span><span class="reveal-line"><span><span class="mark">AI &amp; ALGORITHMS.</span></span></span></h1>
-      <p class="lead hero-fade">太原理工大学人工智能学院在读，日常在 Codeforces 上刷题，也把算法写成能跑起来、能被人用的小工具。这里放我做过的东西、拿到的成绩，以及正在琢磨的问题。</p>
+      <p class="lead hero-fade" data-zh="太原理工大学人工智能学院在读，日常在 Codeforces 上刷题，也把算法写成能跑起来、能被人用的小工具。这里放我做过的东西、拿到的成绩，以及正在琢磨的问题。" data-en="I&#39;m studying in the AI college at Taiyuan University of Technology. Most days I&#39;m on Codeforces, and I like turning algorithms into small tools that actually run and that people can use. This is where I keep what I&#39;ve made, what I&#39;ve won, and whatever I&#39;m still puzzling over.">太原理工大学人工智能学院在读，日常在 Codeforces 上刷题，也把算法写成能跑起来、能被人用的小工具。这里放我做过的东西、拿到的成绩，以及正在琢磨的问题。</p>
     </div>
 
     <div class="hero-stats"><div class="hero-stat reveal" data-delay="0">
     <span class="stat-num" data-to="355" data-unit="分">355<small>分</small></span>
-    <div class="stat-label">CCF-CSP 最高分</div>
-    <div class="stat-note">累计排名前 1.76%</div>
+    <div class="stat-label" data-zh="CCF-CSP 最高分" data-en="CCF-CSP Best">CCF-CSP 最高分</div>
+    <div class="stat-note" data-zh="累计排名前 1.76%" data-en="Top 1.76% overall">累计排名前 1.76%</div>
   </div><div class="hero-stat reveal" data-delay="1">
     <span class="stat-num" data-to="2089" data-unit="">2,089</span>
-    <div class="stat-label">Codeforces 历史最高</div>
+    <div class="stat-label" data-zh="Codeforces 历史最高" data-en="Codeforces Peak">Codeforces 历史最高</div>
     <div class="stat-note">Candidate Master</div>
   </div><div class="hero-stat reveal" data-delay="2">
     <span class="stat-num" data-to="2225" data-unit="">2,225</span>
-    <div class="stat-label">牛客 Rating</div>
-    <div class="stat-note">Rating 排名 465 · 参赛 90 次</div>
+    <div class="stat-label" data-zh="牛客 Rating" data-en="Nowcoder Rating">牛客 Rating</div>
+    <div class="stat-note" data-zh="Rating 排名 465 · 参赛 90 次" data-en="Rank 465 · 90 contests">Rating 排名 465 · 参赛 90 次</div>
   </div><div class="hero-stat reveal" data-delay="3">
     <span class="stat-num" data-to="18" data-unit="项">18<small>项</small></span>
-    <div class="stat-label">竞赛获奖</div>
-    <div class="stat-note">其中全国性 15 项</div>
+    <div class="stat-label" data-zh="竞赛获奖" data-en="Competition Awards">竞赛获奖</div>
+    <div class="stat-note" data-zh="其中全国性 15 项" data-en="15 national-level">其中全国性 15 项</div>
   </div></div>
   </div>
 </section>
@@ -707,14 +717,14 @@
     </div>
     
       <div class="site-age" data-site-age data-since="2026-10-01T13:43:21Z"
-           title="自 2026-10-01 首次上线至今的墙钟时间，不代表服务器在线时长">
+            data-zh-title="自 2026-10-01 首次上线至今的墙钟时间，不代表服务器在线时长" data-en-title="Wall-clock time since the first deploy on 2026-10-01. Not server uptime.">
         <svg class="age-orbit" viewBox="0 0 16 16" aria-hidden="true">
   <circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".45"/>
   <circle class="age-orbit-node" cx="8" cy="1.8" r="1.7" fill="var(--accent)"/>
 </svg>
         <span class="age-label">Site age</span>
         <span class="age-value">
-          <b data-age-d>–</b><i data-age-ud>天</i>
+          <b data-age-d>–</b><i data-age-ud data-zh="天" data-en="days">天</i>
           <b data-age-hms>--:--:--</b>
         </span>
       </div>

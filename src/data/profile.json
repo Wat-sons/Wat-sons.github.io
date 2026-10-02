@@ -24,7 +24,8 @@
     "eyebrow": "Artificial Intelligence · Competitive Programming",
     "headline": ["I BUILD", "THINGS WITH", "AI & ALGORITHMS."],
     "markLine": 2,
-    "lead": "太原理工大学人工智能学院在读，日常在 Codeforces 上刷题，也把算法写成能跑起来、能被人用的小工具。这里放我做过的东西、拿到的成绩，以及正在琢磨的问题。"
+    "lead": "太原理工大学人工智能学院在读，日常在 Codeforces 上刷题，也把算法写成能跑起来、能被人用的小工具。这里放我做过的东西、拿到的成绩，以及正在琢磨的问题。",
+    "leadEn": "I'm studying in the AI college at Taiyuan University of Technology. Most days I'm on Codeforces, and I like turning algorithms into small tools that actually run and that people can use. This is where I keep what I've made, what I've won, and whatever I'm still puzzling over."
   },
 
   "about": {
@@ -69,6 +70,10 @@
   "footer": {
     "line1": "Built with curiosity.",
     "line2": "AI · Algorithms · Building"
+  },
+  "siteAge": {
+    "title": "自 2026-10-01 首次上线至今的墙钟时间，不代表服务器在线时长",
+    "titleEn": "Wall-clock time since the first deploy on 2026-10-01. Not server uptime."
   },
   "site": {
     "_comment": "上线日期。改这一行就能改页脚的 SITE AGE 计时基准。",

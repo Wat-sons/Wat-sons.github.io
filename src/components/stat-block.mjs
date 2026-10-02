@@ -2,8 +2,9 @@
    「大数字成为视觉元素」是这个站的主要叙事手段，所以单独抽成组件。 */
 
 import { esc, num } from "../lib/html.mjs";
+import { bi } from "../lib/i18n.mjs";
 
-export const statBlock = ({ value, unit, label, note, delay = 0, plain = false }) => {
+export const statBlock = ({ value, unit, label, labelEn, note, noteEn, delay = 0, plain = false }) => {
   const countable = typeof value === "number";
   const shown = countable ? num(value) : esc(value);
   const small = unit ? `<small>${esc(unit)}</small>` : "";
@@ -12,8 +13,8 @@ export const statBlock = ({ value, unit, label, note, delay = 0, plain = false }
     : "";
   return `<div class="hero-stat reveal" data-delay="${delay}">
     <span class="stat-num${plain ? " is-plain" : ""}"${numAttrs}>${shown}${small}</span>
-    <div class="stat-label">${esc(label)}</div>
-    ${note ? `<div class="stat-note">${esc(note)}</div>` : ""}
+    <div class="stat-label"${bi(label, labelEn)}>${esc(label)}</div>
+    ${note ? `<div class="stat-note"${bi(note, noteEn)}>${esc(note)}</div>` : ""}
   </div>`;
 };
 
@@ -23,6 +24,6 @@ export const compStat = (s, i) => `
     <span class="stat-num"${typeof s.value === "number" ? ` data-to="${s.value}" data-unit="${esc(s.unit ?? "")}"` : ""}>
       ${typeof s.value === "number" ? num(s.value) : esc(s.value)}${s.unit ? `<small>${esc(s.unit)}</small>` : ""}
     </span>
-    <div class="stat-label">${esc(s.label)}</div>
-    ${s.note ? `<div class="stat-note">${esc(s.note)}</div>` : ""}
+    <div class="stat-label"${bi(s.label, s.labelEn)}>${esc(s.label)}</div>
+    ${s.note ? `<div class="stat-note"${bi(s.note, s.noteEn)}>${esc(s.note)}</div>` : ""}
   </div>`;

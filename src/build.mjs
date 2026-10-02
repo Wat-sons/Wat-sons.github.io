@@ -67,8 +67,10 @@ const resolveMetric = (s) => {
   if (!s.from) return s;
   const value = awardStats[s.from];
   if (value === undefined) throw new Error(`metrics.json 里出现未知的 from: "${s.from}"（可用：${Object.keys(awardStats).join(" / ")}）`);
-  const note = s.note ? s.note.replace(/\{(\w+)\}/g, (_, k) => (awardStats[k] ?? `{${k}}`)) : s.note;
-  return { ...s, value, note };
+  // 中英文的 note 用**同一套** awardStats 替换占位符 ——
+  // 两种语言的数字必须来自同一份统计，否则会出现"中文 15 项 / 英文 14 项"这种事故
+  const fill = (t) => (t ? t.replace(/\{(\w+)\}/g, (_, k) => (awardStats[k] ?? `{${k}}`)) : t);
+  return { ...s, value, note: fill(s.note), noteEn: fill(s.noteEn) };
 };
 metrics.hero = metrics.hero.map(resolveMetric);
 metrics.competition = metrics.competition.map(resolveMetric);
@@ -168,11 +170,14 @@ const html = `<!doctype html>
      没存过就跟随系统 prefers-color-scheme。 -->
 <script>
 (function () {
-  var d = document.documentElement, saved = null;
-  try { saved = localStorage.getItem("theme"); } catch (e) {}
+  var d = document.documentElement, saved = null, lang = null;
+  try { saved = localStorage.getItem("theme"); lang = localStorage.getItem("lang"); } catch (e) {}
   var theme = (saved === "light" || saved === "dark") ? saved
     : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
   d.setAttribute("data-theme", theme);
+  // 语言同理：首屏就要定下来，否则会先闪中文再跳英文。
+  // 默认中文 —— 这是中文优先的个人站，不跟随浏览器语言猜测。
+  d.setAttribute("data-lang", lang === "en" ? "en" : "zh");
 })();
 </script>
 <style>${criticalCss}</style>
