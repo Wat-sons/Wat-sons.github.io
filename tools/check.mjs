@@ -227,6 +227,22 @@ try {
   if ('xcpc' in cf) problems.push('src/data/cf.json 里又冒出 xcpc 字段 —— 训练量统计不公开');
 } catch { /* 没有就跳过 */ }
 
+/* 证书编号：**不要写进公开数据**。
+   编号本身就是个人标识 —— 拿到编号可以在主办方系统里查到具体的人。
+   这条是踩过坑加的：核验证书时顺手把「证书编号 ████████」写进了 awards 的 extra，
+   还把它当成"信息量大"的优点。核验归核验，发布归发布，两回事。
+   注意：注释里也不要写真实编号 —— 那等于换个地方重新发布一次。 */
+{
+  // 3-4 位数字 + 2-5 位大写字母 + 2-4 位数字
+  const CERT_NO = /\b\d{3,4}[A-Z]{2,5}\d{2,4}\b/;
+  for (const f of ['competitions', 'metrics', 'profile', 'projects', 'contests']) {
+    let txt;
+    try { txt = JSON.stringify(await readJson(`src/data/${f}.json`)); } catch { continue; }
+    const m = txt.match(CERT_NO);
+    if (m) problems.push(`src/data/${f}.json 里出现疑似证书编号「${m[0]}」—— 证书编号是个人标识，不对外公开`);
+  }
+}
+
 /* 全站语言规则：**英文管结构，中文管内容。**
    英文：区块英文副标题、START/COMPETE 这类 mono 标签、技术名词、[2026]、BACK TO TOP、首屏宣言
    中文：正文、描述、叙事
