@@ -209,7 +209,9 @@ let r = JSON.parse(await evalJs(`JSON.stringify({
   sceneBg: (() => { const el = document.querySelector('.hero-scenery');
     return el ? getComputedStyle(el).backgroundImage.slice(0, 200) : ''; })(),
   brandImgs: document.querySelectorAll('.brand-avatar').length,
-  abroadImgs: Array.prototype.filter.call(document.querySelectorAll('img'), function (i) { return !i.classList.contains('brand-avatar'); }).length,
+  // data: URI 是内联的，不构成外部资源请求，也不算"公开仓库里的位图"
+  abroadImgs: Array.prototype.filter.call(document.querySelectorAll('img'), function (i) { return !i.classList.contains('brand-avatar') && !/^data:/.test(i.getAttribute('src') || ''); }).length,
+  inlineIcons: document.querySelectorAll('img[src^="data:image/png"]').length,
   themeBtn: document.querySelectorAll('[data-theme-toggle]').length,
 themeAttr: document.documentElement.getAttribute('data-theme'),
   age: (() => { const el = document.querySelector('[data-site-age]');
@@ -261,9 +263,9 @@ themeAttr: document.documentElement.getAttribute('data-theme'),
   heroVisible: getComputedStyle(document.querySelector('.hero')).visibility === 'visible',
   markOn: getComputedStyle(document.querySelector('.display .reveal-line:last-child .mark'), '::after').transform
 })`));
-check('位图只剩导航头像（插画已改为 CSS 背景，按主题只加载一张）',
-  r.imgs === 1 && r.brandImgs === 1 && r.abroadImgs === 0 && /scenery\/orbit/.test(r.sceneBg),
-  `共 ${r.imgs} 张 · 头像 ${r.brandImgs} · 其他 ${r.abroadImgs} · 插画背景=${/scenery/.test(r.sceneBg) ? 'ok' : r.sceneBg}`);
+check('无外部位图（插画走 CSS 背景，图标是内联 data URI）',
+  r.brandImgs === 1 && r.abroadImgs === 0 && r.inlineIcons === 2 && /scenery\/orbit/.test(r.sceneBg),
+  `头像 ${r.brandImgs} · 内联图标 ${r.inlineIcons} · 外部位图 ${r.abroadImgs} · 插画背景=${/scenery/.test(r.sceneBg) ? 'ok' : r.sceneBg}`);
 check('主题切换按钮存在且有初始主题', r.themeBtn === 1 && (r.themeAttr === 'dark' || r.themeAttr === 'light'),
   `按钮 ${r.themeBtn} 个 · data-theme=${r.themeAttr}`);
 

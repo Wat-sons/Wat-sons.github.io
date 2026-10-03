@@ -99,7 +99,10 @@ if (html) {
   for (const [needle, label] of must) {
     if (!html.includes(needle)) problems.push(`index.html 缺 ${label}（${needle}）`);
   }
-  if (/undefined|NaN|\[object Object\]/.test(html)) {
+  // 先把内联的 data URI 剥掉再扫 —— base64 里偶尔会凑巧出现 "NaN" 这种子串，
+  // 那是编码巧合，不是模板漏字段（踩过一次：图标内嵌后误报）。
+  const scand = html.replace(/data:[a-z/+.-]+;base64,[A-Za-z0-9+/=]+/gi, "[data-uri]");
+  if (/undefined|NaN|\[object Object\]/.test(scand)) {
     problems.push('index.html 里出现 undefined / NaN / [object Object]，模板有字段没取到');
   }
   for (const a of competitions.awards) {
@@ -278,6 +281,8 @@ const ALLOWED_BIN = [
   'assets/scenery/orbit.webp',                  // 首尾呼应插画（暗色主题）
   'assets/scenery/orbit-light.webp',            // 同一位置的亮色主题插画（CSS 背景，只加载当前主题那张）
   'assets/avatar/avatar-navbar.webp',           // 导航头像（32px @2x，2KB）
+  'src/brand/icon-nowcoder.png',                // 牛客官方彩色 logo（14px 显示，base64 内嵌进 HTML）
+  'src/brand/icon-blog.png',                    // 博客园官方 favicon
   'assets/favicon/favicon-16.png',              // favicon 位图回退
   'assets/favicon/favicon-32.png',
   'assets/favicon/apple-touch-icon.png',

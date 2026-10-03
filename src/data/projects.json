@@ -17,11 +17,13 @@
       "links": [
         {
           "label": "访问",
-          "url": "https://wat-sons.github.io/"
+          "url": "https://wat-sons.github.io/",
+          "ico": "site"
         },
         {
           "label": "源码",
-          "url": "https://github.com/Wat-sons/Wat-sons.github.io"
+          "url": "https://github.com/Wat-sons/Wat-sons.github.io",
+          "ico": "code"
         }
       ],
       "visual": "none",
@@ -43,11 +45,13 @@
       "links": [
         {
           "label": "Codeforces @quchen666",
-          "url": "https://codeforces.com/profile/quchen666"
+          "url": "https://codeforces.com/profile/quchen666",
+          "ico": "codeforces"
         },
         {
           "label": "Codeforces @quchen",
-          "url": "https://codeforces.com/profile/quchen"
+          "url": "https://codeforces.com/profile/quchen",
+          "ico": "codeforces"
         }
       ],
       "visual": "rating",

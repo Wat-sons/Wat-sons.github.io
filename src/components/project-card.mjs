@@ -19,7 +19,7 @@ export const projectCard = ({ item, visual, flipped }) => `
       <p class="work-desc"${bi(item.desc, item.descEn)}>${esc(item.desc)}</p>
       <div class="work-tags">${(item.tags ?? []).map(tag).join("")}</div>
       ${(item.links ?? []).length
-        ? `<div class="work-links">${item.links.map((l) => textLink({ href: l.url, label: l.label })).join("")}</div>`
+        ? `<div class="work-links">${item.links.map((l) => textLink({ href: l.url, label: l.label, ico: l.ico ?? "" })).join("")}</div>`
         : ""}
     </div>
   </article>`;

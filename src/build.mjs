@@ -17,6 +17,7 @@ import { topbar } from "./sections/topbar.mjs";
 import { hero } from "./sections/hero.mjs";
 import { preloader } from "./lib/preloader.mjs";
 import { markSvg, logoSvg, faviconSvg } from "./lib/brand.mjs";
+import { setIconAssets } from "./lib/icons.mjs";
 import { work } from "./sections/work.mjs";
 import { competition } from "./sections/competition.mjs";
 import { timeline } from "./sections/timeline.mjs";
@@ -85,6 +86,16 @@ if (profile.about?.currently) {
 }
 
 /* ---------- 2. 区块（顺序 = 页面顺序 = 导航顺序 = 编号顺序） ---------- */
+/* 链接图标：官方彩色 logo 以 base64 内嵌（站点不引第三方资源，外链图也会被隐私闸门拦）。
+   PNG 是 14px 显示用的，尺寸已经很小；base64 后每个约 3 KB。 */
+{
+  const toUri = async (f) => `data:image/png;base64,${(await readFile(join(SRC, "brand", f))).toString("base64")}`;
+  setIconAssets({
+    nowcoder: await toUri("icon-nowcoder.png"),
+    blog: await toUri("icon-blog.png"),
+  });
+}
+
 const ctx = (num, note, noteEn) => ({ num, note, noteEn });
 
 const sections = [
@@ -137,6 +148,7 @@ const BRAND = { accent: ACCENT, ink: "#EDEAE3" };
 const GLYPH = await readFile(join(SRC, "brand", "quchen-glyph.svg"), "utf8");
 const glyphInner = (GLYPH.match(/<g[^>]*>([\s\S]*)<\/g>/) || [])[1] ?? "";
 if (!glyphInner) throw new Error("从 quchen-glyph.svg 里抽不出路径");
+
 
 const brandFiles = [
   ["assets/brand/quchen-mark.svg", markSvg({ ...BRAND, size: 120 })],

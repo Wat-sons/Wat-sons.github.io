@@ -8,11 +8,13 @@ import { sectionHead } from "../components/section-head.mjs";
 import { pill } from "../components/pill.mjs";
 
 export const contact = ({ profile, ctx }) => {
+  // 图标按平台取：牛客 / 博客园用官方彩色 logo，GitHub 用官方图形，邮箱用信封
   const links = [
-    pill({ href: `mailto:${profile.email}`, label: profile.email, variant: "is-solid", external: false, arrow: false }),
-    pill({ href: `https://github.com/${profile.github}`, label: `GitHub · ${profile.github}` }),
-    pill({ href: profile.nowcoder, label: `牛客 · ${profile.nowcoderHandle}` }),
-    pill({ href: profile.blog, label: "技术博客" }),
+    pill({ href: `mailto:${profile.email}`, label: profile.email, variant: "is-solid",
+           external: false, arrow: false, ico: "email" }),
+    pill({ href: `https://github.com/${profile.github}`, label: `GitHub · ${profile.github}`, ico: "github" }),
+    pill({ href: profile.nowcoder, label: `牛客 · ${profile.nowcoderHandle}`, ico: "nowcoder" }),
+    pill({ href: profile.blog, label: "技术博客", ico: "blog" }),
   ].join("");
 
   return `

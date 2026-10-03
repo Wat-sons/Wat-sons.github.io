@@ -30,6 +30,11 @@
   --tone-silver: #C6CDD8;
   --tone-bronze: #D08A55;
 
+  /* Codeforces 图标的三条（黄/蓝/红，罗马尼亚国旗）。
+     官网原色 #FDD367 在浅底只有 1.34:1、#BA1F23 在深底只有 2.55:1，
+     所以按主题各替换那一条，其余保持官网原色。 */
+  --cf-1: #FDD367;  --cf-2: #1C97D3;  --cf-3: #E5484D;
+
   /* 图表：与背景反向的抽稀线 */
   --chart-grid:  var(--line);
   --chart-axis:  var(--fg-mute);
@@ -99,6 +104,8 @@
   --tone-gold:   #8A6A12;
   --tone-silver: #5A6270;
   --tone-bronze: #8A5228;
+
+  --cf-1: #B8860B;  --cf-2: #1C97D3;  --cf-3: #BA1F23;
 
   --chart-grid:  var(--line);
   --chart-axis:  var(--fg-mute);
