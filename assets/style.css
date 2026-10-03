@@ -719,6 +719,11 @@ main, .footer { transition: opacity 140ms var(--ease); }
   gap: 2rem;
   flex-wrap: wrap;
 }
+/* 品牌字形：单色印章，用 currentColor 随主题走。
+   高度对齐原来 Q+Path 的 44px，宽度按字形自身比例（275×255）自适应。 */
+.footer-mark { display: block; color: var(--fg); }
+.footer-mark svg { display: block; height: 40px; width: auto; }
+
 .footer-line {
   font-size: var(--fs-meta);
   letter-spacing: 0.06em;

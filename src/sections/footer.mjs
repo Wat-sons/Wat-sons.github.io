@@ -1,4 +1,4 @@
-/* sections/footer.mjs — 页脚：标识 + 一行版权 + 一句签名 + 上线计时 + 回到顶部 */
+/* sections/footer.mjs — 页脚：品牌字形 + 一行版权 + 一句签名 + 上线计时 + 回到顶部 */
 
 import { esc } from "../lib/html.mjs";
 import { markSvg } from "../lib/brand.mjs";
@@ -24,7 +24,7 @@ const ORBIT = `<svg class="age-orbit" viewBox="0 0 16 16" aria-hidden="true">
    数字全部由客户端按 data-since 现算，页面上不写死任何示例值；
    起始日期来自 profile.json 的 site.launchedAt（构建期注入）。
    日期缺失或非法时整块不渲染 —— 页脚其它内容不受影响。 */
-export const footer = ({ profile, year, accent }) => {
+export const footer = ({ profile, year, accent, glyph }) => {
   const launchedAt = profile.site?.launchedAt;
   const valid = typeof launchedAt === "string" && !Number.isNaN(Date.parse(launchedAt));
 
@@ -45,9 +45,12 @@ export const footer = ({ profile, year, accent }) => {
 <footer class="footer">
   <div class="wrap footer-inner">
     <div class="footer-brand">
-      <!-- Q + Path 标识在页脚再出现一次：整页形成
-           「头像（这是我）→ 内容 → 标识（我的品牌）」的收束 -->
-      <span class="footer-mark">${markSvg({ accent, ink: "currentColor", size: 44 })}</span>
+      <!-- 品牌字形（屈臣）作为大面积标记出现在页脚收束。
+           它是单色印章 —— 用 currentColor，亮底黑墨 / 暗底白墨，随主题自动走。
+           注意：**favicon 仍然是 Q + Path**，不是这个。
+           原因见 README：这个字形是位图描摹出来的，笔画密集，
+           16px 下会糊成一团；Q+Path 只有两笔加一个圆，撑得住。 -->
+      <span class="footer-mark">${glyph || markSvg({ accent, ink: "currentColor", size: 44 })}</span>
       <div class="footer-line">
         © ${esc(year)} <b>${esc(profile.handle)}</b> · ${esc(profile.footer?.line1 ?? "")}<br>
         ${esc(profile.footer?.line2 ?? "")}

@@ -136,8 +136,14 @@ const brandFiles = [
   ["assets/brand/quchen-logo.svg", logoSvg(BRAND)],
   // 亮底版本（打印、浅色场景、放在米白背景上时用）
   ["assets/brand/quchen-mark-ink.svg", markSvg({ accent: ACCENT, ink: "#111111", size: 120 })],
-  ["assets/favicon/favicon.svg", faviconSvg({ accent: ACCENT })],
+["assets/favicon/favicon.svg", faviconSvg({ accent: ACCENT })],
 ];
+/* 品牌字形是**手写源**（src/brand/），不是这个脚本生成的 —— 只做拷贝分发。
+   顺便读出来给页脚内联：内联才能让 fill="currentColor" 跟着主题走。 */
+const glyphSrc = join(SRC, "brand", "quchen-glyph.svg");
+const GLYPH = await readFile(glyphSrc, "utf8");
+brandFiles.push(["assets/brand/quchen-glyph.svg", GLYPH]);
+brandFiles.push(["assets/brand/quchen-glyph-a.svg", await readFile(join(SRC, "brand", "quchen-glyph-a.svg"), "utf8")]);
 for (const [rel, svg] of brandFiles) {
   await mkdir(dirname(join(ROOT, rel)), { recursive: true });
   await writeFile(join(ROOT, rel), svg, "utf8");
@@ -211,7 +217,7 @@ ${hero({ profile, metrics })}
 ${sections}
 </main>
 
-${footer({ profile, year, accent: "var(--accent)" })}
+${footer({ profile, year, accent: "var(--accent)", glyph: GLYPH })}
 
 <noscript>
   <div class="noscript-note">浏览器禁用了 JavaScript：全部文字内容仍可正常阅读，仅导航高亮、滚动进度与数字动画不可用。</div>
