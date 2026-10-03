@@ -131,19 +131,23 @@ const criticalCss = minifyCss(rawCritical);
    改令牌时 logo / favicon 会跟着变，不会两处各写一份。 */
 const ACCENT = (rawCritical.match(/--accent:\s*(#[0-9a-fA-F]{3,8})/) || [])[1] || "#D8FF4A";
 const BRAND = { accent: ACCENT, ink: "#EDEAE3" };
+
+/* 品牌字形是**手写源**（src/brand/），不是这个脚本生成的 —— 只做拷贝分发。
+   必须在 brandFiles 之前读：favicon 要复用同一份几何，而不是把路径复制第二遍。 */
+const GLYPH = await readFile(join(SRC, "brand", "quchen-glyph.svg"), "utf8");
+const glyphInner = (GLYPH.match(/<g[^>]*>([\s\S]*)<\/g>/) || [])[1] ?? "";
+if (!glyphInner) throw new Error("从 quchen-glyph.svg 里抽不出路径");
+
 const brandFiles = [
   ["assets/brand/quchen-mark.svg", markSvg({ ...BRAND, size: 120 })],
   ["assets/brand/quchen-logo.svg", logoSvg(BRAND)],
   // 亮底版本（打印、浅色场景、放在米白背景上时用）
   ["assets/brand/quchen-mark-ink.svg", markSvg({ accent: ACCENT, ink: "#111111", size: 120 })],
-["assets/favicon/favicon.svg", faviconSvg({ accent: ACCENT })],
+  // favicon 用品牌字形（2026-10 用户指定），不再是 Q + Path
+  ["assets/favicon/favicon.svg", faviconSvg({ accent: ACCENT, glyphInner })],
+  ["assets/brand/quchen-glyph.svg", GLYPH],
+  ["assets/brand/quchen-glyph-a.svg", await readFile(join(SRC, "brand", "quchen-glyph-a.svg"), "utf8")],
 ];
-/* 品牌字形是**手写源**（src/brand/），不是这个脚本生成的 —— 只做拷贝分发。
-   顺便读出来给页脚内联：内联才能让 fill="currentColor" 跟着主题走。 */
-const glyphSrc = join(SRC, "brand", "quchen-glyph.svg");
-const GLYPH = await readFile(glyphSrc, "utf8");
-brandFiles.push(["assets/brand/quchen-glyph.svg", GLYPH]);
-brandFiles.push(["assets/brand/quchen-glyph-a.svg", await readFile(join(SRC, "brand", "quchen-glyph-a.svg"), "utf8")]);
 for (const [rel, svg] of brandFiles) {
   await mkdir(dirname(join(ROOT, rel)), { recursive: true });
   await writeFile(join(ROOT, rel), svg, "utf8");

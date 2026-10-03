@@ -45,15 +45,23 @@ export function logoSvg({ accent = "#D8FF4A", ink = "currentColor", wordmark = "
 `;
 }
 
-/** favicon：圆角深底 + mark。16px 下要清楚，所以环更粗、路径更短。 */
-export function faviconSvg({ accent = "#D8FF4A", bg = "#0B0B0C", ink = "#EDEAE3" } = {}) {
+/** favicon：圆角深底 + 品牌字形（屈臣）。
+ *
+ *  字形是位图描摹的（275×255），笔画密集。放到 16px 上唯一能做的补救就是
+ *  **尽量放大填充** —— 留白每多 1px，笔画就少 1px。这里取 82% 覆盖，
+ *  既不碰圆角，又比原来 Q 环（占约 44%）多出近一倍像素。
+ *
+ *  glyphInner 由 build.mjs 从 src/brand/quchen-glyph.svg 读出透传。
+ */
+export function faviconSvg({ accent = "#D8FF4A", bg = "#17191E", ink = "#F0EEE8", glyphInner = "" } = {}) {
+  if (!glyphInner) throw new Error("faviconSvg 需要 glyphInner（来自 src/brand/quchen-glyph.svg）");
+  const S = 32, W = 275, H = 255, scale = (S * 0.82) / W;
+  const w = W * scale, h = H * scale;
+  const x = (S - w) / 2, y = (S - h) / 2;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="quchen">
   <title>quchen</title>
   <rect width="32" height="32" rx="7" fill="${bg}"/>
-  <circle cx="13.6" cy="13.6" r="7.1" fill="none" stroke="${ink}" stroke-width="3.2"/>
-  <path d="M 19.3 19.3 C 22.2 22.2 24.4 21.8 26.4 20.4" fill="none"
-        stroke="${accent}" stroke-width="3.2" stroke-linecap="round"/>
-  <circle cx="27.4" cy="19.7" r="1.9" fill="${accent}"/>
+  <g transform="translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${scale.toFixed(5)})" fill="${ink}" fill-rule="evenodd">${glyphInner}</g>
 </svg>
 `;
 }
