@@ -359,6 +359,36 @@
       "certs": [
         "CCF-CSP 第 37 次认证成绩单"
       ]
+    },
+    {
+      "id": "ccpc-changchun-2026-bronze",
+      "date": "2026-09",
+      "title": "中国大学生程序设计竞赛（CCPC）· 全国赛 长春站",
+      "series": "CCPC",
+      "stage": "全国赛",
+      "level": "bronze",
+      "result": "铜牌",
+      "extra": null,
+      "weight": 180,
+      "vault": null,
+      "certs": [],
+      "_source": "简历 2026-10-30：CCPC 全国赛·长春站 铜牌 2026.09"
+    },
+    {
+      "id": "astar-2026-final-bronze",
+      "date": "2026-10",
+      "title": "第 22 届百度之星程序设计大赛 · 决赛",
+      "series": "百度之星",
+      "stage": "全国总决赛",
+      "level": "bronze",
+      "result": "铜奖",
+      "extra": null,
+      "weight": 190,
+      "vault": null,
+      "certs": [
+        "第 22 届百度之星程序设计大赛 决赛 铜奖证书"
+      ],
+      "_source": "证书 OCR：荣获第 22 届百度之星程序设计大赛决赛 铜奖"
     }
   ],
   "stageEn": {
@@ -366,7 +396,8 @@
     "全国总决赛": "National Final",
     "全国邀请赛": "National Invitational",
     "省赛": "Provincial",
-    "西北赛区": "Northwest Region"
+    "西北赛区": "Northwest Region",
+    "全国赛": "National Contest"
   },
   "resultEn": {
     "金奖": "Gold Award",

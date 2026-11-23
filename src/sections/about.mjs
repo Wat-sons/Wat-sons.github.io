@@ -27,12 +27,24 @@ export const about = ({ profile, ctx }) => {
     </div>`).join("");
 
   const edu = profile.education;
-  const campus = (profile.campus ?? []).map((c) => `
+  const campus = (profile.campus ?? []).map((c) => {
+    // role 单独渲染：像「队长」这种身份本身就是重点，塞进 org 字符串会被读成一串机构名。
+    // points 为空时整块不渲染 —— 否则会留一个空的 <ul> 和它的上边距。
+    const role = c.role
+      ? ` <span class="campus-role"${bi(c.role, c.roleEn)}>${esc(c.role)}</span>`
+      : "";
+    const pts = (c.points ?? []).length
+      ? `<ul class="tl-items" style="margin-top:.9rem">${c.points
+          .map((p, j) => `<li${bi(p, (c.pointsEn ?? [])[j])}>${esc(p)}</li>`)
+          .join("")}</ul>`
+      : "";
+    return `
     <div class="reveal">
-      <div class="meta">${esc(c.period)}</div>
-      <h3 class="work-title" style="font-size:var(--fs-h3)"${bi(c.org, c.orgEn)}>${esc(c.org)}</h3>
-      <ul class="tl-items" style="margin-top:.9rem">${c.points.map((p, j) => `<li${bi(p, (c.pointsEn ?? [])[j])}>${esc(p)}</li>`).join("")}</ul>
-    </div>`).join("");
+      <div class="meta"${bi(c.period, c.periodEn)}>${esc(c.period)}</div>
+      <h3 class="work-title" style="font-size:var(--fs-h3)"${bi(c.org, c.orgEn)}>${esc(c.org)}${role}</h3>
+      ${pts}
+    </div>`;
+  }).join("");
 
   return `
 <section id="about" class="section has-ghost">

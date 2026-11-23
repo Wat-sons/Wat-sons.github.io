@@ -57,6 +57,11 @@
         "textEn": "BSc in Artificial Intelligence · Class of 2024 · College of AI, Taiyuan University of Technology"
       },
       {
+        "marker": "Leading",
+        "text": "太原理工大学 ACM 校队队长 · 2026.01 – 至今",
+        "textEn": "Captain, ACM Competitive Programming Team, TYUT · 2026.01 – present"
+      },
+      {
         "marker": "Competing",
         "text": "Codeforces 历史最高 2089（Candidate Master）· 牛客 Rating 2225 · 累计 {total} 项竞赛获奖",
         "textEn": "Codeforces peak 2089 (Candidate Master) · Nowcoder rating 2225 · {total} competition awards so far"
@@ -151,6 +156,16 @@
     "periodEn": "2024.09 – present"
   },
   "campus": [
+    {
+      "org": "太原理工大学 ACM 校队",
+      "orgEn": "ACM Competitive Programming Team, TYUT",
+      "period": "2026.01 – 至今",
+      "periodEn": "2026.01 – present",
+      "points": [],
+      "pointsEn": [],
+      "role": "队长",
+      "roleEn": "Captain"
+    },
     {
       "org": "太原理工大学 自律委员会 学风建设部",
       "period": "2024.09 – 2025.06",

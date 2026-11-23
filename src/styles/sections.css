@@ -487,6 +487,19 @@ html.js.is-booting .hero-fade { animation: none; }
    在英文界面里挂着反而像没翻干净。 */
 [data-lang="en"] .cn { display: none; }
 
+/* 校园经历里的身份标签（如「队长」）。
+   做成小号 accent 字，跟在机构名后面 —— 不抢标题的字重，但一眼能看到。 */
+.campus-role {
+  display: inline-block;
+  margin-left: 0.5em;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  vertical-align: 2px;
+}
+
 /* ═══════════════ CONTACT ═══════════════ */
 /* 与 Path 叙事收尾呼应：Loading 是 PATH FOUND，Timeline 是 PATH SO FAR，
    到这里是 THE PATH CONTINUES，然后才是那句 CTA。 */
